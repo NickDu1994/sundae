@@ -1,7 +1,6 @@
 package com.xwing.sundae.android.view;
 
 import android.net.Uri;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +13,17 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.view.explore.ExploreFragment;
 import com.xwing.sundae.android.view.index.IndexFragment;
+import com.xwing.sundae.android.view.message.MessageFragment;
+import com.xwing.sundae.android.view.my.MyFragment;
+import com.xwing.sundae.android.view.post.PostFragment;
 
-public class MainActivity extends AppCompatActivity implements IndexFragment.OnFragmentInteractionListener, ExploreFragment.OnFragmentInteractionListener{
+
+public class MainActivity extends AppCompatActivity implements
+        IndexFragment.OnFragmentInteractionListener,
+        ExploreFragment.OnFragmentInteractionListener,
+        PostFragment.OnFragmentInteractionListener,
+        MessageFragment.OnFragmentInteractionListener,
+        MyFragment.OnFragmentInteractionListener {
 
     private String TAG = "MainActivity";
     private int lastSelectedPosition;
@@ -25,6 +33,9 @@ public class MainActivity extends AppCompatActivity implements IndexFragment.OnF
     private FragmentTransaction fragmentTransaction;
     private IndexFragment mIndexFragment;
     private ExploreFragment mExploreFragment;
+    private PostFragment mPostFragment;
+    private MessageFragment mMessageFragment;
+    private MyFragment mMyFragment;
 
 
     @Override
@@ -78,12 +89,30 @@ public class MainActivity extends AppCompatActivity implements IndexFragment.OnF
                         break;
                     case 2:  // post
                         Toast.makeText(MainActivity.this, "click 2", Toast.LENGTH_SHORT).show();
+                        if(mPostFragment == null){
+                            mPostFragment = PostFragment.newInstance("","");
+                            fragmentTransaction.add(R.id.mainContainer, mPostFragment);
+                        } else {
+                            fragmentTransaction.show(mPostFragment);
+                        }
                         break;
                     case 3:  // message
                         Toast.makeText(MainActivity.this, "click 3", Toast.LENGTH_SHORT).show();
+                        if(mMessageFragment == null){
+                            mMessageFragment = MessageFragment.newInstance("","");
+                            fragmentTransaction.add(R.id.mainContainer, mMessageFragment);
+                        } else {
+                            fragmentTransaction.show(mMessageFragment);
+                        }
                         break;
                     case 4:  // my
                         Toast.makeText(MainActivity.this, "click 4", Toast.LENGTH_SHORT).show();
+                        if(mMyFragment == null){
+                            mMyFragment = MyFragment.newInstance("","");
+                            fragmentTransaction.add(R.id.mainContainer, mMyFragment);
+                        } else {
+                            fragmentTransaction.show(mMyFragment);
+                        }
                         break;
                     default:
                         Log.e(TAG , "navigation tab index catching error");
@@ -92,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements IndexFragment.OnF
                 fragmentTransaction.commit();
             }//onTabSelected
         });
-
     }
 
     private void setDefaultFragment() {
@@ -109,6 +137,18 @@ public class MainActivity extends AppCompatActivity implements IndexFragment.OnF
 
         if(mExploreFragment != null){
             transaction.hide(mExploreFragment);
+        }
+
+        if(mPostFragment != null) {
+            transaction.hide(mPostFragment);
+        }
+
+        if(mMessageFragment != null) {
+            transaction.hide(mMessageFragment);
+        }
+
+        if(mMyFragment != null) {
+            transaction.hide(mMyFragment);
         }
     }
 
