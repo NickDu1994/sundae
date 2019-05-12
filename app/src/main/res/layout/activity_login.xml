@@ -3,11 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorSpace"
-    tools:context=".android.view.index.IndexFragment">
+    tools:context=".android.view.LoginActivity">
 
-    <com.xwing.sundae.android.customview.SearchRoundCTACardView
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></com.xwing.sundae.android.customview.SearchRoundCTACardView>
+        android:layout_height="wrap_content"
+        android:text="This is login activity"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_vertical"/>
 
 </LinearLayout>
