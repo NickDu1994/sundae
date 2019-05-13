@@ -4,10 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorSpace"
+    android:orientation="vertical"
     tools:context=".android.view.index.IndexFragment">
 
     <com.xwing.sundae.android.customview.SearchRoundCTACardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></com.xwing.sundae.android.customview.SearchRoundCTACardView>
 
+    <com.youth.banner.Banner
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/banner"
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
 </LinearLayout>

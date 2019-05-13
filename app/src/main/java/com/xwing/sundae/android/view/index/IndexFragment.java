@@ -3,6 +3,8 @@ package com.xwing.sundae.android.view.index;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xwing.sundae.R;
+import com.xwing.sundae.android.model.IndexBannerImage;
+import com.xwing.sundae.android.util.GlideImageLoader;
+import com.youth.banner.Banner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,6 +68,7 @@ public class IndexFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -67,6 +76,7 @@ public class IndexFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_index, container, false);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -86,6 +96,7 @@ public class IndexFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
     }
 
     @Override
@@ -109,4 +120,23 @@ public class IndexFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        List<IndexBannerImage> images = new ArrayList<IndexBannerImage>();
+        IndexBannerImage indexBannerImage = new IndexBannerImage();
+        indexBannerImage.setImageUrl("https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg");
+        images.add(indexBannerImage);
+        IndexBannerImage indexBannerImage2 = new IndexBannerImage();
+        indexBannerImage2.setImageUrl("https://img1.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/d7917d2a719c779.jpg");
+        images.add(indexBannerImage2);
+        IndexBannerImage indexBannerImage3 = new IndexBannerImage();
+        indexBannerImage3.setImageUrl("https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/926d23b38826a86.jpg");
+        images.add(indexBannerImage3);
+
+        Banner banner = (Banner) getActivity().findViewById(R.id.banner);
+        banner.setImageLoader(new GlideImageLoader());
+        banner.setImages(images);
+        banner.start();
+    }
 }
