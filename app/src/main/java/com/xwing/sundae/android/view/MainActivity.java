@@ -8,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -19,6 +22,7 @@ import com.xwing.sundae.android.view.index.IndexFragment;
 import com.xwing.sundae.android.view.message.MessageFragment;
 import com.xwing.sundae.android.view.my.MyFragment;
 import com.xwing.sundae.android.view.post.PostFragment;
+import com.xwing.sundae.android.customview.WeiboPopupWindow.MoreWindow;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements
     private PostFragment mPostFragment;
     private MessageFragment mMessageFragment;
     private MyFragment mMyFragment;
+    private MoreWindow mMoreWindow;
 
 
     @Override
@@ -78,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements
                 .initialise();
 
         mBottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.SimpleOnTabSelectedListener(){
+
             @Override
             public void onTabSelected(int position) {
                 lastSelectedPosition = position;
@@ -101,12 +107,14 @@ public class MainActivity extends AppCompatActivity implements
                         }
                         break;
                     case 2:  // post
-                        if(mPostFragment == null){
+                        /*if(mPostFragment == null){
                             mPostFragment = PostFragment.newInstance("","");
                             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
                         } else {
                             fragmentTransaction.show(mPostFragment);
-                        }
+                        }*/
+                        showMoreWindow(getWindow().getDecorView().findViewById(R.id.mainContainer));
+                        //For navigation logic, go to below
                         break;
                     case 3:  // message
                         if(mMessageFragment == null){
@@ -173,5 +181,35 @@ public class MainActivity extends AppCompatActivity implements
     public void onFragmentInteraction(Uri uri) {
         Toast.makeText(this, "MainActivity recieve message from fragment" + uri.toString(), Toast.LENGTH_SHORT).show();
     }
+
+    private void showMoreWindow(View view) {
+        Log.e(TAG , "enter showMoreWindow");
+        if (null == mMoreWindow) {
+            mMoreWindow = new MoreWindow(this);
+            mMoreWindow.init();
+        }
+        mMoreWindow.showMoreWindow(view,100, getSupportFragmentManager());
+    }
+
+    public void clickCiTiao(View view){
+        fragmentTransaction = fragmentManager.beginTransaction();
+        mMoreWindow.hideMoreWindow();
+        Toast.makeText(this, "点击了词条", Toast.LENGTH_SHORT).show();
+        if(mPostFragment == null){
+            mPostFragment = PostFragment.newInstance("","");
+            fragmentTransaction.add(R.id.mainContainer, mPostFragment);
+        } else {
+            fragmentTransaction.show(mPostFragment);
+        }
+        fragmentTransaction.commit();
+
+    }
+
+    public void clickXinDe(View view) {
+        mMoreWindow.hideMoreWindow();
+        Toast.makeText(this, "点击了心得", Toast.LENGTH_SHORT).show();
+    }
+
+
 
 }

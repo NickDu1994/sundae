@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#90FFFFFF" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerVertical="true"
+        android:layout_centerInParent="true">
+        <TextView
+            android:id="@+id/more_window_local"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:clickable="true"
+            android:drawableTop="@drawable/tabbar_compose_idea"
+            android:textAlignment="center"
+            android:onClick="clickCiTiao"
+            android:text="词条" />
+
+        <TextView
+            android:id="@+id/more_window_auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawableTop="@drawable/tabbar_compose_review"
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/more_window_local"
+            android:textAlignment="center"
+            android:onClick="clickXinDe"
+            android:text="心得"/>
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/center_music_window_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="78dp"
+        android:visibility="invisible"
+        android:src="@drawable/tabbar_compose_background_icon_close" />
+
+</RelativeLayout>
