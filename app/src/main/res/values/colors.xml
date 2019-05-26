@@ -7,5 +7,5 @@
     <color name="colorSpace">#EDF2F4</color>
     <color name="textColorPrimary">#000000</color>
     <color name="colorNavigationBarInactivedText">#707070</color>
-    <color name="colorNavigationBarBg">#DADADA</color>
+    <color name="colorNavigationBarBg">#FFFFFF</color>
 </resources>

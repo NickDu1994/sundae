@@ -10,14 +10,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.IndexBannerImage;
+import com.xwing.sundae.android.util.CallBackUtil;
+import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.GlideImageLoader;
+import com.xwing.sundae.android.util.OkhttpUtil;
 import com.youth.banner.Banner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.Call;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -138,5 +145,48 @@ public class IndexFragment extends Fragment {
         banner.setImageLoader(new GlideImageLoader());
         banner.setImages(images);
         banner.start();
+
+        sendPostRequest();
+
+    }
+
+    public void sendGetRequest() {
+
+        String url = "http://10.0.2.2:3001/index";
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("count","15");
+        paramsMap.put("q","de");
+        OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug", "e=" + e);
+            }
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug", "response" + response);
+            }
+        });
+    }
+
+    public void sendPostRequest() {
+        String url = "http://10.0.2.2:3001/list";
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("user","15");
+        String jsonStr = CommonMethod.mapToJson(paramsMap);
+        OkhttpUtil.okHttpPostJson(url, jsonStr, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug", "response" + response);
+            }
+        });
     }
 }

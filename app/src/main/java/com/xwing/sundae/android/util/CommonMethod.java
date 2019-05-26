@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.xwing.sundae.R;
 
 import java.io.UnsupportedEncodingException;
@@ -19,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -159,5 +161,17 @@ public class CommonMethod {
             return dm.heightPixels;
         }
         return 0;
+    }
+
+    /**
+     * 将Map转化为Json
+     *
+     * @param map
+     * @return String
+     */
+    public static <T> String mapToJson(Map<String, T> map) {
+        Gson gson = new Gson();
+        String jsonStr = gson.toJson(map);
+        return jsonStr;
     }
 }
