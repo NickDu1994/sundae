@@ -1,18 +1,23 @@
 package com.xwing.sundae.android.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
+import com.xwing.sundae.android.model.CommonResponse;
+import com.xwing.sundae.android.model.UserInfo;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -23,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static android.content.Context.MODE_PRIVATE;
+import static java.util.Objects.isNull;
 
 public class CommonMethod {
     /**
@@ -174,4 +182,32 @@ public class CommonMethod {
         String jsonStr = gson.toJson(map);
         return jsonStr;
     }
+
+    /**
+     * 判断用户是否登录
+     *
+     * @param response
+     * @return boolean
+     */
+    public static boolean ifLogin(String response) {
+        return (getUserInfo(response))!=null & (getUserInfo(response).getData().getAuth() == "true");
+    }
+
+
+    /**
+     * 判断用户是否登录
+     *
+     * @param response
+     * @return userInfoBean
+     */
+    public static CommonResponse<UserInfo> getUserInfo(String response) {
+        Gson gson = new Gson();
+        CommonResponse<UserInfo> userInfoBean =
+                (CommonResponse<UserInfo>) gson.fromJson(response,
+                        new TypeToken<CommonResponse<UserInfo>>() {
+                        }.getType());
+        return userInfoBean;
+    }
+
+
 }

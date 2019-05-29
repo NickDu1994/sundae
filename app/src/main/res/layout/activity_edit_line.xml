@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".android.view.my.EditLineActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:id="@+id/edit_header"
+            android:layout_width="match_parent"
+            android:layout_height="50sp">
+
+            <TextView
+                android:id="@+id/edit_line_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20sp"
+                android:text="@string/string_cancel_btn"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/edit_line_save"
+                android:layout_width="50sp"
+                android:layout_height="30sp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/background_green_btn"
+                android:text="@string/string_save_btn"
+                android:textColor="#ffffff"
+                android:textSize="18sp"
+                android:layout_marginRight="20sp" />
+
+        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/user_info_edit_lines"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

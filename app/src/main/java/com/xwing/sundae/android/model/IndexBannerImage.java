@@ -10,4 +10,5 @@ public class IndexBannerImage {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
 }

@@ -126,17 +126,17 @@ public class MainActivity extends AppCompatActivity implements
                         break;
                     case 4:  // my
                         boolean isLogin = false;//Todo
-                        if(isLogin) {
+//                        if(isLogin) {
                             if(mMyFragment == null){
                                 mMyFragment = MyFragment.newInstance("","");
                                 fragmentTransaction.add(R.id.mainContainer, mMyFragment);
                             } else {
                                 fragmentTransaction.show(mMyFragment);
                             }
-                        } else {
-                            Intent intent=new Intent(MainActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                        }
+//                        } else {
+//                            Intent intent=new Intent(MainActivity.this, LoginActivity.class);
+//                            startActivity(intent);
+//                        }
 
                         break;
                     default:

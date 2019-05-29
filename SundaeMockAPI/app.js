@@ -4,6 +4,9 @@ var fs = require("fs");
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var jsonParser = bodyParser.json();
+const cors = require('cors');
+
+app.use(cors());
  
 //  GET 请求
 app.get('/index', function (req, res) {
@@ -13,6 +16,23 @@ app.get('/index', function (req, res) {
        res.send( data );
    });
 })
+
+app.post('/getPhoneMessage', function (req, res) {
+	console.log("接收到 GET 请求");
+   fs.readFile( __dirname + "/response/" + "getPhoneMessage.json", 'utf8', function (err, data) {
+       console.log( "response:",data );
+       res.send( data );
+   });
+})
+
+app.post('/getUserInfo', function (req, res) {
+	console.log("接收到 GET 请求");
+   fs.readFile( __dirname + "/response/" + "getUserInfo.json", 'utf8', function (err, data) {
+       console.log( "response:",data );
+       res.send( data );
+   });
+})
+ 
  
  
 //  POST 请求

@@ -1,0 +1,25 @@
+{
+	"status":"succ",
+	"code":200,
+	"data":{
+		"auth":"true",
+		"info":{
+			"id": "40281d816afdc281016afe13460d0004", 
+			"username": "15604030425", 
+			"nickname": "15604030425", 
+			"roleid": null, 
+			"point": null, 
+			"avatarUrl": null, 
+			"gender": null, 
+			"region": null, 
+			"profile": null, 
+			"verificationCode": null, 
+			"createTime": "190528185357124", 
+			"dataStatus": null, 
+			"lastUpdateTime": null, 
+			"token": null, 
+			"lastLoginTime": "190528185357124", 
+			"lastLoginIp": null
+		}
+	}
+}

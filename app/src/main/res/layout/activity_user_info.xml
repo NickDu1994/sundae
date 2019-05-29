@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".android.view.my.UserInfoActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <fragment
+                android:id="@+id/fragment_title"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:name="com.xwing.sundae.android.view.header.CommonMyHeader"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="#F5F6FA">
+            <RelativeLayout
+                android:id="@+id/user_logo_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10sp"
+                android:background="#F5F6FA">
+                <ImageView
+                    android:id="@+id/info_user_pic"
+                    android:layout_marginLeft="20sp"
+                    android:layout_width="50sp"
+                    android:layout_height="50sp"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20sp"
+                    android:layout_marginTop="10sp"
+                    android:gravity="center_vertical"
+                    android:layout_alignParentRight="true"
+                    android:textSize="16sp"
+                    android:text="修改头像 >"
+                    />
+            </RelativeLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/user_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F5F6FA">
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

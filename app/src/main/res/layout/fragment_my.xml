@@ -5,10 +5,103 @@
     android:layout_height="match_parent"
     tools:context=".android.view.my.MyFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="my_fragment" />
+        android:orientation="vertical"
+        android:background="#F5F6FA">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#4879FF">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:paddingRight="15sp"
+                    android:layout_marginTop="15sp"
+                    android:src="@mipmap/setting"/>
+            </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/user_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="30sp"
+                    android:paddingBottom="30sp"
+                    android:paddingLeft="20sp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/user_pic"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_width="80sp"
+                        android:layout_height="80sp"
+                        />
+                </LinearLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="50sp"
+                    android:layout_marginLeft="10sp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="10sp"
+                        android:layout_marginRight="10sp"
+                        >
+                        <TextView
+                            android:id="@+id/user_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/string_click_login"
+                            android:textSize="20sp"
+                            android:textColor="#ffffff"/>
+                        <TextView
+                            android:id="@+id/user_id"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textSize="16sp"
+                            android:textColor="#ffffff"/>
+                    </LinearLayout>
+                    <!--<ImageView-->
+                    <!--android:id="@+id/iv_right_icon"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:paddingRight="20sp"-->
+                    <!--android:src="@mipmap/more"/>-->
+                </RelativeLayout>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="20sp">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="20sp"
+                    android:background="@drawable/corner_top"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/user_field_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F5F6FA">
+        </LinearLayout>
+    </LinearLayout>
 
 </FrameLayout>
