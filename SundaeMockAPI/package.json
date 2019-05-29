@@ -1,0 +1,14 @@
+{
+  "name": "com.sundae",
+  "version": "1.0.0",
+  "description": "none",
+  "main": "app.js",
+  "scripts": {
+    "test": "test app.js"
+  },
+  "author": "Nick Du",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
