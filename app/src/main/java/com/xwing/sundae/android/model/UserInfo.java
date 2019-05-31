@@ -22,7 +22,7 @@ public class UserInfo {
         this.info = info;
     }
 
-    class Info {
+    public class Info {
         private String id;
         private String username;
         private String nickname;

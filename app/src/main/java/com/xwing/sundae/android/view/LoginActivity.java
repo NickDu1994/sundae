@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,8 +29,11 @@ import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.model.VerifyCode;
 import com.xwing.sundae.android.util.CallBackUtil;
+import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.OkhttpUtil;
+import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.util.interpolator.JellyInterpolator;
+import com.xwing.sundae.android.view.my.MyFragment;
 
 import java.util.HashMap;
 
@@ -52,16 +57,21 @@ public class LoginActivity extends AppCompatActivity {
     private int countSeconds = 60;//倒计时秒数
 
     String verify_code = "";
+    SharedPreferencesHelper sharedPreferencesHelper;
 
+    private MyFragment mMyFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        sharedPreferencesHelper= new SharedPreferencesHelper(LoginActivity.this, "loginActivity");
 
         initView();
         initEvent();
     }
+
+
 
     private void initView() {
         mBtnLogin = (TextView) findViewById(R.id.main_btn_login);
@@ -193,36 +203,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * 插入preference内值
-     *
-     * @param key,value
-     */
-    private boolean setPreferences(String key, String value) {
-        Boolean isSetSucc = false;
-        try {
-            SharedPreferences sharedPreferences = getSharedPreferences("user", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(key, value);
-            editor.commit();
-            isSetSucc = true;
-        } catch (Exception e) {
-        } finally {
-            return isSetSucc;
-        }
-    }
-
-    /**
-     * 获取存在preference内信息
-     *
-     * @param key
-     */
-    private String getPreferences(String key) {
-        SharedPreferences preferences = getSharedPreferences("user", Context.MODE_PRIVATE);
-        String value = preferences.getString(key, "");
-        return value;
-    }
-
-    /**
      * call 验证码api
      *
      * @param mobile_id
@@ -246,7 +226,7 @@ public class LoginActivity extends AppCompatActivity {
                             (CommonResponse<VerifyCode>)gson.fromJson(response,
                                     new TypeToken<CommonResponse<VerifyCode>>() {}.getType());
                     String code = verifyCodeBean.getData().getCode();
-                    setPreferences("verify_code",code);
+                    sharedPreferencesHelper.put("verify_code",code);
                     Log.v("loginPostRequest","verify_code" + code);
                 } catch (Exception e) {
                     Log.v("loginPostRequestError","error" + e);
@@ -271,18 +251,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                Gson gson = new Gson();
-                setPreferences("user_info",response);
-                CommonResponse<UserInfo> userInfoBean =
-                        (CommonResponse<UserInfo>) gson.fromJson(response,
-                                new TypeToken<CommonResponse<UserInfo>>() {
-                                }.getType());
-                if(userInfoBean.getData().getAuth() == "true") {
+
+                CommonResponse<UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
+                if(null!=userInfoBean.getData()&&userInfoBean.getData().getAuth().equals("true")) {
+                    sharedPreferencesHelper.put("user_info",response.toString());
+                    sharedPreferencesHelper.put("auth",true);
                     finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
     }

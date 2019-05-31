@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,8 @@ import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.UserInfoOneLineView;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
+import com.xwing.sundae.android.util.CommonMethod;
+import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.view.LoginActivity;
 import com.xwing.sundae.android.view.MainActivity;
 
@@ -57,9 +60,10 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
     ImageView user_pic;
     TextView user_name, user_id;
 
+    SharedPreferencesHelper sharedPreferencesHelper;
+
 
     private OnFragmentInteractionListener mListener;
-
 
 
     public MyFragment() {
@@ -117,6 +121,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v(TAG, "onCreate");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -126,9 +131,12 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+//        SharedPreferencesHelper sharedPreferencesHelper1 = new SharedPreferencesHelper(getActivity(),"clear")
+//                .clear();
+        Log.v(TAG, "test");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my, container, false);
+        sharedPreferencesHelper = new SharedPreferencesHelper(getActivity(), "MyFragment");
 
         initView(view);
         loadPortrait();
@@ -138,6 +146,64 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
 
         return view;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.v(TAG, "onDestroy");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.v(TAG, "onPause");
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+//        sharedPreferencesHelper = new SharedPreferencesHelper(getActivity(), "MyFragment");
+        Log.d("authDebug2","auth"+sharedPreferencesHelper.get("auth","").toString());
+
+
+//        Log.d("authDebug",sharedPreferencesHelper.get("auth","").toString());
+//        Log.d("authDebug",sharedPreferencesHelper.get("auth","").toString());
+//        Log.d("maggieTest",sharedPreferencesHelper.get("user_info","").toString());
+        String commonResponse = sharedPreferencesHelper.get("user_info","").toString();
+        if(null!=commonResponse && !"".equals(commonResponse)) {
+            CommonMethod.ifLogin(commonResponse);
+        }
+//        if (loginFlag()) {
+//            setUserInfo();
+//        } else {
+//
+//        }
+        Log.v(TAG, "onResume");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Log.v(TAG, "onStart");
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.v(TAG, "onViewStateRestored");
+    }
+
+//    private boolean loginFlag() {
+//        if (sharedPreferencesHelper.get("user_info", "") == null) {
+//            return false;
+//        }
+//
+//        Log.v(TAG,sharedPreferencesHelper.get("user_info", "user_info").toString());
+//
+//        return CommonMethod.ifLogin(sharedPreferencesHelper.get("user_info","").toString());
+//    }
 
     private void initEvent() {
         user_field.setOnClickListener(this);
@@ -152,11 +218,21 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
         user_pic = (ImageView) view.findViewById(R.id.user_pic);
         user_name = (TextView) view.findViewById(R.id.user_name);
         user_id = (TextView) view.findViewById(R.id.user_id);
-        if(ifLogin(getPreferences("user_info"))) {
-            CommonResponse<UserInfo> userInfoCommonResponse = getUserInfo(getPreferences("user_info"));
-//            user_name.setText(userInfoCommonResponse.getData().getInfo());
-        }
+
     }
+
+//    private void setUserInfo() {
+//        if (ifLogin(getPreferences("user_info"))) {
+//            CommonResponse<UserInfo> userInfoCommonResponse = getUserInfo(getPreferences("user_info"));
+//
+//            if (null != userInfoCommonResponse.getData() && null != userInfoCommonResponse.getData().getInfo()) {
+//                UserInfo info = userInfoCommonResponse.getData();
+//                user_id.setText(userInfoCommonResponse.getData().getInfo().getUsername());
+//                user_name.setText(userInfoCommonResponse.getData().getInfo().getNickname());
+//                Glide.with(this).load(userInfoCommonResponse.getData());
+//            }
+//        }
+//    }
 
     private void addChildViews() {
 
