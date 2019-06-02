@@ -125,7 +125,7 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
 
 
     public void showMoreWindow(View anchor,int bottomMargin, FragmentManager _fragmentManager) {
-        final RelativeLayout layout = (RelativeLayout)LayoutInflater.from(mContext).inflate(R.layout.customeview_center_music_more_window, null);
+        final RelativeLayout layout = (RelativeLayout)LayoutInflater.from(mContext).inflate(R.layout.customeview_post_show_more_window, null);
         setContentView(layout);
         globalRelativeLayout = layout;
         ImageView close= (ImageView)layout.findViewById(R.id.center_music_window_close);
@@ -247,7 +247,7 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
         switch (v.getId()) {
 
             case R.id.more_window_local:
-                final RelativeLayout layout = (RelativeLayout)LayoutInflater.from(mContext).inflate(R.layout.customeview_center_music_more_window, null);
+                final RelativeLayout layout = (RelativeLayout)LayoutInflater.from(mContext).inflate(R.layout.customeview_post_show_more_window, null);
                 if (isShowing()) {
                     closeAnimation(layout);
                 }

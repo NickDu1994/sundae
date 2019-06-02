@@ -3,7 +3,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-	 <!--login-->
+    <!--login-->
     <string name="string_login_title">Sundae</string>
     <string name="string_login_subtitle">探索未知</string>
     <string name="string_mobile_no">手机号</string>

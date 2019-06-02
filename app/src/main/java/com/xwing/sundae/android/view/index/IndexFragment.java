@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +17,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.xwing.sundae.R;
+import com.xwing.sundae.android.adapter.ComplexListAdapter;
+import com.xwing.sundae.android.customview.SearchRoundCTACardView;
+import com.xwing.sundae.android.model.ComplexListModel;
 import com.xwing.sundae.android.model.IndexBannerImage;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
@@ -44,7 +51,11 @@ public class IndexFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
     private OnFragmentInteractionListener mListener;
+    private List<ComplexListModel> complexListModelList = new ArrayList<>();
+
 
     public IndexFragment() {
         // Required empty public constructor
@@ -76,6 +87,7 @@ public class IndexFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        fragmentManager = getFragmentManager();
     }
 
     @Override
@@ -130,6 +142,20 @@ public class IndexFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        SearchRoundCTACardView searchRoundCTACardView = getActivity().findViewById(R.id.search_button);
+        searchRoundCTACardView.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                Log.d("dkdebug", "enter click to search fragment");
+                SearchFragment mIndexFragment = new SearchFragment();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.add(R.id.mainContainer, mIndexFragment);
+                fragmentTransaction.commit();
+            }
+        });
+
         List<IndexBannerImage> images = new ArrayList<IndexBannerImage>();
         IndexBannerImage indexBannerImage = new IndexBannerImage();
         indexBannerImage.setImageUrl("https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg");
@@ -146,8 +172,17 @@ public class IndexFragment extends Fragment {
         banner.setImages(images);
         banner.start();
 
-        sendPostRequest();
-
+        initMockData();
+        RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.index_recylerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        recyclerView.setHasFixedSize(true);
+        ComplexListAdapter complexListAdapter = new ComplexListAdapter(complexListModelList, getContext());
+        recyclerView.setAdapter(complexListAdapter);
     }
 
     public void sendGetRequest() {
@@ -189,4 +224,22 @@ public class IndexFragment extends Fragment {
             }
         });
     }
+
+    public void initMockData() {
+        for(int i = 0; i < 5; i++){
+            String[] imageArray = {"https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg",
+                    "https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg",
+                    "https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg"};
+            ComplexListModel complexListModel = new ComplexListModel(
+                    "Digitial information",
+                    "This is a content for sundae app usingThis is a content for sundae app usingThis is a content for sundae app using",
+                    imageArray,
+                    true,
+                    "1900次浏览",
+                    "3个月前"
+            );
+            complexListModelList.add(complexListModel);
+        }
+    }
+
 }
