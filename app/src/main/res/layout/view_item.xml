@@ -15,7 +15,7 @@
     <LinearLayout
         android:id="@+id/ll_root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70sp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingBottom="20dp"
@@ -27,7 +27,7 @@
             android:id="@+id/iv_left_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@mipmap/back"/>
+            android:src="@drawable/back"/>
 
         <TextView
             android:id="@+id/tv_text_content"
@@ -55,10 +55,10 @@
 
         <ImageView
             android:id="@+id/iv_right_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
             android:paddingLeft="10dp"
-            android:src="@mipmap/more"/>
+            android:src="@drawable/more"/>
     </LinearLayout>
 
     <!--item的下分割线-->

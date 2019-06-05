@@ -118,7 +118,7 @@ public class UserInfoOneLineView extends LinearLayout {
         setLeftIcon(iconRes);
         setTextContent(textContent);
         showEdit(false);
-        setRightText("");
+        tvRightText.setVisibility(INVISIBLE);
         showArrow(true);
         return this;
     }
@@ -130,12 +130,16 @@ public class UserInfoOneLineView extends LinearLayout {
      * @param iconRes     icon图片
      * @param textContent 文字内容
      */
-//    public OneLineView initMine(int iconRes, String textContent, String textRight, boolean showArrow) {
-//        init(iconRes, textContent);
-//        setRightText(textRight);
-//        showArrow(showArrow);
-//        return this;
-//    }
+    public UserInfoOneLineView initMine(int iconRes, String textContent, String textRight, boolean showArrow) {
+        init();
+        setLeftIcon(iconRes);
+        setTextContent(textContent);
+        showDivider(false, true);
+        setRightText(textRight);
+        setEditable(false);
+        showArrow(showArrow);
+        return this;
+    }
 
 
     /**
@@ -314,7 +318,11 @@ public class UserInfoOneLineView extends LinearLayout {
      * @return
      */
     public UserInfoOneLineView setRightText(String rightText) {
-        tvRightText.setText(rightText);
+        if("".equals(rightText) || null == rightText) {
+            tvRightText.setText("未填写");
+        } else {
+            tvRightText.setText(rightText);
+        }
         return this;
     }
 
@@ -396,6 +404,7 @@ public class UserInfoOneLineView extends LinearLayout {
      */
     public UserInfoOneLineView setEditable(boolean editable) {
         editContent.setFocusable(editable);
+        editContent.setVisibility(INVISIBLE);
         return this;
     }
 

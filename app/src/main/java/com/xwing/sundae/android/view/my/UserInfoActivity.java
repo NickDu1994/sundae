@@ -2,8 +2,10 @@ package com.xwing.sundae.android.view.my;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -11,15 +13,19 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.lljjcoder.citypickerview.widget.CityPicker;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.UserInfoOneLineView;
+import com.xwing.sundae.android.model.CommonResponse;
+import com.xwing.sundae.android.model.UserInfo;
+import com.xwing.sundae.android.view.GetUserInfo;
 import com.yanzhenjie.permission.AndPermission;
 
 import java.io.File;
@@ -27,13 +33,74 @@ import java.io.File;
 public class UserInfoActivity extends AppCompatActivity implements View.OnClickListener,
         UserInfoOneLineView.OnRootClickListener{
 
+    /**
+     * user 编辑的内容类型
+     */
     private static final String EDITTYPE = "EDITTYPE";
-    ImageView info_user_pic;
-    TextView return_icon, profile_title, save_info;
 
+    /**
+     * user的头像区域(头像+修改头像)
+     */
+    RelativeLayout user_logo_field;
+
+    /**
+     * user的头像
+     */
+    ImageView info_user_pic;
+
+    /**
+     * user的所有可编辑列表
+     */
     LinearLayout info_list;
 
-    RelativeLayout user_logo_field;
+    /**
+     * user 个人信息
+     */
+
+    static UserInfo userInfo;
+
+    /**
+     * Userinfo get 方法
+     * @return
+     */
+    public static UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    /**
+     * Userinfo set 方法
+     * @return
+     */
+    public static void setUserInfo(UserInfo info) {
+        userInfo = info;
+    }
+
+    /**
+     * selected province
+     */
+    private String province;
+    /**
+     * selected city
+     */
+    private String city;
+    /**
+     * selected district
+     */
+    private String district;
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    /**
+     * user selected Region
+     */
+    private String selectedRegion;
+
 
     protected static final int CHOOSE_PICTURE = 0;
     protected static final int TAKE_PICTURE = 1;
@@ -49,51 +116,77 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         initView();
         initEvent();
         showUserPic();
-
-        add_info_list();
+        userInfo = new GetUserInfo(this).getUserInfo().getData();
+        add_info_list(userInfo);
         requestPermission();
     }
 
+    @Override
+    protected void onResume() {
+        add_info_list(userInfo);
+        super.onResume();
+    }
 
+    /**
+     * user点击修改头像的事件监听
+     */
     private void initEvent() {
-
         user_logo_field.setOnClickListener(this);
     }
 
+    /**
+     * 初始化
+     */
     private void initView() {
         info_user_pic = findViewById(R.id.info_user_pic);
         info_list = findViewById(R.id.user_info);
         user_logo_field = findViewById(R.id.user_logo_field);
     }
 
-    private void add_info_list() {
+    /**
+     * 将用户可编辑的列表通过自定义view传入
+     */
+    private void add_info_list(UserInfo userinfo) {
+        info_list.removeAllViews();
+        // 加入昵称列
         UserInfoOneLineView nick_name = new UserInfoOneLineView(this)
-                .init(R.mipmap.id,this.getString(R.string.string_nickname),true,true)
+                .initMine(R.drawable.id,this.getString(R.string.string_nickname),userinfo.getInfo().getNickname(),true)
                 .setOnRootClickListener(this, "nickname");
         info_list.addView(nick_name);
+
+        // 加入性别列
         UserInfoOneLineView gender = new UserInfoOneLineView(this)
-                .init(R.mipmap.gender,this.getString(R.string.string_gender),false,true)
+                .initMine(R.drawable.gender,this.getString(R.string.string_gender),userinfo.getInfo().getGender(),true)
                 .setOnRootClickListener(this, "gender");
         info_list.addView(gender);
+        // 加入地区列
         UserInfoOneLineView region = new UserInfoOneLineView(this)
-                .init(R.mipmap.region,this.getString(R.string.string_region),false,true)
+                .initMine(R.drawable.region,this.getString(R.string.string_region),userinfo.getInfo().getRegion(),true)
                 .setOnRootClickListener(this, "region");
         info_list.addView(region);
+        // 加入个人简介列
         UserInfoOneLineView my_profile = new UserInfoOneLineView(this)
-                .init(R.mipmap.profile,this.getString(R.string.string_my_profile),false,true)
+                .initMine(R.drawable.profile,this.getString(R.string.string_my_profile),userinfo.getInfo().getProfile(),true)
                 .setOnRootClickListener(this, "profile");
         info_list.addView(my_profile);
+
     }
 
+    /**
+     * 处理user头像(圆形)
+     */
     private void showUserPic() {
         RequestOptions options = new RequestOptions().
                 circleCropTransform();
         Glide.with(this)
-                .load(R.mipmap.girl)
+                .load(R.drawable.avatar)
                 .apply(options)
                 .into(info_user_pic);
     }
 
+    /**
+     * 拿到修改头像的权限
+     */
     private void requestPermission() {
         AndPermission.with(UserInfoActivity.this)
                 .permission(
@@ -129,8 +222,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     /**
      * 保存裁剪之后的图片数据
      *
-     * @param
-     * @param picdata
+     * @param data
      */
     protected void setImageToView(Intent data) {
 //        Bundle extras = data.getExtras();
@@ -142,6 +234,9 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 //        }
     }
 
+    /**
+     * 选择图片上传
+     */
     private void chooseImage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         String[] items = {"选择本地照片", "拍照"};
@@ -192,6 +287,10 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    /**
+     * 监听点击事件
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -201,31 +300,66 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    /**
+     * root点击事件监听
+     * @param view
+     */
     @Override
     public void onRootClick(View view) {
-        Log.v("userInfoActivity",view.getTag().toString());
-        String tag_name = view.getTag().toString();
-        Bundle data = new Bundle();
-        data.putString("name",tag_name);
-        Intent intent = new Intent(UserInfoActivity.this, EditLineActivity.class);
-        intent.putExtra(EDITTYPE, data);
-        startActivity(intent);
-//        switch ((String) view.getTag()) {
-//
-//            case "nickname":
-//
-//
-//                break;
-//            case "gender":
-//                break;
-//            case "region":
-//                break;
-//            case "profile":
-//                intent = new Intent(UserInfoActivity.this, EditLineActivity.class);
-//                intent.putExtra(EDITTYPE, tag_name);
-//                startActivity(intent);
-//        }
 
+        String tag_name = view.getTag().toString();
+        if(!"region".equals(tag_name)) {
+            Bundle data = new Bundle();
+            data.putString("name",tag_name);
+            Intent intent = new Intent(UserInfoActivity.this, EditUserInfoActivity.class);
+            intent.putExtra(EDITTYPE, data);
+            startActivity(intent);
+        } else {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm.isActive()) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+                selectAddress();
+            }
+        }
     }
 
+    private void selectAddress() {
+        CityPicker cityPicker = new CityPicker.Builder(UserInfoActivity.this)
+                .textSize(16)
+                .title("地址选择")
+                .titleBackgroundColor("#eeeeee")
+                .confirTextColor("#696969")
+                .cancelTextColor("#696969")
+                .province("上海市")
+                .city("上海市")
+                .district("浦东新区")
+                .textColor(Color.parseColor("#000000"))
+                .provinceCyclic(true)
+                .cityCyclic(false)
+                .districtCyclic(false)
+                .visibleItemsCount(7)
+                .itemPadding(10)
+                .onlyShowProvinceAndCity(false)
+                .build();
+        cityPicker.show();
+        //监听方法，获取选择结果
+        cityPicker.setOnCityItemClickListener(new CityPicker.OnCityItemClickListener() {
+            @Override
+            public void onSelected(String... citySelected) {
+                //省份
+                province = citySelected[0];
+                //城市
+                city = citySelected[1];
+                //区县（如果设定了两级联动，那么该项返回空）
+                district = citySelected[2];
+                //
+                selectedRegion = province + "-" + city + "-" + district;
+                Log.e("MAGGIE==>",province+city+district);
+                userInfo.getInfo().setRegion(selectedRegion);
+                add_info_list(userInfo);
+            }
+        });
+
+    }
 }

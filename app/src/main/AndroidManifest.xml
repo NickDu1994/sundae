@@ -12,7 +12,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".android.view.LoginActivity"></activity>
+        <activity android:name=".android.view.my.FeedbackActivity"></activity>
+        <activity android:name=".android.view.my.MyPubishActivity" />
+        <activity android:name=".android.view.my.MyCommentActivity" />
+        <activity android:name=".android.view.my.MyCollectActivity" />
+        <activity android:name=".android.view.my.MyFollowActivity" />
+        <activity android:name=".android.view.my.TestPullActivity">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity android:name=".android.view.my.EditUserInfoActivity" />
+        <activity android:name=".android.view.my.UserInfoActivity" />
+        <activity android:name=".android.view.LoginActivity" />
         <activity android:name=".android.view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

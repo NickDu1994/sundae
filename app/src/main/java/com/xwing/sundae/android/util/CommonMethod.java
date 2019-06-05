@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
+import com.xwing.sundae.android.view.LoginActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -33,6 +34,8 @@ import static android.content.Context.MODE_PRIVATE;
 import static java.util.Objects.isNull;
 
 public class CommonMethod {
+
+
     /**
      * 验证手机格式
      */

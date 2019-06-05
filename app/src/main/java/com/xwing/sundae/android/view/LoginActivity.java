@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        sharedPreferencesHelper= new SharedPreferencesHelper(LoginActivity.this, "loginActivity");
+        sharedPreferencesHelper= new SharedPreferencesHelper(LoginActivity.this, "user");
 
         initView();
         initEvent();

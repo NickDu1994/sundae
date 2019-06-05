@@ -22,7 +22,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="32sp"
-                android:src="@mipmap/mobile" />
+                android:src="@drawable/mobile" />
 
             <EditText
                 android:id="@+id/user_mobile_no"
@@ -53,7 +53,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="28sp"
-                android:src="@mipmap/vercode" />
+                android:src="@drawable/vercode" />
 
             <EditText
                 android:id="@+id/user_mobile_vercode"

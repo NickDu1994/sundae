@@ -19,12 +19,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/user_setting"
+                    android:layout_width="30sp"
+                    android:layout_height="30sp"
                     android:layout_alignParentRight="true"
-                    android:paddingRight="15sp"
-                    android:layout_marginTop="15sp"
-                    android:src="@mipmap/setting"/>
+                    android:paddingRight="10sp"
+                    android:layout_marginTop="5sp"
+                    android:src="@drawable/logout"/>
             </RelativeLayout>
             <LinearLayout
                 android:id="@+id/user_field"
@@ -48,6 +49,7 @@
                         />
                 </LinearLayout>
                 <RelativeLayout
+                    android:id="@+id/user_info_show"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="50sp"
@@ -75,13 +77,6 @@
                             android:textSize="16sp"
                             android:textColor="#ffffff"/>
                     </LinearLayout>
-                    <!--<ImageView-->
-                    <!--android:id="@+id/iv_right_icon"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_alignParentRight="true"-->
-                    <!--android:paddingRight="20sp"-->
-                    <!--android:src="@mipmap/more"/>-->
                 </RelativeLayout>
 
             </LinearLayout>

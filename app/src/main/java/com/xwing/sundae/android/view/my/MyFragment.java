@@ -1,6 +1,8 @@
 package com.xwing.sundae.android.view.my;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -13,19 +15,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.UserInfoOneLineView;
+import com.xwing.sundae.android.model.CommonResponse;
+import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.view.LoginActivity;
+import com.xwing.sundae.android.view.MainActivity;
+
+import org.json.JSONObject;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.support.constraint.Constraints.TAG;
+import static com.bumptech.glide.request.RequestOptions.circleCropTransform;
+import static com.xwing.sundae.android.util.CommonMethod.getUserInfo;
+import static com.xwing.sundae.android.util.CommonMethod.ifLogin;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,48 +60,22 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
 
     private ImageView image;
 
-    LinearLayout user_field, list_item;
-    ImageView user_pic;
-    TextView user_name, user_id;
+    RelativeLayout user_info_show;
 
     SharedPreferencesHelper sharedPreferencesHelper;
+
+    LinearLayout user_field, list_item;
+    ImageView user_pic, user_setting;
+    TextView user_name, user_id;
 
 
     private OnFragmentInteractionListener mListener;
 
+    // set the user all pics as circle && placeholder
+    RequestOptions options = new RequestOptions().placeholder(R.drawable.defaultpic).circleCropTransform();
 
     public MyFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * 获取存在preference内信息
-     *
-     * @param key
-     */
-    private String getPreferences(String key) {
-        SharedPreferences preferences = getActivity().getSharedPreferences("user", MODE_PRIVATE);
-        String value = preferences.getString(key, "");
-        return value;
-    }
-
-    /**
-     * 插入preference内值
-     *
-     * @param key,value
-     */
-    private boolean setPreferences(String key, String value) {
-        Boolean isSetSucc = false;
-        try {
-            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(key, value);
-            editor.commit();
-            isSetSucc = true;
-        } catch (Exception e) {
-        } finally {
-            return isSetSucc;
-        }
     }
 
     /**
@@ -122,159 +109,156 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        SharedPreferencesHelper sharedPreferencesHelper1 = new SharedPreferencesHelper(getActivity(),"clear")
-//                .clear();
-        Log.v(TAG, "test");
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my, container, false);
-        sharedPreferencesHelper = new SharedPreferencesHelper(getActivity(), "loginActivity");
+        sharedPreferencesHelper =
+                new SharedPreferencesHelper(getActivity(), "user");
+
 
         initView(view);
         loadPortrait();
         addChildViews();
         initEvent();
 
-
         return view;
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.v(TAG, "onDestroy");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.v(TAG, "onPause");
-    }
-
-    @Override
     public void onResume() {
-
         super.onResume();
-//        sharedPreferencesHelper = new SharedPreferencesHelper(getActivity(), "MyFragment");
-        Log.d("authDebug2","auth"+sharedPreferencesHelper.get("auth",false).toString());
-
-
-//        Log.d("authDebug",sharedPreferencesHelper.get("auth","").toString());
-//        Log.d("authDebug",sharedPreferencesHelper.get("auth","").toString());
-//        Log.d("maggieTest",sharedPreferencesHelper.get("user_info","").toString());
-        String commonResponse = sharedPreferencesHelper.get("user_info","").toString();
-        if(null!=commonResponse && !"".equals(commonResponse)) {
-            CommonMethod.ifLogin(commonResponse);
-        }
-//        if (loginFlag()) {
-//            setUserInfo();
-//        } else {
-//
-//        }
-        Log.v(TAG, "onResume");
+        setUserInfo();
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        Log.v(TAG, "onStart");
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        Log.v(TAG, "onViewStateRestored");
-    }
-
-//    private boolean loginFlag() {
-//        if (sharedPreferencesHelper.get("user_info", "") == null) {
-//            return false;
-//        }
-//
-//        Log.v(TAG,sharedPreferencesHelper.get("user_info", "user_info").toString());
-//
-//        return CommonMethod.ifLogin(sharedPreferencesHelper.get("user_info","").toString());
-//    }
 
     private void initEvent() {
         user_field.setOnClickListener(this);
         user_pic.setOnClickListener(this);
+        user_setting.setOnClickListener(this);
 
     }
 
     private void initView(View view) {
+
         image = (ImageView) view.findViewById(R.id.user_pic);
         user_field = (LinearLayout) view.findViewById(R.id.user_field);
         list_item = (LinearLayout) view.findViewById(R.id.user_field_detail);
         user_pic = (ImageView) view.findViewById(R.id.user_pic);
         user_name = (TextView) view.findViewById(R.id.user_name);
         user_id = (TextView) view.findViewById(R.id.user_id);
+        user_setting = (ImageView) view.findViewById(R.id.user_setting);
+        user_info_show = (RelativeLayout) view.findViewById(R.id.user_info_show);
 
     }
 
-//    private void setUserInfo() {
-//        if (ifLogin(getPreferences("user_info"))) {
-//            CommonResponse<UserInfo> userInfoCommonResponse = getUserInfo(getPreferences("user_info"));
-//
-//            if (null != userInfoCommonResponse.getData() && null != userInfoCommonResponse.getData().getInfo()) {
-//                UserInfo info = userInfoCommonResponse.getData();
-//                user_id.setText(userInfoCommonResponse.getData().getInfo().getUsername());
-//                user_name.setText(userInfoCommonResponse.getData().getInfo().getNickname());
-//                Glide.with(this).load(userInfoCommonResponse.getData());
-//            }
-//        }
-//    }
+    private void setUserInfo() {
+        //get user detail from sharePreference.
+        String commonResponse = sharedPreferencesHelper.get("user_info", "").toString();
+
+        if (null != commonResponse && !"".equals(commonResponse) && CommonMethod.ifLogin(commonResponse)) {
+            CommonResponse<UserInfo> userInfoCommonResponse = CommonMethod.getUserInfo(commonResponse);
+            UserInfo info = userInfoCommonResponse.getData();
+            user_id.setText(info.getInfo().getUsername());
+            user_name.setText(info.getInfo().getNickname());
+//            Glide.with(this).load(info.getInfo().getAvatarUrl()).apply(options).into(image);
+            Glide.with(this).load(R.drawable.avatar).apply(options).into(image);
+            user_setting.setVisibility(View.VISIBLE);
+
+        } else {
+            setUserInfoAsNoLogin();
+        }
+    }
+
+    private void setUserInfoAsNoLogin() {
+        user_setting.setVisibility(View.INVISIBLE);
+        Glide.with(this).load(R.drawable.girl).apply(options).into(image);
+        user_name.setText(this.getString(R.string.string_click_login));
+        user_id.setText("");
+    }
 
     private void addChildViews() {
 
         UserInfoOneLineView mySent = new UserInfoOneLineView(getContext())
-                .init(R.mipmap.sent, this.getString(R.string.string_my_sent), false, true)
+                .init(R.drawable.sent, this.getString(R.string.string_my_sent), false, true)
                 .setOnRootClickListener(this, "mySent");
         list_item.addView(mySent);
 
         UserInfoOneLineView myComment = new UserInfoOneLineView(getContext())
-                .init(R.mipmap.comment, this.getString(R.string.string_my_comment), false, true)
+                .init(R.drawable.comment, this.getString(R.string.string_my_comment), false, true)
                 .setOnRootClickListener(this, "myComment");
         list_item.addView(myComment);
 
         UserInfoOneLineView myCollect = new UserInfoOneLineView(getContext())
-                .init(R.mipmap.collect, this.getString(R.string.string_my_collect), false, true)
+                .init(R.drawable.collect, this.getString(R.string.string_my_collect), false, true)
                 .setOnRootClickListener(this, "myCollect");
         list_item.addView(myCollect);
 
         UserInfoOneLineView myFollow = new UserInfoOneLineView(getContext())
-                .init(R.mipmap.follow, this.getString(R.string.string_my_follow), false, true)
+                .init(R.drawable.follow, this.getString(R.string.string_my_follow), false, true)
                 .setOnRootClickListener(this, "myFollow");
         list_item.addView(myFollow);
 
         UserInfoOneLineView suggFeedback = new UserInfoOneLineView(getContext())
-                .init(R.mipmap.feedback, this.getString(R.string.string_suggestion_feedback), false, true)
+                .init(R.drawable.feedback, this.getString(R.string.string_suggestion_feedback), false, true)
                 .setOnRootClickListener(this, "suggFeedback");
         list_item.addView(suggFeedback);
 
     }
 
     private void loadPortrait() {
-        RequestOptions options = new RequestOptions().
-                circleCropTransform();
-        Glide.with(this)
-                .load(R.mipmap.girl)
-                .apply(options)
-                .into(image);
+
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.user_field:
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
+                toUserInfoPage();
+//                Intent intent = new Intent(getActivity(), UserInfoActivity.class);
+//                startActivity(intent);
                 break;
             case R.id.user_pic:
-                Intent intent1 = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent1);
+                toUserInfoPage();
+                break;
+            case R.id.user_setting:
+                logOut();
                 break;
         }
+    }
+
+    private void toUserInfoPage() {
+        String commonResponse = sharedPreferencesHelper.get("user_info", "").toString();
+
+        Intent intent;
+        if(CommonMethod.ifLogin(commonResponse)) {
+            intent = new Intent(getActivity(), UserInfoActivity.class);
+        } else {
+            intent = new Intent(getActivity(), LoginActivity.class);
+        }
+        startActivity(intent);
+    }
+
+    private void logOut() {
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setTitle("退出登录")
+                .setMessage("退出后不会删除任何历史数据，下次登录依然可以使用本账号")
+                .setPositiveButton("确定",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sharedPreferencesHelper.remove("user_info");
+                                sharedPreferencesHelper.remove("auth");
+                                setUserInfo();
+//                                getActivity().finish();
+                            }
+                        }).setNegativeButton(this.getString(R.string.string_cancel_btn),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                return;
+                            }
+                        }).create();
+
+        alertDialog.show();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -307,18 +291,23 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
         switch ((String) view.getTag()) {
             case "mySent":
                 position = 1;
+                startActivity(new Intent(getActivity(),MyPubishActivity.class));
                 break;
             case "myComment":
                 position = 2;
+                startActivity(new Intent(getActivity(),MyCommentActivity.class));
                 break;
             case "myCollect":
                 position = 3;
+                startActivity(new Intent(getActivity(),MyCommentActivity.class));
                 break;
             case "myFollow":
                 position = 4;
+                startActivity(new Intent(getActivity(),MyFollowActivity.class));
                 break;
             case "suggFeedback":
                 position = 5;
+                startActivity(new Intent(getActivity(),FeedbackActivity.class));
                 break;
         }
         Toast.makeText(getContext(), "点击了第" + position + "行", Toast.LENGTH_SHORT).show();

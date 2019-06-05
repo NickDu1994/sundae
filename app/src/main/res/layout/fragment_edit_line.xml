@@ -13,7 +13,7 @@
         <EditText
             android:id="@+id/edit_text_value"
             android:layout_width="match_parent"
-            android:layout_height="50sp"
+            android:layout_height="60sp"
             android:paddingLeft="20sp"/>
         <ImageView
             android:id="@+id/clear_edit_text_icon"
@@ -22,7 +22,7 @@
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20sp"
-            android:src="@mipmap/clear"/>
+            android:src="@drawable/clear"/>
     </RelativeLayout>
     <LinearLayout
         android:id="@+id/user_info_edit_gender"
