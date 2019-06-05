@@ -201,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements
             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
         } else {
             fragmentTransaction.show(mPostFragment);
+
         }
         fragmentTransaction.commit();
 
