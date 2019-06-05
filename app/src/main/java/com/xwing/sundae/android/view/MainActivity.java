@@ -1,15 +1,12 @@
 package com.xwing.sundae.android.view;
 
-import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,12 +14,14 @@ import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.ashokvarma.bottomnavigation.ShapeBadgeItem;
 import com.xwing.sundae.R;
+import com.xwing.sundae.android.customview.WeiboPopupWindow.MoreWindow;
 import com.xwing.sundae.android.view.explore.ExploreFragment;
+import com.xwing.sundae.android.view.explore.FollowFragment;
+import com.xwing.sundae.android.view.explore.RankFragment;
 import com.xwing.sundae.android.view.index.IndexFragment;
 import com.xwing.sundae.android.view.message.MessageFragment;
 import com.xwing.sundae.android.view.my.MyFragment;
 import com.xwing.sundae.android.view.post.PostFragment;
-import com.xwing.sundae.android.customview.WeiboPopupWindow.MoreWindow;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -30,7 +29,9 @@ public class MainActivity extends AppCompatActivity implements
         ExploreFragment.OnFragmentInteractionListener,
         PostFragment.OnFragmentInteractionListener,
         MessageFragment.OnFragmentInteractionListener,
-        MyFragment.OnFragmentInteractionListener {
+        MyFragment.OnFragmentInteractionListener,
+        FollowFragment.OnFragmentInteractionListener,
+        RankFragment.OnFragmentInteractionListener {
 
     private String TAG = "MainActivity";
     private int lastSelectedPosition;

@@ -1,15 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorSpace"
+    android:orientation="vertical"
     tools:context=".android.view.explore.ExploreFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/details_header"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Explore Fragment" />
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp"
+        android:background="#323232">
 
-</FrameLayout>
+
+        <TextView
+            android:id="@+id/follow_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="false"
+            android:gravity="center"
+            android:text="关注"
+            android:textColor="#fff"
+            android:textSize="15sp" />
+        <TextView
+            android:id="@+id/rank_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="榜单"
+            android:textColor="#fff"
+            android:textSize="15sp" />
+        　　
+    </RelativeLayout>
+
+    <FrameLayout android:id="@+id/list_container" android:layout_height="0dp" android:layout_weight="1" android:layout_width="match_parent">
+    </FrameLayout>
+</LinearLayout>

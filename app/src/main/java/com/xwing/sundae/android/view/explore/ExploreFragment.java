@@ -3,13 +3,23 @@ package com.xwing.sundae.android.view.explore;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.andview.refreshview.XRefreshView;
 import com.xwing.sundae.R;
+import com.xwing.sundae.android.adapter.FollowAdapter;
+import com.xwing.sundae.android.model.FollowModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,7 +29,7 @@ import com.xwing.sundae.R;
  * Use the {@link ExploreFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ExploreFragment extends Fragment {
+public class ExploreFragment extends Fragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,6 +40,14 @@ public class ExploreFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private List<FollowModel> followList = new ArrayList<>();
+    XRefreshView xRefreshView;
+    FollowAdapter followAdapter;
+    private Handler handler = new Handler();
+    private FollowFragment followFragment;
+    private RankFragment rankFragment;
+
+    private TextView followBtn, rankBtn;
 
     public ExploreFragment() {
         // Required empty public constructor
@@ -53,6 +71,14 @@ public class ExploreFragment extends Fragment {
         return fragment;
     }
 
+    private void setDefaultFragment() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        followFragment = FollowFragment.newInstance("","");
+        transaction.add(R.id.list_container, followFragment).commit();
+
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +93,69 @@ public class ExploreFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_explore, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+//        xRefreshView = getActivity().findViewById(R.id.follow_list_wrapper);
+//        RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.follow_list);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
+//            @Override
+//            public boolean canScrollVertically() {
+//                return true;
+//            }
+//        });
+//        recyclerView.setHasFixedSize(true);
+//        followAdapter = new FollowAdapter(followList, getContext());
+//        recyclerView.setAdapter(followAdapter);
+//
+//        getFollowList();
+//        setPullandRefresh();
+        followBtn = (TextView) getActivity().findViewById(R.id.follow_btn);
+        rankBtn = (TextView) getActivity().findViewById(R.id.rank_btn);
+        //控件颜色
+        followBtn.setTextColor(getResources().getColor(R.color.colorMainTheme));
+        rankBtn.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
+        followBtn.setOnClickListener(this);
+        rankBtn.setOnClickListener(this);
+        setDefaultFragment();
+    }
+
+    @Override
+    public void onClick(View v) {
+        FragmentManager fm = getFragmentManager();
+        // 开启Fragment事务
+        FragmentTransaction transaction = fm.beginTransaction();
+
+        switch (v.getId())
+        {
+            case R.id.follow_btn:
+                if (followFragment == null)
+                {
+                    followFragment = new FollowFragment();
+                }
+                // 使用当前Fragment的布局替代id_content的控件
+                transaction.replace(R.id.list_container, followFragment);
+                //控件颜色
+                followBtn.setTextColor(getResources().getColor(R.color.colorMainTheme));
+                rankBtn.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
+                break;
+            case R.id.rank_btn:
+                if (rankFragment == null)
+                {
+                    rankFragment = new RankFragment();
+                }
+                transaction.replace(R.id.list_container, rankFragment);
+                //控件颜色
+                followBtn.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
+                rankBtn.setTextColor(getResources().getColor(R.color.colorMainTheme));
+                break;
+        }
+        // transaction.addToBackStack();
+        // 事务提交
+        transaction.commit();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -106,5 +195,69 @@ public class ExploreFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void getFollowList() {
+        initMockData();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                followAdapter.notifyDataSetChanged();
+                xRefreshView.stopRefresh();
+                xRefreshView.stopLoadMore();
+
+            }
+        });
+    }
+
+    public void initMockData() {
+        for(int i = 0; i < 10; i++){
+            FollowModel follow = new FollowModel(
+                    "蛋蛋评价了一个词条",
+                    "2天前",
+                    "WTF",
+                    "This is a content for sundae app usingThis is a content for sundae app usingThis is a content for sundae app using",
+                    "https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg"
+            );
+            followList.add(follow);
+        }
+    }
+
+    private void setPullandRefresh() {
+        xRefreshView.setPinnedTime(1000);
+        //如果刷新时不想让里面的列表滑动，可以这么设置
+        xRefreshView.setPinnedContent(false);
+        xRefreshView.setMoveForHorizontal(true);
+        //允许下拉刷新
+        xRefreshView.setPullRefreshEnable(true);
+        xRefreshView.setPullLoadEnable(true);
+        xRefreshView.setAutoLoadMore(false);
+//        adapter.setCustomLoadMoreView(new XRefreshViewFooter(this));
+        xRefreshView.enableReleaseToLoadMore(false);
+        xRefreshView.enableRecyclerViewPullUp(true);
+        xRefreshView.enablePullUpWhenLoadCompleted(false);
+//        xRefreshView.setEmptyView(R.layout.layout_empty_view);//添加empty_view
+
+        xRefreshView.setXRefreshViewListener(new XRefreshView.SimpleXRefreshListener() {
+
+            @Override
+            public void onRefresh(boolean isPullDown) {
+                //super.onRefresh(isPullDown);
+                xRefreshView.setLoadComplete(false);
+                getFollowList();
+//                xRefreshView.stopRefresh();
+            }
+
+            @Override
+            public void onLoadMore(boolean isSilence) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        getFollowList();
+                    }
+                }, 2000);
+            }
+        });
     }
 }

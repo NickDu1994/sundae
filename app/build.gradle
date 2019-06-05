@@ -35,4 +35,7 @@ dependencies {
     implementation 'jp.wasabeef:glide-transformations:3.0.1'
     implementation 'com.youth.banner:banner:1.4.10'
     implementation 'com.yanzhenjie:permission:2.0.0-rc4'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+
+    implementation 'com.huxq17.xrefreshview:xrefreshview:3.6.9'
 }

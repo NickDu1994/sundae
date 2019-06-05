@@ -18,23 +18,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.UserInfoOneLineView;
-import com.xwing.sundae.android.model.CommonResponse;
-import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.view.LoginActivity;
-import com.xwing.sundae.android.view.MainActivity;
-
-import org.json.JSONObject;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.support.constraint.Constraints.TAG;
-import static com.xwing.sundae.android.util.CommonMethod.getUserInfo;
-import static com.xwing.sundae.android.util.CommonMethod.ifLogin;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -136,7 +127,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
         Log.v(TAG, "test");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my, container, false);
-        sharedPreferencesHelper = new SharedPreferencesHelper(getActivity(), "MyFragment");
+        sharedPreferencesHelper = new SharedPreferencesHelper(getActivity(), "loginActivity");
 
         initView(view);
         loadPortrait();
@@ -164,7 +155,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
 
         super.onResume();
 //        sharedPreferencesHelper = new SharedPreferencesHelper(getActivity(), "MyFragment");
-        Log.d("authDebug2","auth"+sharedPreferencesHelper.get("auth","").toString());
+        Log.d("authDebug2","auth"+sharedPreferencesHelper.get("auth",false).toString());
 
 
 //        Log.d("authDebug",sharedPreferencesHelper.get("auth","").toString());
