@@ -21,6 +21,7 @@ import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.view.LoginActivity;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;

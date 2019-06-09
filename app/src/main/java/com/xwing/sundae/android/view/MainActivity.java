@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements
         Toast.makeText(this, "MainActivity recieve message from fragment" + uri.toString(), Toast.LENGTH_SHORT).show();
     }
 
-    private void showMoreWindow(View view) {
+    public void showMoreWindow(View view) {
         Log.e(TAG , "enter showMoreWindow");
         if (null == mMoreWindow) {
             mMoreWindow = new MoreWindow(this);
@@ -211,6 +211,17 @@ public class MainActivity extends AppCompatActivity implements
         mMoreWindow.hideMoreWindow();
         Toast.makeText(this, "点击了心得", Toast.LENGTH_SHORT).show();
     }
+
+    public void triggerBottomNavigationBar(boolean isShow){
+        if(isShow){
+            mBottomNavigationBar.setVisibility(View.VISIBLE);
+            //mBottomNavigationBar.show();
+        }else{
+            mBottomNavigationBar.setVisibility(View.GONE);
+            //mBottomNavigationBar.hide();
+        }
+    }
+
 
 
 

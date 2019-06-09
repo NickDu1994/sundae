@@ -37,17 +37,20 @@
                     android:layout_weight="9"
                     android:layout_gravity="center_vertical"
                     android:textSize="16sp"
-                    android:text="请输入想要搜索的词条"/>
+                    android:hint="请输入想要搜索的词条"/>
                 <ImageButton
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:background="#00FFFFFF"
                     android:src="@drawable/close"/>
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
         <Button
+            android:id="@+id/cancel_button"
             android:layout_width="60dp"
             android:layout_height="40dp"
             android:background="#00FFFFFF"

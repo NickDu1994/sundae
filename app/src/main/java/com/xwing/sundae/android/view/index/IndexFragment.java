@@ -16,16 +16,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.adapter.ComplexListAdapter;
 import com.xwing.sundae.android.customview.SearchRoundCTACardView;
+import com.xwing.sundae.android.model.BaseImage;
+import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.ComplexListModel;
 import com.xwing.sundae.android.model.IndexBannerImage;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
+import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.GlideImageLoader;
 import com.xwing.sundae.android.util.OkhttpUtil;
+import com.xwing.sundae.android.view.MainActivity;
 import com.youth.banner.Banner;
+import com.youth.banner.listener.OnBannerListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,10 +58,8 @@ public class IndexFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private FragmentManager fragmentManager;
-    private FragmentTransaction fragmentTransaction;
+    private PortalFragment portalFragment;
     private OnFragmentInteractionListener mListener;
-    private List<ComplexListModel> complexListModelList = new ArrayList<>();
 
 
     public IndexFragment() {
@@ -87,7 +92,6 @@ public class IndexFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        fragmentManager = getFragmentManager();
     }
 
     @Override
@@ -142,104 +146,13 @@ public class IndexFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        SearchRoundCTACardView searchRoundCTACardView = getActivity().findViewById(R.id.search_button);
-        searchRoundCTACardView.setOnClickListener(new View.OnClickListener(){
-
-            @Override
-            public void onClick(View v) {
-                Log.d("dkdebug", "enter click to search fragment");
-                SearchFragment mIndexFragment = new SearchFragment();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(R.id.mainContainer, mIndexFragment);
-                fragmentTransaction.commit();
-            }
-        });
-
-        List<IndexBannerImage> images = new ArrayList<IndexBannerImage>();
-        IndexBannerImage indexBannerImage = new IndexBannerImage();
-        indexBannerImage.setImageUrl("https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg");
-        images.add(indexBannerImage);
-        IndexBannerImage indexBannerImage2 = new IndexBannerImage();
-        indexBannerImage2.setImageUrl("https://img1.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/d7917d2a719c779.jpg");
-        images.add(indexBannerImage2);
-        IndexBannerImage indexBannerImage3 = new IndexBannerImage();
-        indexBannerImage3.setImageUrl("https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/926d23b38826a86.jpg");
-        images.add(indexBannerImage3);
-
-        Banner banner = (Banner) getActivity().findViewById(R.id.banner);
-        banner.setImageLoader(new GlideImageLoader());
-        banner.setImages(images);
-        banner.start();
-
-        initMockData();
-        RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.index_recylerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        });
-        recyclerView.setHasFixedSize(true);
-        ComplexListAdapter complexListAdapter = new ComplexListAdapter(complexListModelList, getContext());
-        recyclerView.setAdapter(complexListAdapter);
+        setDefaultFragment();
     }
 
-    public void sendGetRequest() {
-
-        String url = "http://10.0.2.2:3001/index";
-        HashMap<String, String> paramsMap = new HashMap<>();
-        paramsMap.put("count","15");
-        paramsMap.put("q","de");
-        OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
-            @Override
-            public void onFailure(Call call, Exception e) {
-                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
-                Log.d("dkdebug", "e=" + e);
-            }
-
-            @Override
-            public void onResponse(String response) {
-                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
-                Log.d("dkdebug", "response" + response);
-            }
-        });
+    private void setDefaultFragment() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        portalFragment = PortalFragment.newInstance("","");
+        transaction.add(R.id.index_fragment_container, portalFragment).commit();
     }
-
-    public void sendPostRequest() {
-        String url = "http://10.0.2.2:3001/list";
-        HashMap<String, String> paramsMap = new HashMap<>();
-        paramsMap.put("user","15");
-        String jsonStr = CommonMethod.mapToJson(paramsMap);
-        OkhttpUtil.okHttpPostJson(url, jsonStr, new CallBackUtil.CallBackString() {
-            @Override
-            public void onFailure(Call call, Exception e) {
-                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onResponse(String response) {
-                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
-                Log.d("dkdebug", "response" + response);
-            }
-        });
-    }
-
-    public void initMockData() {
-        for(int i = 0; i < 5; i++){
-            String[] imageArray = {"https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg",
-                    "https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg",
-                    "https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg"};
-            ComplexListModel complexListModel = new ComplexListModel(
-                    "Digitial information",
-                    "This is a content for sundae app usingThis is a content for sundae app usingThis is a content for sundae app using",
-                    imageArray,
-                    true,
-                    "1900次浏览",
-                    "3个月前"
-            );
-            complexListModelList.add(complexListModel);
-        }
-    }
-
 }
