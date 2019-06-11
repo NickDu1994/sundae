@@ -35,7 +35,10 @@ import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.util.interpolator.JellyInterpolator;
 import com.xwing.sundae.android.view.my.MyFragment;
 
+import org.json.JSONArray;
+
 import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 
@@ -44,8 +47,11 @@ import static com.xwing.sundae.android.util.CommonMethod.isMobileNO;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginBeautyActivityTag";
-    private static final String REQUEST_URL = "http://192.168.18.1:8080/user";
-    private String mock_url = "http://10.0.2.2:3001/";
+    private static final String REQUEST_URL = "http://192.168.31.30:8080/user";
+    //    private static final String REQUEST_URL_MY = "http://192.168.31.17:8080/user";
+    private static final String REQUEST_URL_MY = "http://101.225.90.186:8080/user";
+    private String REQUEST_URL_MOCK = "http://10.0.2.2:3001";
+
 
     private TextView mBtnLogin, get_verify_code_btn;
     private View progress;
@@ -60,17 +66,17 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferencesHelper sharedPreferencesHelper;
 
     private MyFragment mMyFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        sharedPreferencesHelper= new SharedPreferencesHelper(LoginActivity.this, "user");
+        sharedPreferencesHelper = new SharedPreferencesHelper(LoginActivity.this, "user");
 
         initView();
         initEvent();
     }
-
 
 
     private void initView() {
@@ -208,9 +214,16 @@ public class LoginActivity extends AppCompatActivity {
      * @param mobile_id
      */
     private void getVerifyCodeRequest(String mobile_id) {
-        String url = REQUEST_URL + "/getPhoneMessage/" + mobile_id;
+//        String url = REQUEST_URL + "/getPhoneMessage/" + mobile_id;
+        String url = REQUEST_URL_MY + "/getPhoneMessage";
+        String mock_url = REQUEST_URL_MOCK + "/getPhoneMessage";
+        HashMap<String, String> paramsMap = new HashMap<>();
 
-        OkhttpUtil.okHttpPostJson(mock_url+"getPhoneMessage", "", new CallBackUtil.CallBackString() {
+
+        paramsMap.put("phone", mobile_id);
+        String request_json = CommonMethod.mapToJson(paramsMap);
+
+        OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
                 Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_SHORT).show();
@@ -221,15 +234,16 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
 
                 Gson gson = new Gson();
-                try{
+                try {
                     CommonResponse<VerifyCode> verifyCodeBean =
-                            (CommonResponse<VerifyCode>)gson.fromJson(response,
-                                    new TypeToken<CommonResponse<VerifyCode>>() {}.getType());
+                            (CommonResponse<VerifyCode>) gson.fromJson(response,
+                                    new TypeToken<CommonResponse<VerifyCode>>() {
+                                    }.getType());
                     String code = verifyCodeBean.getData().getCode();
-                    sharedPreferencesHelper.put("verify_code",code);
-                    Log.v("loginPostRequest","verify_code" + code);
+                    sharedPreferencesHelper.put("verify_code", code);
+                    Log.v("loginPostRequest", "verify_code" + code);
                 } catch (Exception e) {
-                    Log.v("loginPostRequestError","error" + e);
+                    Log.v("loginPostRequestError", "error" + e);
                 }
             }
         });
@@ -240,9 +254,22 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void loginPostRequest() {
         verify_code = user_mobile_vercode.getText().toString();
-        String url = REQUEST_URL + "/login/" + verify_code;
+        String url = REQUEST_URL_MY + "/login";
+        String mobile = user_mobile_no.getText().toString();
+        String verificationCode = user_mobile_vercode.getText().toString();
 
-        OkhttpUtil.okHttpPostJson(mock_url+"getUserInfo", "", new CallBackUtil.CallBackString() {
+        String mock_url = REQUEST_URL_MOCK + "/getUserInfo";
+
+
+        HashMap<String, String> paramsMap = new HashMap<>();
+
+
+        paramsMap.put("verificationCode", verificationCode);
+        paramsMap.put("phone", mobile);
+        String request_json = CommonMethod.mapToJson(paramsMap);
+
+        OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
+            //        OkhttpUtil.okHttpPostJson(mock_url, "", new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
                 Toast.makeText(LoginActivity.this, "server error", Toast.LENGTH_SHORT).show();
@@ -250,16 +277,28 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                Gson gson = new Gson();
+                Map<String, Object> map_res = gson.fromJson(response, Map.class);
+                Log.e("maggue", map_res.get("status") + "");
+                if (null != map_res.get("status") && "200.0".equals(map_res.get("status").toString())) {
+                    Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
 
-                CommonResponse<UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
-                if(null!=userInfoBean.getData()&&userInfoBean.getData().getAuth().equals("true")) {
-                    sharedPreferencesHelper.put("user_info",response.toString());
-                    sharedPreferencesHelper.put("auth",true);
-                    finish();
+                    CommonResponse<UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
+                    if (null != userInfoBean.getData()) {
+                        sharedPreferencesHelper.put("user_info", response);
+                        sharedPreferencesHelper.put("auth", true);
+                        finish();
+                    } else {
+                        recovery();
+                        Toast.makeText(LoginActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
+
+                    }
                 } else {
+                    recovery();
                     Toast.makeText(LoginActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
+
                 }
+
             }
         });
     }

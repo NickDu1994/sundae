@@ -63,7 +63,7 @@ public class GetUserInfo {
      */
     public boolean ifLogin() {
         CommonResponse<UserInfo> userInfoCommonResponse = getUserInfo();
-        if (null != userInfoCommonResponse && userInfoCommonResponse.getData().getAuth().equals("true")) {
+        if (null != userInfoCommonResponse && userInfoCommonResponse.getStatus()==200) {
             return true;
         }
         return false;

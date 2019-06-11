@@ -2,9 +2,25 @@ package com.xwing.sundae.android.model;
 
 public class CommonResponse<T> {
 
-    private String status;
-    private int code;
+    private int status;
+    private String msg;
     private T data;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
     public T getData() {
         return data;
@@ -13,20 +29,5 @@ public class CommonResponse<T> {
     public void setData(T data) {
         this.data = data;
     }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
 }
+

@@ -196,8 +196,9 @@ public class CommonMethod {
     public static boolean ifLogin(String response) {
         CommonResponse<UserInfo> userInfoCommonResponse = getUserInfo(response);
         if(!"".equals(response) && null!=userInfoCommonResponse) {
-            userInfoCommonResponse.getData().getAuth().equals("true");
-            return true;
+            if(userInfoCommonResponse.getStatus() == 200) {
+                return true;
+            }
         }
         return false;
 //        return (getUserInfo(response))!=null && (getUserInfo(response).getData().getAuth().equals("true"));
@@ -222,6 +223,5 @@ public class CommonMethod {
         }
         return null;
     }
-
 
 }

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <com.mcxtzhang.swipemenulib.SwipeMenuLayout
+        android:layout_width="match_parent"
+        android:layout_height="80sp"
+        android:clickable="true"
+        android:paddingBottom="1dp"
+        app:ios="false"
+        app:leftSwipe="true"
+        app:swipeEnable="true">
+        <LinearLayout
+            android:id="@+id/follow_field"
+            android:layout_width="match_parent"
+            android:layout_height="100sp"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/follow_avatarUrl"
+                android:layout_width="70sp"
+                android:layout_height="70sp"
+                android:src="@drawable/boy"
+                android:layout_marginLeft="20sp"
+                android:layout_marginTop="15sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100sp"
+                android:orientation="vertical"
+                android:layout_marginLeft="20sp"
+                android:layout_marginTop="20sp">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/follow_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:text="Maggie"/>
+                    <TextView
+                        android:id="@+id/followTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:layout_marginLeft="80sp"
+                        android:text="关注于 2018年11月19日"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20sp">
+                    <TextView
+                        android:id="@+id/sentCounts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:text="发布数 30"/>
+                    <TextView
+                        android:id="@+id/getPraisedCounts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20sp"
+                        android:textSize="14sp"
+                        android:text="获赞数 500"/>
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <Button
+            android:id="@+id/btnCancelFollow"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:background="@color/red_ff4a57"
+            android:text="取消关注"
+            android:textColor="@android:color/white"/>
+    </com.mcxtzhang.swipemenulib.SwipeMenuLayout>
+    <View
+        android:id="@+id/divider_bottom"
+        android:layout_width="fill_parent"
+        android:layout_height="5sp"
+        android:background="#efefef" />
+
+</LinearLayout>

@@ -13,11 +13,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.UserInfoEditLineView;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
+import com.xwing.sundae.android.model.VerifyCode;
+import com.xwing.sundae.android.util.CallBackUtil;
+import com.xwing.sundae.android.util.CommonMethod;
+import com.xwing.sundae.android.util.OkhttpUtil;
+import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.view.GetUserInfo;
+import com.xwing.sundae.android.view.LoginActivity;
+
+import java.util.HashMap;
+
+import okhttp3.Call;
 
 public class EditUserInfoActivity extends AppCompatActivity implements View.OnClickListener,
         UserInfoEditLineView.OnRootClickListener {
@@ -27,13 +39,20 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
     private static final String USER_INFO_TYPE_GENDER = "gender";
     private static final String USER_INFO_TYPE_REGION = "region";
 
+    private static final String REQUEST_URL = "http://192.168.31.30:8080/user";
+//    private static final String REQUEST_URL_MY = "http://192.168.31.17:8080/user";
+    private static final String REQUEST_URL_MY = "http://101.225.90.186:8080/user";
+
 
     LinearLayout user_info_edit_lines;
     TextView edit_line_cancel, edit_text_value;
     Button edit_line_save;
 
     UserInfoEditLineView userInfoEditLineView;
+    SharedPreferencesHelper sharedPreferencesHelper;
     UserInfo userInfo = new UserInfo();
+
+    Gson gson = new Gson();
 
     @SuppressLint("ResourceType")
     @Override
@@ -52,19 +71,19 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
         switch (userInfoEditType) {
             // 点击编辑姓名
             case USER_INFO_TYPE_NICKNAME:
-                UserInfoEditLineView name_edit_view = userInfoEditLineView.setNameEdit(userInfo.getInfo().getNickname())
+                UserInfoEditLineView name_edit_view = userInfoEditLineView.setNameEdit(userInfo.getNickname())
                         .setOnRootClickListener(this, USER_INFO_TYPE_NICKNAME);
                 user_info_edit_lines.addView(name_edit_view);
                 break;
             // 点击编辑个人简介
             case USER_INFO_TYPE_PROFILE:
-                UserInfoEditLineView profile_edit_view = userInfoEditLineView.setProfileEdit(userInfo.getInfo().getProfile())
+                UserInfoEditLineView profile_edit_view = userInfoEditLineView.setProfileEdit(userInfo.getProfile())
                         .setOnRootClickListener(this, USER_INFO_TYPE_PROFILE);
                 user_info_edit_lines.addView(profile_edit_view);
                 break;
             // 点击编辑性别
             case USER_INFO_TYPE_GENDER:
-                UserInfoEditLineView gender_edit_view = userInfoEditLineView.setGenderEdit(userInfo.getInfo().getGender())
+                UserInfoEditLineView gender_edit_view = userInfoEditLineView.setGenderEdit(userInfo.getGender())
                         .setOnRootClickListener(this, USER_INFO_TYPE_GENDER);
                 user_info_edit_lines.addView(gender_edit_view);
                 break;
@@ -112,40 +131,42 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
      * 保存用户编辑的信息，并且关闭当前activity
      */
     private void saveInfo() {
-
         String edit_type = UserInfoEditLineView.getEditType();
+
+        String edit_value = "";
 
         switch (edit_type){
             case USER_INFO_TYPE_NICKNAME:
-                checkName();
+                edit_value = checkName();
                 break;
             case USER_INFO_TYPE_GENDER:
-                String gender = UserInfoEditLineView.getGenderByOper();
-                userInfo.getInfo().setGender(gender);
+                String gender_text = "0".equals(UserInfoEditLineView.getGenderByOper())?"男":"女";
+                edit_value = UserInfoEditLineView.getGenderByOper();
+                userInfo.setGender(edit_value);
                 break;
             case USER_INFO_TYPE_PROFILE:
-                String profile = UserInfoEditLineView.getProfile();
-                userInfo.getInfo().setProfile(profile);
+                edit_value = UserInfoEditLineView.getProfile();
+                userInfo.setProfile(edit_value);
                 break;
         }
-        Log.e("MAGGIE==>", ""+userInfo);
-
         //call save info api
-        UserInfoActivity.setUserInfo(userInfo);
-        this.finish();
+//        UserInfoActivity.setUserInfo(userInfo);
+
+        updateUserInfoPost(edit_type,edit_value);
+
     }
 
     /**
      * 检查姓名编辑是否为空，不为空时进行修改后的赋值
      */
-    private void checkName(){
+    private String checkName(){
         String name = UserInfoEditLineView.getName();
         if(null == name || "".equals(name)) {
             noNameAlert();
-            return;
+            return "";
         }
-        userInfo.getInfo().setNickname(name);
-
+        userInfo.setNickname(name);
+        return name;
     }
 
     /**
@@ -165,5 +186,37 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onRootClick(View view) {
 
+    }
+
+    private void updateUserInfoPost(String editType,String editValue) {
+        GetUserInfo userInfo = new GetUserInfo(this);
+        Long user_id = userInfo.getUserInfo().getData().getId();
+        String url = REQUEST_URL_MY + "/modify/" + user_id;
+
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put(editType,editValue);
+        String request_json = CommonMethod.mapToJson(paramsMap);
+
+        OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(EditUserInfoActivity.this, "server error", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(String response) {
+
+                Toast.makeText(EditUserInfoActivity.this, "更新信息成功", Toast.LENGTH_SHORT).show();
+                try{
+                    CommonResponse<UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
+                    UserInfoActivity.setUserInfo(userInfoBean.getData());
+                    sharedPreferencesHelper.remove("user_info");
+                    sharedPreferencesHelper.put("user_info", response);
+                    finish();
+                } catch (Exception e) {
+                    Log.v("loginPostRequestError","error" + e);
+                }
+            }
+        });
     }
 }

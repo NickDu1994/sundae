@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -25,14 +26,24 @@ import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.UserInfoOneLineView;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
+import com.xwing.sundae.android.util.CallBackUtil;
+import com.xwing.sundae.android.util.CommonMethod;
+import com.xwing.sundae.android.util.OkhttpUtil;
+import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.view.GetUserInfo;
 import com.yanzhenjie.permission.AndPermission;
 
 import java.io.File;
+import java.util.HashMap;
+
+import okhttp3.Call;
 
 public class UserInfoActivity extends AppCompatActivity implements View.OnClickListener,
         UserInfoOneLineView.OnRootClickListener{
 
+//    private static final String REQUEST_URL_MY = "http://192.168.31.17:8080/user";
+
+    private static final String REQUEST_URL_MY = "http://101.225.90.186:8080/user";
     /**
      * user 编辑的内容类型
      */
@@ -97,6 +108,11 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     }
 
     /**
+     * SharedPreferencesHelper 对象
+     */
+    SharedPreferencesHelper sharedPreferencesHelper;
+
+    /**
      * user selected Region
      */
     private String selectedRegion;
@@ -150,23 +166,23 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         info_list.removeAllViews();
         // 加入昵称列
         UserInfoOneLineView nick_name = new UserInfoOneLineView(this)
-                .initMine(R.drawable.id,this.getString(R.string.string_nickname),userinfo.getInfo().getNickname(),true)
+                .initMine(R.drawable.id,this.getString(R.string.string_nickname),userinfo.getNickname(),true)
                 .setOnRootClickListener(this, "nickname");
         info_list.addView(nick_name);
 
         // 加入性别列
         UserInfoOneLineView gender = new UserInfoOneLineView(this)
-                .initMine(R.drawable.gender,this.getString(R.string.string_gender),userinfo.getInfo().getGender(),true)
+                .initMine(R.drawable.gender,this.getString(R.string.string_gender),userinfo.getGender(),true)
                 .setOnRootClickListener(this, "gender");
         info_list.addView(gender);
         // 加入地区列
         UserInfoOneLineView region = new UserInfoOneLineView(this)
-                .initMine(R.drawable.region,this.getString(R.string.string_region),userinfo.getInfo().getRegion(),true)
+                .initMine(R.drawable.region,this.getString(R.string.string_region),userinfo.getRegion(),true)
                 .setOnRootClickListener(this, "region");
         info_list.addView(region);
         // 加入个人简介列
         UserInfoOneLineView my_profile = new UserInfoOneLineView(this)
-                .initMine(R.drawable.profile,this.getString(R.string.string_my_profile),userinfo.getInfo().getProfile(),true)
+                .initMine(R.drawable.profile,this.getString(R.string.string_my_profile),userinfo.getProfile(),true)
                 .setOnRootClickListener(this, "profile");
         info_list.addView(my_profile);
 
@@ -179,7 +195,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         RequestOptions options = new RequestOptions().
                 circleCropTransform();
         Glide.with(this)
-                .load(R.drawable.avatar)
+                .load(R.drawable.defaultpic)
                 .apply(options)
                 .into(info_user_pic);
     }
@@ -356,10 +372,44 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                 //
                 selectedRegion = province + "-" + city + "-" + district;
                 Log.e("MAGGIE==>",province+city+district);
-                userInfo.getInfo().setRegion(selectedRegion);
+                userInfo.setRegion(selectedRegion);
                 add_info_list(userInfo);
+
+                updateUserInfoPost("region",selectedRegion);
             }
         });
 
+    }
+
+    private void updateUserInfoPost(String editType,String editValue) {
+        GetUserInfo userInfo = new GetUserInfo(this);
+        Long user_id = userInfo.getUserInfo().getData().getId();
+        String url = REQUEST_URL_MY + "/modify/" + user_id;
+
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put(editType,editValue);
+        String request_json = CommonMethod.mapToJson(paramsMap);
+
+        OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(UserInfoActivity.this, "update user server error", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(String response) {
+
+                Toast.makeText(UserInfoActivity.this, "更新信息成功", Toast.LENGTH_SHORT).show();
+                try{
+                    CommonResponse<UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
+                    setUserInfo(userInfoBean.getData());
+                    sharedPreferencesHelper.remove("user_info");
+                    sharedPreferencesHelper.put("user_info", response);
+                    finish();
+                } catch (Exception e) {
+                    Log.v("update user failed","error" + e);
+                }
+            }
+        });
     }
 }

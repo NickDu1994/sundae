@@ -150,9 +150,11 @@ public class UserInfoEditLineView extends LinearLayout implements View.OnClickLi
 
     public static String getGenderByOper() {
         if (null != gender_male_selected_icon.getDrawable()) {
-            return "男";
+            //male
+            return "0";
         }
-        return "女";
+        //female
+        return "1";
     }
 
     /**
@@ -215,7 +217,7 @@ public class UserInfoEditLineView extends LinearLayout implements View.OnClickLi
      */
     public UserInfoEditLineView setNameEdit(String name) {
         init();
-        setEditType("name");
+        setEditType("nickname");
         setName(name);
         showEditGender(false);
         showEditThin(true);
@@ -233,6 +235,7 @@ public class UserInfoEditLineView extends LinearLayout implements View.OnClickLi
     public UserInfoEditLineView setGenderEdit(String gender) {
         init();
         setEditType("gender");
+//        String gender = type==0?"男":"女";
         setGender(gender);
         if (null == gender || "".equals(gender) || ("男").equals(gender)) {
             selectMale();

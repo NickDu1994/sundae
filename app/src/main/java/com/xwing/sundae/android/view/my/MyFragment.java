@@ -157,8 +157,8 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
         if (null != commonResponse && !"".equals(commonResponse) && CommonMethod.ifLogin(commonResponse)) {
             CommonResponse<UserInfo> userInfoCommonResponse = CommonMethod.getUserInfo(commonResponse);
             UserInfo info = userInfoCommonResponse.getData();
-            user_id.setText(info.getInfo().getUsername());
-            user_name.setText(info.getInfo().getNickname());
+            user_id.setText(info.getUsername());
+            user_name.setText(info.getNickname());
 //            Glide.with(this).load(info.getInfo().getAvatarUrl()).apply(options).into(image);
             Glide.with(this).load(R.drawable.avatar).apply(options).into(image);
             user_setting.setVisibility(View.VISIBLE);
@@ -299,7 +299,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
                 break;
             case "myCollect":
                 position = 3;
-                startActivity(new Intent(getActivity(),MyCommentActivity.class));
+                startActivity(new Intent(getActivity(),MyCollectActivity.class));
                 break;
             case "myFollow":
                 position = 4;

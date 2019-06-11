@@ -44,4 +44,7 @@ dependencies {
     implementation 'liji.library.dev:citypickerview:0.7.0'
     implementation 'com.github.mcxtzhang:all-base-adapter:V1.5.2'
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.2.1'
+
+    implementation 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
+    implementation "com.android.support:design:28"
 }

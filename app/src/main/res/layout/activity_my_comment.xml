@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".android.view.my.MyCommentActivity">
+
     <com.andview.refreshview.XRefreshView xmlns:tools="http://schemas.android.com/tools"
         xmlns:xrefreshview="http://schemas.android.com/apk/res-auto"
         android:id="@+id/common_list_wrapper"
@@ -15,13 +16,26 @@
         xrefreshview:isHeightMatchParent="true"
         xrefreshview:isWidthMatchParent="true">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/common_list"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:nestedScrollingEnabled="false">
+            android:orientation="vertical">
 
-        </android.support.v7.widget.RecyclerView>
+            <fragment
+                android:id="@+id/fragment_title"
+                android:name="com.xwing.sundae.android.view.header.CommonMyHeader"
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/common_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false">
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+
 
     </com.andview.refreshview.XRefreshView>
 
