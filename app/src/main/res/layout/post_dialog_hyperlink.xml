@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/hptextView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="名称" />
+
+    <EditText
+        android:id="@+id/hpeditText1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/hptextView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="超链接" />
+
+    <EditText
+        android:id="@+id/hpeditText2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

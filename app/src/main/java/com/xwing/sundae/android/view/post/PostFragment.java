@@ -1,6 +1,9 @@
 package com.xwing.sundae.android.view.post;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.xwing.sundae.R;
 
@@ -40,7 +45,7 @@ public class PostFragment extends Fragment {
     private RichEditor mEditor;
     private TextView mPreview;
     private OnFragmentInteractionListener mListener;
-
+    private String content ;
     private ImageView postBackShow;
     private final int REQUEST_CODE_PICKER = 100;
 
@@ -100,6 +105,8 @@ public class PostFragment extends Fragment {
         mPreview = (TextView) view.findViewById(R.id.preview);
         mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
             @Override public void onTextChange(String text) {
+                content = text;
+                Log.d(TAG, " post onTextChange: "+content);
                 mPreview.setText(text);
             }
         });
@@ -275,7 +282,30 @@ public class PostFragment extends Fragment {
 
         view.findViewById(R.id.action_insert_link).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                mEditor.insertLink("https://github.com/wasabeef", "wasabeef");
+                LayoutInflater factory = LayoutInflater.from(getActivity());
+
+                final View textEntryView = factory.inflate(R.layout.post_dialog_hyperlink, null);
+                final EditText editTextName = (EditText) textEntryView.findViewById(R.id.hpeditText1);
+                final EditText editTextlink = (EditText)textEntryView.findViewById(R.id.hpeditText2);
+                new AlertDialog.Builder(getActivity()).setTitle(" ")
+
+                        .setView(textEntryView)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String input1 = editTextName.getText().toString();
+                                String input2 = editTextName.getText().toString();
+                                if (input1.equals("")||input2.equals("")) {
+                                    Toast.makeText(getActivity().getApplicationContext(), "内容不能为空！" , Toast.LENGTH_LONG).show();
+                                }
+                                else {
+                                    mEditor.insertLink(input2, input1);
+                                }
+                            }
+                        })
+                        .setNegativeButton("取消", null).show();
+
+
+
             }
         });
         view.findViewById(R.id.action_insert_checkbox).setOnClickListener(new View.OnClickListener() {
@@ -319,14 +349,28 @@ public class PostFragment extends Fragment {
         if(requestCode ==3){
             if(data!=null){
                 Uri uri = data.getData();
-                Log.d(TAG, "onActivityResult: "+uri.getPath());
-                mEditor.insertImage("/media/external/images/media/117/ORIGINAL/NONE/1207640113",
+                String imagePath = getImagePath(uri,null);
+                Log.d(TAG, "onActivityResult: "+imagePath);
+                mEditor.insertImage("file:"+imagePath,
                         "dachshund");
 
             }
         }
 
     }
+    private String getImagePath(Uri uri, String selection) {
+        String path = null;
+        //通过Uri和selection 来获取真实的图片路径
+        Cursor cursor = getActivity().getContentResolver().query(uri,null,selection,null,null);
+        if(cursor!=null){
+            if (cursor.moveToFirst()){
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        return path;
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
