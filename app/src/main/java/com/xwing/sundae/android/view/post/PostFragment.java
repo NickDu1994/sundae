@@ -361,14 +361,14 @@ public class PostFragment extends Fragment {
             }
         });
 
-        view.findViewById(R.id.action_insert_image).setOnClickListener(new View.OnClickListener() {
+       /* view.findViewById(R.id.action_insert_image).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) { Intent intent = new Intent(Intent.ACTION_PICK, null);
                 intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
                 startActivityForResult(intent, 3);
 
 
             }
-        });
+        });*/
 
         view.findViewById(R.id.action_insert_link).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
