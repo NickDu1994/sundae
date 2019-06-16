@@ -18,22 +18,25 @@ import co.lujun.androidtagview.TagView;
 
 public class CustomeButtonGroupView extends LinearLayout {
     private Context mContext;
+    private String[] mTagList;
 
     public CustomeButtonGroupView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         LayoutInflater.from(context).inflate(R.layout.customeview_buttongroup_view, this);
-        initView2();
+
     }
 
-    private static String[] testName = {"apple","title","layout","LinearLayout","new","child"};
-
+    public void setTagList(String[] tagList){
+        mTagList = tagList;
+        initView2();
+    }
 
     public void initView2() {
        LinearLayout parentLL = (LinearLayout) findViewById(R.id.tagcontainerLayout);
        List<String> list = new ArrayList<>();
-       for (int i = 0; i < testName.length; i++) {
-            list.add(testName[i]);
+       for (int i = 0; i < mTagList.length; i++) {
+            list.add(mTagList[i]);
        }
        TagContainerLayout mTagContainerLayout = (TagContainerLayout) findViewById(R.id.tagcontainerLayout);
        mTagContainerLayout.setTags(list);

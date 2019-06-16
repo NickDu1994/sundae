@@ -24,6 +24,7 @@ import com.xwing.sundae.android.model.BaseImage;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.ComplexListModel;
 import com.xwing.sundae.android.model.IndexBannerImage;
+import com.xwing.sundae.android.model.IndexRecommendListModel;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
@@ -38,6 +39,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import okhttp3.Call;
+
+import static com.xwing.sundae.android.util.CommonMethod.CalculateTimeUntilNow;
 
 public class PortalFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -114,17 +117,8 @@ public class PortalFragment extends Fragment {
 
         getNews();
 
-        initMockData();
-        RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.index_recylerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        });
-        recyclerView.setHasFixedSize(true);
-        ComplexListAdapter complexListAdapter = new ComplexListAdapter(complexListModelList, getContext());
-        recyclerView.setAdapter(complexListAdapter);
+        getRecommend();
+
     }
 
     public void sendGetRequest() {
@@ -168,20 +162,7 @@ public class PortalFragment extends Fragment {
     }
 
     public void initMockData() {
-        for(int i = 0; i < 5; i++){
-            String[] imageArray = {"http://chuantu.xyz/t6/702/1560009290x2362407012.jpg",
-                    "http://chuantu.xyz/t6/702/1560009290x2362407012.jpg",
-                    "http://chuantu.xyz/t6/702/1560009290x2362407012.jpg"};
-            ComplexListModel complexListModel = new ComplexListModel(
-                    "Digitial information",
-                    "This is a content for sundae app usingThis is a content for sundae app usingThis is a content for sundae app using",
-                    imageArray,
-                    true,
-                    "1900次浏览",
-                    "3个月前"
-            );
-            complexListModelList.add(complexListModel);
-        }
+
     }
 
     public void getNews(){
@@ -226,19 +207,61 @@ public class PortalFragment extends Fragment {
                 }
             }
         });
+    }
 
+    public void getRecommend(){
 
+        String url = Constant.globalServerUrl + "/abbreviation/getRecommendedEntryList";
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("reserve","123456");
+        OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug onFailure", "e=" + e);
+            }
 
-//        List<IndexBannerImage> images = new ArrayList<IndexBannerImage>();
-//        IndexBannerImage indexBannerImage = new IndexBannerImage();
-//        indexBannerImage.setImageUrl("https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg");
-//        images.add(indexBannerImage);
-//        IndexBannerImage indexBannerImage2 = new IndexBannerImage();
-//        indexBannerImage2.setImageUrl("https://img1.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/d7917d2a719c779.jpg");
-//        images.add(indexBannerImage2);
-//        IndexBannerImage indexBannerImage3 = new IndexBannerImage();
-//        indexBannerImage3.setImageUrl("https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/926d23b38826a86.jpg");
-//        images.add(indexBannerImage3);
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug", "response" + response);
+                Gson gson = new Gson();
+                try{
+                    CommonResponse<List<IndexRecommendListModel>> responseIndexRecommendList =
+                            (CommonResponse<List<IndexRecommendListModel>>)gson.fromJson(response,
+                                    new TypeToken<CommonResponse<List<IndexRecommendListModel>>>() {}.getType());
+                    final List<IndexRecommendListModel> dataList = responseIndexRecommendList.getData();
+                    List<BaseImage> displayImages = new ArrayList<BaseImage>();
+                    for(IndexRecommendListModel item : dataList){
+                        String[] imageArray = {item.getImageList().get(0).getPath(),
+                                item.getImageList().get(1).getPath(),
+                                item.getImageList().get(2).getPath()};
+                        ComplexListModel complexListModel = new ComplexListModel(
+                                item.getAbbrName() + " " + item.getFullName(),
+                                item.getContent(),
+                                imageArray,
+                                true,
+                                "???",
+                                CalculateTimeUntilNow(item.getCreateTime())
+                        );
+                        complexListModelList.add(complexListModel);
+                    }
 
+                    RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.index_recylerview);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
+                        @Override
+                        public boolean canScrollVertically() {
+                            return false;
+                        }
+                    });
+                    recyclerView.setHasFixedSize(true);
+                    ComplexListAdapter complexListAdapter = new ComplexListAdapter(complexListModelList, getContext());
+                    recyclerView.setAdapter(complexListAdapter);
+
+                } catch (Exception e) {
+                    Log.d("dkdebug onResponse", "e=" + e);
+                }
+            }
+        });
     }
 }

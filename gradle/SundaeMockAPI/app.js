@@ -34,9 +34,17 @@ app.post('/getUserInfo', function (req, res) {
 })
  
  
- app.get('/news/getLastestNews', function (req, res) {
+app.get('/news/getLastestNews', function (req, res) {
 	console.log("接收到 GET 请求");
    fs.readFile( __dirname + "/response/" + "getNewsResponse.json", 'utf8', function (err, data) {
+       console.log( "response:",data );
+       res.send( data );
+   });
+})
+
+app.get('/abbreviation/getRecommendedEntryList', function (req, res) {
+	console.log("接收到 GET 请求");
+   fs.readFile( __dirname + "/response/" + "recommend.json", 'utf8', function (err, data) {
        console.log( "response:",data );
        res.send( data );
    });
