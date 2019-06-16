@@ -30,7 +30,7 @@
                 android:orientation="vertical"
                 android:layout_marginLeft="20sp"
                 android:layout_marginTop="20sp">
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -39,15 +39,26 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
-                        android:text="Maggie"/>
-                    <TextView
-                        android:id="@+id/followTime"
-                        android:layout_width="match_parent"
+                        android:text="Maggie"
+                        android:layout_alignParentLeft="true"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:layout_marginLeft="80sp"
-                        android:text="关注于 2018年11月19日"/>
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="30sp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="关注于"/>
+                        <TextView
+                            android:id="@+id/followTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text=" 2018年11月19日"/>
+                    </LinearLayout>
+                </RelativeLayout>
 
 
                 <LinearLayout
@@ -55,19 +66,45 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="20sp">
-                    <TextView
-                        android:id="@+id/sentCounts"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="14sp"
-                        android:text="发布数 30"/>
-                    <TextView
-                        android:id="@+id/getPraisedCounts"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:text="发布数"/>
+                        <TextView
+                            android:id="@+id/sentCounts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5sp"
+                            android:textSize="14sp"
+                            android:text="30"/>
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20sp"
-                        android:textSize="14sp"
-                        android:text="获赞数 500"/>
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="20sp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20sp"
+                            android:textSize="14sp"
+                            android:text="获赞数"/>
+                        <TextView
+                            android:id="@+id/getPraisedCounts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5sp"
+                            android:textSize="14sp"
+                            android:text="500"/>
+                    </LinearLayout>
+
+
 
                 </LinearLayout>
             </LinearLayout>

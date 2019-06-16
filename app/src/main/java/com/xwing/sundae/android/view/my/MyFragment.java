@@ -4,10 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,24 +19,16 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.UserInfoOneLineView;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
+import com.xwing.sundae.android.view.GetUserInfo;
 import com.xwing.sundae.android.view.LoginActivity;
-import com.xwing.sundae.android.view.MainActivity;
 
-import org.json.JSONObject;
-
-import static android.content.Context.MODE_PRIVATE;
 import static android.support.constraint.Constraints.TAG;
-import static com.bumptech.glide.request.RequestOptions.circleCropTransform;
-import static com.xwing.sundae.android.util.CommonMethod.getUserInfo;
-import static com.xwing.sundae.android.util.CommonMethod.ifLogin;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,6 +57,9 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
     LinearLayout user_field, list_item;
     ImageView user_pic, user_setting;
     TextView user_name, user_id;
+
+    GetUserInfo getUserInfo ;
+    UserInfo userInfo;
 
 
     private OnFragmentInteractionListener mListener;
@@ -115,10 +108,10 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
         sharedPreferencesHelper =
                 new SharedPreferencesHelper(getActivity(), "user");
 
-
         initView(view);
         loadPortrait();
         addChildViews();
+        setUserInfo();
         initEvent();
 
         return view;
@@ -152,17 +145,24 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
 
     private void setUserInfo() {
         //get user detail from sharePreference.
-        String commonResponse = sharedPreferencesHelper.get("user_info", "").toString();
 
-        if (null != commonResponse && !"".equals(commonResponse) && CommonMethod.ifLogin(commonResponse)) {
-            CommonResponse<UserInfo> userInfoCommonResponse = CommonMethod.getUserInfo(commonResponse);
-            UserInfo info = userInfoCommonResponse.getData();
-            user_id.setText(info.getUsername());
-            user_name.setText(info.getNickname());
-//            Glide.with(this).load(info.getInfo().getAvatarUrl()).apply(options).into(image);
+        String user_info = sharedPreferencesHelper.get("user_info","").toString();
+
+        userInfo = getUserInfo.getUserInfo();
+        if(getUserInfo.getIfAuth() && userInfo!=null) {
+            user_name.setText(userInfo.getNickname());
+            user_id.setText(userInfo.getUsername());
             Glide.with(this).load(R.drawable.avatar).apply(options).into(image);
             user_setting.setVisibility(View.VISIBLE);
+        }if (null != user_info && !"".equals(user_info)) {
+            userInfo = CommonMethod.getUserInfo(user_info).getData();
 
+            getUserInfo.setUserInfo(userInfo);
+
+            user_name.setText(userInfo.getNickname());
+            user_id.setText(userInfo.getUsername());
+            Glide.with(this).load(R.drawable.avatar).apply(options).into(image);
+            user_setting.setVisibility(View.VISIBLE);
         } else {
             setUserInfoAsNoLogin();
         }
@@ -182,10 +182,10 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
                 .setOnRootClickListener(this, "mySent");
         list_item.addView(mySent);
 
-        UserInfoOneLineView myComment = new UserInfoOneLineView(getContext())
-                .init(R.drawable.comment, this.getString(R.string.string_my_comment), false, true)
-                .setOnRootClickListener(this, "myComment");
-        list_item.addView(myComment);
+//        UserInfoOneLineView myComment = new UserInfoOneLineView(getContext())
+//                .init(R.drawable.comment, this.getString(R.string.string_my_comment), false, true)
+//                .setOnRootClickListener(this, "myComment");
+//        list_item.addView(myComment);
 
         UserInfoOneLineView myCollect = new UserInfoOneLineView(getContext())
                 .init(R.drawable.collect, this.getString(R.string.string_my_collect), false, true)
@@ -197,10 +197,10 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
                 .setOnRootClickListener(this, "myFollow");
         list_item.addView(myFollow);
 
-        UserInfoOneLineView suggFeedback = new UserInfoOneLineView(getContext())
-                .init(R.drawable.feedback, this.getString(R.string.string_suggestion_feedback), false, true)
-                .setOnRootClickListener(this, "suggFeedback");
-        list_item.addView(suggFeedback);
+//        UserInfoOneLineView suggFeedback = new UserInfoOneLineView(getContext())
+//                .init(R.drawable.feedback, this.getString(R.string.string_suggestion_feedback), false, true)
+//                .setOnRootClickListener(this, "suggFeedback");
+//        list_item.addView(suggFeedback);
 
     }
 
@@ -210,6 +210,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
 
     @Override
     public void onClick(View v) {
+
         switch (v.getId()) {
             case R.id.user_field:
                 toUserInfoPage();
@@ -229,7 +230,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
         String commonResponse = sharedPreferencesHelper.get("user_info", "").toString();
 
         Intent intent;
-        if(CommonMethod.ifLogin(commonResponse)) {
+        if(getUserInfo.getIfAuth()) {
             intent = new Intent(getActivity(), UserInfoActivity.class);
         } else {
             intent = new Intent(getActivity(), LoginActivity.class);
@@ -287,16 +288,20 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
 
     @Override
     public void onRootClick(View view) {
+//        if(!getUserInfo.getIfAuth()) {
+//            Toast.makeText(getContext(), "请先进行登录", Toast.LENGTH_SHORT).show();
+//            startActivity(new Intent(getActivity(),LoginActivity.class));
+//        }
         int position = 0;
         switch ((String) view.getTag()) {
             case "mySent":
                 position = 1;
                 startActivity(new Intent(getActivity(),MyPubishActivity.class));
                 break;
-            case "myComment":
-                position = 2;
-                startActivity(new Intent(getActivity(),MyCommentActivity.class));
-                break;
+//            case "myComment":
+//                position = 2;
+//                startActivity(new Intent(getActivity(),MyCommentActivity.class));
+//                break;
             case "myCollect":
                 position = 3;
                 startActivity(new Intent(getActivity(),MyCollectActivity.class));
@@ -305,10 +310,10 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
                 position = 4;
                 startActivity(new Intent(getActivity(),MyFollowActivity.class));
                 break;
-            case "suggFeedback":
-                position = 5;
-                startActivity(new Intent(getActivity(),FeedbackActivity.class));
-                break;
+//            case "suggFeedback":
+//                position = 5;
+//                startActivity(new Intent(getActivity(),FeedbackActivity.class));
+//                break;
         }
         Toast.makeText(getContext(), "点击了第" + position + "行", Toast.LENGTH_SHORT).show();
     }

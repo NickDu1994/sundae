@@ -28,6 +28,7 @@ import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
+import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.view.GetUserInfo;
@@ -39,11 +40,10 @@ import java.util.HashMap;
 import okhttp3.Call;
 
 public class UserInfoActivity extends AppCompatActivity implements View.OnClickListener,
-        UserInfoOneLineView.OnRootClickListener{
+        UserInfoOneLineView.OnRootClickListener {
 
 //    private static final String REQUEST_URL_MY = "http://192.168.31.17:8080/user";
 
-    private static final String REQUEST_URL_MY = "http://101.225.90.186:8080/user";
     /**
      * user 编辑的内容类型
      */
@@ -68,23 +68,9 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
      * user 个人信息
      */
 
-    static UserInfo userInfo;
+    private static GetUserInfo getUserInfo;
 
-    /**
-     * Userinfo get 方法
-     * @return
-     */
-    public static UserInfo getUserInfo() {
-        return userInfo;
-    }
-
-    /**
-     * Userinfo set 方法
-     * @return
-     */
-    public static void setUserInfo(UserInfo info) {
-        userInfo = info;
-    }
+    private UserInfo userInfo;
 
     /**
      * selected province
@@ -124,6 +110,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 
     protected static Uri tempUri;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,14 +119,20 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         initView();
         initEvent();
         showUserPic();
-        userInfo = new GetUserInfo(this).getUserInfo().getData();
-        add_info_list(userInfo);
+        getUserInfo = new GetUserInfo(this);
+        if (getUserInfo.getIfAuth()) {
+            userInfo = getUserInfo.getUserInfo();
+            add_info_list(userInfo);
+        }
+
         requestPermission();
     }
 
     @Override
     protected void onResume() {
-        add_info_list(userInfo);
+        if (getUserInfo.getIfAuth() && null!= userInfo) {
+            add_info_list(userInfo);
+        }
         super.onResume();
     }
 
@@ -162,27 +155,27 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     /**
      * 将用户可编辑的列表通过自定义view传入
      */
-    private void add_info_list(UserInfo userinfo) {
+    private void add_info_list(com.xwing.sundae.android.model.UserInfo userinfo) {
         info_list.removeAllViews();
         // 加入昵称列
         UserInfoOneLineView nick_name = new UserInfoOneLineView(this)
-                .initMine(R.drawable.id,this.getString(R.string.string_nickname),userinfo.getNickname(),true)
+                .initMine(R.drawable.id, this.getString(R.string.string_nickname), userinfo.getNickname(), true)
                 .setOnRootClickListener(this, "nickname");
         info_list.addView(nick_name);
 
         // 加入性别列
         UserInfoOneLineView gender = new UserInfoOneLineView(this)
-                .initMine(R.drawable.gender,this.getString(R.string.string_gender),userinfo.getGender(),true)
+                .initMine(R.drawable.gender, this.getString(R.string.string_gender), userinfo.getGender(), true)
                 .setOnRootClickListener(this, "gender");
         info_list.addView(gender);
         // 加入地区列
         UserInfoOneLineView region = new UserInfoOneLineView(this)
-                .initMine(R.drawable.region,this.getString(R.string.string_region),userinfo.getRegion(),true)
+                .initMine(R.drawable.region, this.getString(R.string.string_region), userinfo.getRegion(), true)
                 .setOnRootClickListener(this, "region");
         info_list.addView(region);
         // 加入个人简介列
         UserInfoOneLineView my_profile = new UserInfoOneLineView(this)
-                .initMine(R.drawable.profile,this.getString(R.string.string_my_profile),userinfo.getProfile(),true)
+                .initMine(R.drawable.profile, this.getString(R.string.string_my_profile), userinfo.getProfile(), true)
                 .setOnRootClickListener(this, "profile");
         info_list.addView(my_profile);
 
@@ -305,6 +298,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * 监听点击事件
+     *
      * @param v
      */
     @Override
@@ -318,15 +312,16 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 
     /**
      * root点击事件监听
+     *
      * @param view
      */
     @Override
     public void onRootClick(View view) {
 
         String tag_name = view.getTag().toString();
-        if(!"region".equals(tag_name)) {
+        if (!"region".equals(tag_name)) {
             Bundle data = new Bundle();
-            data.putString("name",tag_name);
+            data.putString("name", tag_name);
             Intent intent = new Intent(UserInfoActivity.this, EditUserInfoActivity.class);
             intent.putExtra(EDITTYPE, data);
             startActivity(intent);
@@ -371,24 +366,22 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                 district = citySelected[2];
                 //
                 selectedRegion = province + "-" + city + "-" + district;
-                Log.e("MAGGIE==>",province+city+district);
+                Log.e("MAGGIE==>", province + city + district);
                 userInfo.setRegion(selectedRegion);
                 add_info_list(userInfo);
 
-                updateUserInfoPost("region",selectedRegion);
+                updateUserInfoPost("region", selectedRegion);
             }
         });
 
     }
 
-    private void updateUserInfoPost(String editType,String editValue) {
-        GetUserInfo userInfo = new GetUserInfo(this);
-        Long user_id = userInfo.getUserInfo().getData().getId();
-        String url = REQUEST_URL_MY + "/modify/" + user_id;
+    private void updateUserInfoPost(String editType, String editValue) {
+        Long user_id = userInfo.getId();
+        String url = Constant.REQUEST_URL_MY + "/user/modify/" + user_id;
 
         HashMap<String, String> paramsMap = new HashMap<>();
-        paramsMap.put(editType,editValue);
-        String request_json = CommonMethod.mapToJson(paramsMap);
+        paramsMap.put(editType, editValue);
 
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
@@ -400,14 +393,14 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
             public void onResponse(String response) {
 
                 Toast.makeText(UserInfoActivity.this, "更新信息成功", Toast.LENGTH_SHORT).show();
-                try{
-                    CommonResponse<UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
-                    setUserInfo(userInfoBean.getData());
+                try {
+                    CommonResponse<com.xwing.sundae.android.model.UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
+                    getUserInfo.setUserInfo(userInfoBean.getData());
                     sharedPreferencesHelper.remove("user_info");
                     sharedPreferencesHelper.put("user_info", response);
                     finish();
                 } catch (Exception e) {
-                    Log.v("update user failed","error" + e);
+                    Log.v("update user failed", "error" + e);
                 }
             }
         });

@@ -72,10 +72,12 @@ public class MyFollowerInfoAdapter extends RecyclerView.Adapter<MyFollowerInfoAd
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
         MyFollowerModel follow = mDatas.get(i);
+        viewHolder.follow_username.setText(follow.getFollow_username());
         viewHolder.followTime.setText(follow.getFollowTime());
         viewHolder.sentCounts.setText(follow.getSentCounts());
         viewHolder.getPraisedCounts.setText(follow.getGetPraisedCounts());
-        RequestOptions options = new RequestOptions().placeholder(R.drawable.defaultpic).circleCropTransform();
+        RequestOptions options = new RequestOptions().placeholder(R.drawable.defaultpic)
+                .error(R.drawable.defaultpic).circleCropTransform();
         Glide.with(mContext).load(follow.getFollow_avatarUrl()).apply(options).into(viewHolder.follow_avatarUrl);
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {

@@ -74,7 +74,12 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
         RequestOptions options = new RequestOptions().placeholder(R.drawable.defaultpic).circleCropTransform();
         viewHolder.item_name.setText(collect.getItem_name());
         viewHolder.item_content.setText(collect.getItem_content());
-        Glide.with(mContext).load(collect.getItem_image()).apply(options).into(viewHolder.item_image);
+
+        if("".equals(collect.getItem_image()) || null == collect.getItem_image()) {
+            Glide.with(mContext).load(R.drawable.explore).apply(options).into(viewHolder.item_image);
+        } else {
+            Glide.with(mContext).load(collect.getItem_image()).apply(options).into(viewHolder.item_image);
+        }
         viewHolder.collect_author.setText(collect.getCollect_author());
         viewHolder.collect_time.setText(collect.getCollect_time());
 

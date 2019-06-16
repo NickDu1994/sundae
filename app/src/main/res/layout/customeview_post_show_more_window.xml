@@ -9,7 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_centerVertical="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100sp"
         android:layout_centerInParent="true">
         <TextView
             android:id="@+id/more_window_local"
@@ -17,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:clickable="true"
-            android:drawableTop="@drawable/tabbar_compose_idea"
+            android:drawableTop="@drawable/edit"
             android:textAlignment="center"
             android:onClick="clickCiTiao"
             android:text="词条" />
@@ -27,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:drawableTop="@drawable/tabbar_compose_review"
+            android:drawableTop="@drawable/xinde"
             android:layout_centerInParent="true"
             android:layout_toRightOf="@id/more_window_local"
             android:textAlignment="center"
