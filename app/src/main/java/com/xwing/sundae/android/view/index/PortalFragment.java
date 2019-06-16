@@ -39,14 +39,6 @@ import java.util.List;
 
 import okhttp3.Call;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PortalFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PortalFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PortalFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -111,7 +103,7 @@ public class PortalFragment extends Fragment {
                 Log.d("dkdebug", "enter click to search fragment");
                 SearchFragment searchFragment = new SearchFragment();
                 fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.add(R.id.index_fragment_container, searchFragment);
+                fragmentTransaction.replace(R.id.index_fragment_container, searchFragment);
                 fragmentTransaction.commit();
 
                 MainActivity mainActivity = (MainActivity)getActivity();

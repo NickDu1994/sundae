@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.view.MainActivity;
@@ -24,6 +26,8 @@ public class SearchFragment extends Fragment {
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private Button cancelButton;
+    private ImageButton cleanButton;
+    private EditText mainEditText;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -74,6 +78,7 @@ public class SearchFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mainEditText = getActivity().findViewById(R.id.mainEditText);
         cancelButton = getActivity().findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +90,14 @@ public class SearchFragment extends Fragment {
 
                 MainActivity mainActivity = (MainActivity)getActivity();
                 mainActivity.triggerBottomNavigationBar(true);
+            }
+        });
+
+        cleanButton = getActivity().findViewById(R.id.clean_button);
+        cleanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainEditText.setText("");
             }
         });
     }

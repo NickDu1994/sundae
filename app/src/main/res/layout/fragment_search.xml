@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
+    android:orientation="vertical"
     tools:context=".android.view.index.SearchFragment">
 
     <LinearLayout
@@ -32,13 +33,16 @@
                     android:layout_gravity="center_vertical"
                     android:src="@drawable/search_icon"/>
                 <EditText
+                    android:id="@+id/mainEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="9"
                     android:layout_gravity="center_vertical"
                     android:textSize="16sp"
+                    android:background="@null"
                     android:hint="请输入想要搜索的词条"/>
                 <ImageButton
+                    android:id="@+id/clean_button"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:layout_gravity="center_vertical"
@@ -60,5 +64,17 @@
             android:text="取消"/>
     </LinearLayout>
 
+    <com.xwing.sundae.android.customview.CustomeButtonGroupView
+        android:id="@+id/historyPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+    </com.xwing.sundae.android.customview.CustomeButtonGroupView>
+
+    <com.xwing.sundae.android.customview.CustomeButtonGroupView
+        android:id="@+id/hotPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.xwing.sundae.android.customview.CustomeButtonGroupView>
 </LinearLayout>

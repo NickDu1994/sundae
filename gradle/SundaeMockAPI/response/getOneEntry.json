@@ -1,0 +1,29 @@
+{
+    "status": 200,
+    "msg": "success",
+    "data": {
+        "id": "40281d816b25c898016b25c95ab50000",
+        "userId": null,
+        "abbrName": null,
+        "fullName": null,
+        "content": "等我QQ无多群无无群",
+        "imageId": "40281",
+        "dataStatus": null,
+        "createTime": null,
+        "createBy": null,
+        "lastUpdateTime": null,
+        "type": 0,
+        "image": {
+            "id": "40281d816b25c898016b25c95ab50000",
+            "postId": null,
+            "abbreviationId": null,
+            "path": "http://192.168.157.128/images/2018/06/27/1530084324092519.jpg",
+            "name": null,
+            "sequence": null,
+            "dataStatus": null,
+            "createTime": "2019-06-03 00:00:00 ",
+            "lastUpdateTime": null,
+            "type": 3
+        }
+    }
+}
