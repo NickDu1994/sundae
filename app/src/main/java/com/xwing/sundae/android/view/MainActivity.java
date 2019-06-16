@@ -102,15 +102,15 @@ public class MainActivity extends AppCompatActivity implements
                             fragmentTransaction.show(mIndexFragment);
                         }
                         break;
-                    case 1:  // explore
+                   /* case 1:  // explore
                         if(mExploreFragment == null){
                             mExploreFragment = ExploreFragment.newInstance("","");
                             fragmentTransaction.add(R.id.mainContainer, mExploreFragment);
                         } else {
                             fragmentTransaction.show(mExploreFragment);
                         }
-                        break;
-                    case 2:  // post
+                        break;*/
+                    case 1:  // post
                         List<Fragment> fragmentslist =  fragmentManager.getFragments();
                         boolean existflag= false;
                         for(Fragment f :fragmentslist){
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements
                             fragmentTransaction.show(mMessageFragment);
                         }
                         break;
-                    case 4:  // my
+                    case 2:  // my
                         boolean isLogin = false;//Todo
 //                        if(isLogin) {
                             if(mMyFragment == null){

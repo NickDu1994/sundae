@@ -32,8 +32,11 @@ import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.PostImageUtil;
 import com.xwing.sundae.android.view.MainActivity;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jp.wasabeef.richeditor.RichEditor;
@@ -70,6 +73,11 @@ public class PostFragment extends Fragment {
     private ImageView postBackShow;
     private ImageView postBackShow2;
     private ImageView postBackShow3;
+    private Uri  postBackShowuri;
+
+    private Uri  postBackShowuri2;
+    private Uri  postBackShowuri3;
+
     private final int REQUEST_CODE_PICKER = 100;
     private EditText editText1;
     private EditText editText2;
@@ -486,6 +494,32 @@ public class PostFragment extends Fragment {
                             }
                         }
                 );
+                List<File> fileList = new ArrayList<>();
+
+                File file = new File(getImagePath(postBackShowuri,""));
+
+                File file2 = new File(getImagePath(postBackShowuri2,""));
+                File file3 = new File(getImagePath(postBackShowuri3,""));
+                fileList.add(file);
+                fileList.add(file2);
+                fileList.add(file3);
+                OkhttpUtil.okHttpUploadListFile("http://10.0.2.2:8080/image/upload/img", fileList, "uploadFile", "image", new CallBackUtil() {
+                    @Override
+                    public Object onParseResponse(Call call, Response response) {
+                        return response;
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Exception e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(Object response) {
+                        Log.d(TAG, "onResponse: "+response.toString());
+
+                    }
+                });
             }
         });
         return view;
@@ -503,7 +537,9 @@ public class PostFragment extends Fragment {
             // 从相册返回的数据
             if (data != null) {
                 // 得到图片的全路径
+
                 Uri uri = data.getData();
+                postBackShowuri = uri;
                 postBackShow.setBackgroundResource(0);
                 postBackShow.setImageURI(uri);
             }
@@ -526,6 +562,7 @@ public class PostFragment extends Fragment {
             if (data != null) {
                 // 得到图片的全路径
                 Uri uri = data.getData();
+                postBackShowuri2= uri;
                 postBackShow2.setBackgroundResource(0);
                 postBackShow2.setImageURI(uri);
             }
@@ -537,6 +574,7 @@ public class PostFragment extends Fragment {
             if (data != null) {
                 // 得到图片的全路径
                 Uri uri = data.getData();
+                postBackShowuri3= uri;
                 postBackShow3.setBackgroundResource(0);
                 postBackShow3.setImageURI(uri);
             }
