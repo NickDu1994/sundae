@@ -4,10 +4,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,8 +27,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xwing.sundae.R;
+import com.xwing.sundae.android.util.CallBackUtil;
+import com.xwing.sundae.android.util.OkhttpUtil;
+import com.xwing.sundae.android.util.PostImageUtil;
+import com.xwing.sundae.android.view.MainActivity;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import jp.wasabeef.richeditor.RichEditor;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 
 /**
@@ -47,8 +68,11 @@ public class PostFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private String content ;
     private ImageView postBackShow;
+    private ImageView postBackShow2;
+    private ImageView postBackShow3;
     private final int REQUEST_CODE_PICKER = 100;
-
+    private EditText editText1;
+    private EditText editText2;
     public PostFragment() {
         // Required empty public constructor
     }
@@ -90,7 +114,10 @@ public class PostFragment extends Fragment {
         // Inflate the layout for this fragment
         mEditor = (RichEditor) view.findViewById(R.id.editor);
 
-        postBackShow=(ImageView) view.findViewById(R.id.post_back_show) ;
+        postBackShow=(ImageView) view.findViewById(R.id.post_back_show1) ;
+        postBackShow2=(ImageView) view.findViewById(R.id.post_back_show2) ;
+        postBackShow3=(ImageView) view.findViewById(R.id.post_back_show3) ;
+
         mEditor.setEditorHeight(200);
         mEditor.setEditorFontSize(22);
         mEditor.setEditorFontColor(Color.BLACK);
@@ -101,6 +128,42 @@ public class PostFragment extends Fragment {
         //mEditor.setBackground("https://raw.githubusercontent.com/wasabeef/art/master/chip.jpg");
         mEditor.setPlaceholder("请输入正文");
         //mEditor.setInputEnabled(false);
+        editText1 = view.findViewById(R.id.post_edit1);
+        editText2= view.findViewById(R.id.post_edit2);
+        editText1.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                GradientDrawable drawable = new GradientDrawable();
+                drawable.setCornerRadius(15);
+               // drawable.setGradientRadius(20);
+                drawable.setStroke(2,Color.GRAY);
+                if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                {
+                    editText1.setBackground(drawable);
+                }else{
+                    editText1.setBackgroundDrawable(drawable);
+                }
+
+
+            }
+        });
+        editText2.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                GradientDrawable drawable = new GradientDrawable();
+                drawable.setCornerRadius(15);
+                drawable.setStroke(2,Color.GRAY);
+                if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                {
+                    editText2.setBackground(drawable);
+                }else{
+                    editText2.setBackgroundDrawable(drawable);
+                }
+
+            }
+        });
 
         mPreview = (TextView) view.findViewById(R.id.preview);
         mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
@@ -119,7 +182,24 @@ public class PostFragment extends Fragment {
 
             }
         });
+        postBackShow2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, null);
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent, 4);
 
+            }
+        });
+        postBackShow3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, null);
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent, 5);
+
+            }
+        });
 
         view.findViewById(R.id.action_undo).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -323,7 +403,91 @@ public class PostFragment extends Fragment {
 
             }
         });
+        view.findViewById(R.id.post_enter).setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                String base64Image="";
+                String base64Image2="";
+                String base64Image3="";
+                String title1 = editText1.getText().toString();
+                String title2 = editText2.getText().toString();
+                if(editText1==null||editText1.length()<=0){
+                    GradientDrawable drawable = new GradientDrawable();
+                    drawable.setCornerRadius(15);
+                    drawable.setStroke(2,Color.RED);
+                    if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                    {
+                        editText1.setBackground(drawable);
+                    }else{
+                        editText1.setBackgroundDrawable(drawable);
+                    }
+                    return;
+                }else if(editText2==null||editText2.length()<=0){
+                    GradientDrawable drawable = new GradientDrawable();
+                    drawable.setCornerRadius(15);
+                    drawable.setStroke(2,Color.RED);
+                    if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                    {
+                        editText2.setBackground(drawable);
+                    }else{
+                        editText2.setBackgroundDrawable(drawable);
+                    }
+                    return;
+                }
+                if((postBackShow).getDrawable()==null||(postBackShow2).getDrawable()==null||(postBackShow3).getDrawable()==null){
+
+                    Toast.makeText(getActivity().getApplicationContext(),"请上传3张图片",Toast.LENGTH_SHORT);
+                    return;
+                }else {
+                    Bitmap bitmap = ((BitmapDrawable) (postBackShow).getDrawable()).getBitmap();
+
+                     base64Image = PostImageUtil.imgToBase64(50, bitmap);
+                    Bitmap bitmap2 = ((BitmapDrawable) (postBackShow2).getDrawable()).getBitmap();
+
+                    base64Image = PostImageUtil.imgToBase64(50, bitmap);
+                    Bitmap bitmap3 = ((BitmapDrawable) (postBackShow3).getDrawable()).getBitmap();
+
+                    base64Image = PostImageUtil.imgToBase64(50, bitmap);
+                    Log.d(TAG, "base64Image: " + base64Image);
+                }
+                Map<String, String > paramMap  =  new HashMap<>();
+                paramMap.put("title1",title1);
+                paramMap.put("title2",title2);
+                paramMap.put("backgroundImage",base64Image);
+                paramMap.put("backgroundImage2",base64Image2);
+                paramMap.put("backgroundImage3",base64Image3);
+                if(content!=null){
+                    paramMap.put("content",content);
+                }
+
+
+                OkhttpUtil.okHttpPost("http://10.0.2.2:8080/abbreviation/upload", paramMap, new CallBackUtil<Response>() {
+                            @Override
+                            public Response onParseResponse(Call call, Response response) {
+                                return response;
+                            }
+
+                            @Override
+                            public void onFailure(Call call, Exception e) {
+                                e.printStackTrace();
+                                Log.d(TAG, "onFailure: ..."+e.getMessage());
+                            }
+
+                            @Override
+                            public void onResponse(Response response) {
+                                try {
+                                    Log.d(TAG, "onResponse: "+response.body().string());
+                                    ((MainActivity)getActivity()).gotoMyFragment();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }
+                );
+            }
+        });
         return view;
     }
 
@@ -346,7 +510,8 @@ public class PostFragment extends Fragment {
 
 
         }
-        if(requestCode ==3){
+
+        else if(requestCode ==3){
             if(data!=null){
                 Uri uri = data.getData();
                 String imagePath = getImagePath(uri,null);
@@ -355,6 +520,28 @@ public class PostFragment extends Fragment {
                         "dachshund");
 
             }
+        }
+       else  if (requestCode == 4) {
+            // 从相册返回的数据
+            if (data != null) {
+                // 得到图片的全路径
+                Uri uri = data.getData();
+                postBackShow2.setBackgroundResource(0);
+                postBackShow2.setImageURI(uri);
+            }
+
+
+        }
+        else if (requestCode == 5) {
+            // 从相册返回的数据
+            if (data != null) {
+                // 得到图片的全路径
+                Uri uri = data.getData();
+                postBackShow3.setBackgroundResource(0);
+                postBackShow3.setImageURI(uri);
+            }
+
+
         }
 
     }

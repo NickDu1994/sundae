@@ -2,6 +2,7 @@ package com.xwing.sundae.android.view;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,8 @@ import com.xwing.sundae.android.view.index.IndexFragment;
 import com.xwing.sundae.android.view.message.MessageFragment;
 import com.xwing.sundae.android.view.my.MyFragment;
 import com.xwing.sundae.android.view.post.PostFragment;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -108,13 +111,20 @@ public class MainActivity extends AppCompatActivity implements
                         }
                         break;
                     case 2:  // post
-                        /*if(mPostFragment == null){
+                        List<Fragment> fragmentslist =  fragmentManager.getFragments();
+                        boolean existflag= false;
+                        for(Fragment f :fragmentslist){
+                            if(f ==mPostFragment){
+                                existflag=true;
+                            }
+                        }
+                        if(!existflag ){
                             mPostFragment = PostFragment.newInstance("","");
                             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
                         } else {
                             fragmentTransaction.show(mPostFragment);
-                        }*/
-                        showMoreWindow(getWindow().getDecorView().findViewById(R.id.mainContainer));
+                        }
+                       // showMoreWindow(getWindow().getDecorView().findViewById(R.id.mainContainer));
                         //For navigation logic, go to below
                         break;
                     case 3:  // message
@@ -153,6 +163,22 @@ public class MainActivity extends AppCompatActivity implements
         mIndexFragment = new IndexFragment();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.mainContainer, mIndexFragment);
+        fragmentTransaction.commit();
+    }
+
+    public void gotoMyFragment() {
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
+       // MyFragment myFragment = new MyFragment();
+        //fragmentTransaction.add(R.id.mainContainer, myFragment);
+        if(mMyFragment == null){
+            fragmentTransaction.remove(mPostFragment);
+            mMyFragment = MyFragment.newInstance("","");
+            fragmentTransaction.add(R.id.mainContainer, mMyFragment);
+        } else {
+            fragmentTransaction.remove(mPostFragment);
+            fragmentTransaction.show(mMyFragment);
+        }
         fragmentTransaction.commit();
     }
 
