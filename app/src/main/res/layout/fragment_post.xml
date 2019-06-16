@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".android.view.post.PostFragment"
     android:background="#eeeeee">
+
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -376,12 +378,7 @@
                 android:background="@null"
                 />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="HTML Preview"
-                android:textSize="12sp" />
+
 
             <TextView
                 android:id="@+id/preview"
@@ -391,8 +388,20 @@
 
         </LinearLayout>
     </LinearLayout>
+
 </ScrollView>
 
+    <AbsoluteLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        >
 
+        <com.xwing.sundae.android.util.LoadingView
+            android:id="@+id/loadingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </AbsoluteLayout>
 
 </FrameLayout>

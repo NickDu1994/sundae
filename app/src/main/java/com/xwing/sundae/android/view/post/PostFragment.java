@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.util.CallBackUtil;
+import com.xwing.sundae.android.util.LoadingView;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.PostImageUtil;
 import com.xwing.sundae.android.view.MainActivity;
@@ -77,7 +78,7 @@ public class PostFragment extends Fragment {
 
     private Uri  postBackShowuri2;
     private Uri  postBackShowuri3;
-
+    private LoadingView loadingView;
     private final int REQUEST_CODE_PICKER = 100;
     private EditText editText1;
     private EditText editText2;
@@ -121,7 +122,8 @@ public class PostFragment extends Fragment {
         View view =inflater.inflate(R.layout.fragment_post, container, false);
         // Inflate the layout for this fragment
         mEditor = (RichEditor) view.findViewById(R.id.editor);
-
+        loadingView = view.findViewById(R.id.loadingView);
+        loadingView.setVisibility(View.INVISIBLE);
         postBackShow=(ImageView) view.findViewById(R.id.post_back_show1) ;
         postBackShow2=(ImageView) view.findViewById(R.id.post_back_show2) ;
         postBackShow3=(ImageView) view.findViewById(R.id.post_back_show3) ;
@@ -173,12 +175,12 @@ public class PostFragment extends Fragment {
             }
         });
 
-        mPreview = (TextView) view.findViewById(R.id.preview);
+        // = (TextView) view.findViewById(R.id.preview);
         mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
             @Override public void onTextChange(String text) {
                 content = text;
                 Log.d(TAG, " post onTextChange: "+content);
-                mPreview.setText(text);
+               // mPreview.setText(text);
             }
         });
         postBackShow.setOnClickListener(new View.OnClickListener() {
@@ -415,6 +417,8 @@ public class PostFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
+
+
                 String base64Image="";
                 String base64Image2="";
                 String base64Image3="";
@@ -445,7 +449,7 @@ public class PostFragment extends Fragment {
                 }
                 if((postBackShow).getDrawable()==null||(postBackShow2).getDrawable()==null||(postBackShow3).getDrawable()==null){
 
-                    Toast.makeText(getActivity().getApplicationContext(),"请上传3张图片",Toast.LENGTH_SHORT);
+                    Toast.makeText(getActivity().getApplicationContext(),"请上传3张图片",Toast.LENGTH_SHORT).show();
                     return;
                 }else {
                     Bitmap bitmap = ((BitmapDrawable) (postBackShow).getDrawable()).getBitmap();
@@ -468,7 +472,8 @@ public class PostFragment extends Fragment {
                 if(content!=null){
                     paramMap.put("content",content);
                 }
-
+                loadingView.setVisibility(View.VISIBLE);
+                loadingView.showLoading();
 
                 OkhttpUtil.okHttpPost("http://10.0.2.2:8080/abbreviation/upload", paramMap, new CallBackUtil<Response>() {
                             @Override
@@ -485,6 +490,12 @@ public class PostFragment extends Fragment {
                             @Override
                             public void onResponse(Response response) {
                                 try {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            loadingView.showSuccess();
+                                        }
+                                    });
                                     Log.d(TAG, "onResponse: "+response.body().string());
                                     ((MainActivity)getActivity()).gotoMyFragment();
                                 }catch (Exception e){
