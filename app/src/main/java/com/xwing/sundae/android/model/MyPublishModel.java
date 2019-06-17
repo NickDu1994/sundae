@@ -12,7 +12,7 @@ public class MyPublishModel {
     /**
      * 词条创建时间
      */
-    private Date create_time;
+    private String abb_create_time;
     /**
      * 词条类型
      */
@@ -40,7 +40,7 @@ public class MyPublishModel {
 
     /**
      * 构造器
-     * @param create_time
+     * @param abb_create_time
      * @param abb_type
      * @param item_name
      * @param item_content
@@ -48,14 +48,14 @@ public class MyPublishModel {
      * @param abb_fullName
      * @param item_image
      */
-    public MyPublishModel(Date create_time,
+    public MyPublishModel(String abb_create_time,
                           String abb_type,
                           String item_name,
                           String item_content,
                           String abb_likedCount,
                           String abb_fullName,
                           String item_image) {
-        this.create_time = create_time;
+        this.abb_create_time = abb_create_time;
         this.item_name = item_name;
         this.abb_type = abb_type;
         this.item_content = item_content;
@@ -64,12 +64,12 @@ public class MyPublishModel {
         this.item_image = item_image;
     }
 
-    public Date getCreate_time() {
-        return create_time;
+    public String getCreate_time() {
+        return abb_create_time;
     }
 
-    public void setCreate_time(Date create_time) {
-        this.create_time = create_time;
+    public void setCreate_time(String create_time) {
+        this.abb_create_time = create_time;
     }
 
     public String getAbb_type() {

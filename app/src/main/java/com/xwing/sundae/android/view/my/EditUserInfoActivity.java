@@ -51,7 +51,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        userInfo = getUserInfo.getUserInfo();
+        userInfo = getUserInfo.getUserInfo().getData();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_line);
 
@@ -202,7 +202,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
                 Toast.makeText(EditUserInfoActivity.this, "更新信息成功", Toast.LENGTH_SHORT).show();
                 try {
                     CommonResponse<UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
-                    getUserInfo.setUserInfo(userInfoBean.getData());
+//                    getUserInfo.setUserInfo(userInfoBean.getData());
                     sharedPreferencesHelper.remove("user_info");
                     sharedPreferencesHelper.put("user_info", response);
                     finish();

@@ -70,18 +70,19 @@ public class MyFollowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_follow);
 
-        userInfo = getUserInfo.getUserInfo();
+        getUserInfo = new GetUserInfo(this);
+        if(null != getUserInfo) {
+            userInfo = getUserInfo.getUserInfo().getData();
+            getMyFollowList();
+        }
 
         header_title = findViewById(R.id.header_title);
         header_title.setText("我的关注");
 
         xRefreshView = findViewById(R.id.follower_list_wrapper);
         recyclerView = (RecyclerView) findViewById(R.id.rv);
-        //获得页面数据
-//        getFollowList();
-        getMyFollowList();
-        setPullandRefresh();
 
+        setPullandRefresh();
     }
 
     private void getFollowList() {
@@ -150,13 +151,13 @@ public class MyFollowActivity extends AppCompatActivity {
     }
 
     private void getMyFollowList() {
-        String url = Constant.REQUEST_URL_MY + "/user/follow";
+        String url = Constant.REQUEST_URL_MY + "/follow/follow";
         Long user_id = userInfo.getId();
 
         HashMap<String,String> paramsMap = new HashMap<>();
         paramsMap.put("userId", user_id.toString());
 
-        OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
+        OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
                 Toast.makeText(MyFollowActivity.this, "getMyFollowList Failed", Toast.LENGTH_SHORT).show();

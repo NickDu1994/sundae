@@ -76,7 +76,7 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
         viewHolder.item_content.setText(collect.getItem_content());
 
         if("".equals(collect.getItem_image()) || null == collect.getItem_image()) {
-            Glide.with(mContext).load(R.drawable.explore).apply(options).into(viewHolder.item_image);
+            Glide.with(mContext).load(R.drawable.pic).apply(options).into(viewHolder.item_image);
         } else {
             Glide.with(mContext).load(collect.getItem_image()).apply(options).into(viewHolder.item_image);
         }

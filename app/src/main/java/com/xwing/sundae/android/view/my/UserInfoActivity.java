@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,22 +22,28 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.gson.Gson;
 import com.lljjcoder.citypickerview.widget.CityPicker;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.UserInfoOneLineView;
 import com.xwing.sundae.android.model.CommonResponse;
+import com.xwing.sundae.android.model.MyFollowerModel;
 import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
+import com.xwing.sundae.android.util.GlideImageLoader;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.view.GetUserInfo;
 import com.yanzhenjie.permission.AndPermission;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
+import jp.wasabeef.glide.transformations.internal.Utils;
 import okhttp3.Call;
 
 public class UserInfoActivity extends AppCompatActivity implements View.OnClickListener,
@@ -116,12 +123,14 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
 
+        getUserInfo = new GetUserInfo(this);
+
         initView();
         initEvent();
         showUserPic();
-        getUserInfo = new GetUserInfo(this);
-        if (getUserInfo.getIfAuth()) {
-            userInfo = getUserInfo.getUserInfo();
+
+        if (null != getUserInfo.getUserInfo() && !"".equals(getUserInfo.getUserInfo())) {
+            userInfo = getUserInfo.getUserInfo().getData();
             add_info_list(userInfo);
         }
 
@@ -130,8 +139,8 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     protected void onResume() {
-        if (getUserInfo.getIfAuth() && null!= userInfo) {
-            add_info_list(userInfo);
+        if (null != getUserInfo.getUserInfo() && !"".equals(getUserInfo.getUserInfo())) {
+            add_info_list(getUserInfo.getUserInfo().getData());
         }
         super.onResume();
     }
@@ -234,13 +243,38 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
      * @param data
      */
     protected void setImageToView(Intent data) {
-//        Bundle extras = data.getExtras();
-//        if (extras != null) {
-//            Bitmap photo = extras.getParcelable("data");
+        Bundle extras = data.getExtras();
+        if (extras != null) {
+            Bitmap photo = extras.getParcelable("data");
+            String photoBase64 = GlideImageLoader.bitmapToBase64(photo);
+            uploadImage(photoBase64);
 //            photo = Utils.toRoundBitmap(photo, tempUri); // 这个时候的图片已经被处理成圆形的了
 //            iv_personal_icon.setImageBitmap(photo);
+            Glide.with(this)
+                    .load(photo)
+                    .into(info_user_pic);
 //            uploadPic(photo);
-//        }
+        }
+    }
+
+    private void uploadImage(String photoBase64) {
+        String url = Constant.REQUEST_URL_MY + "/image/upload/img";
+
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("uploadFile", photoBase64);
+
+        OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(UserInfoActivity.this, "upload Failed", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(String response) {
+                String res = response;
+                Toast.makeText(UserInfoActivity.this, "upload succ", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /**

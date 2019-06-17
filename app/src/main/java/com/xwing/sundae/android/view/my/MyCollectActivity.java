@@ -16,9 +16,7 @@ import com.google.gson.Gson;
 import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.adapter.MyCollectAdapter;
-import com.xwing.sundae.android.adapter.MyFollowerInfoAdapter;
 import com.xwing.sundae.android.model.MyCollectModel;
-import com.xwing.sundae.android.model.MyFollowerModel;
 import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.Constant;
@@ -71,7 +69,11 @@ public class MyCollectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_collect);
 
-        userInfo = getUserInfo.getUserInfo();
+        getUserInfo = new GetUserInfo(this);
+        if(null != getUserInfo) {
+            userInfo = getUserInfo.getUserInfo().getData();
+            getMyCollectList();
+        }
 
         header_title = findViewById(R.id.header_title);
         header_title.setText("我的收藏");
@@ -79,7 +81,6 @@ public class MyCollectActivity extends AppCompatActivity {
         xRefreshView = findViewById(R.id.collect_list_wrapper);
         recyclerView = findViewById(R.id.collect_rv);
 
-        getMyCollectList();
         setPullandRefresh();
     }
 

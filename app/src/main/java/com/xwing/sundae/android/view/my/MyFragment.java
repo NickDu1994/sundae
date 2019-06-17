@@ -58,7 +58,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
     ImageView user_pic, user_setting;
     TextView user_name, user_id;
 
-    GetUserInfo getUserInfo ;
+    GetUserInfo getUserInfo;
     UserInfo userInfo;
 
 
@@ -97,19 +97,21 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        Log.v(TAG, "success dk");
+        getUserInfo = new GetUserInfo(getActivity());
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my, container, false);
         sharedPreferencesHelper =
                 new SharedPreferencesHelper(getActivity(), "user");
 
         initView(view);
-        loadPortrait();
         addChildViews();
         setUserInfo();
         initEvent();
@@ -143,38 +145,9 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
 
     }
 
-    private void setUserInfo() {
-        //get user detail from sharePreference.
-
-        String user_info = sharedPreferencesHelper.get("user_info","").toString();
-
-        userInfo = getUserInfo.getUserInfo();
-        if(getUserInfo.getIfAuth() && userInfo!=null) {
-            user_name.setText(userInfo.getNickname());
-            user_id.setText(userInfo.getUsername());
-            Glide.with(this).load(R.drawable.avatar).apply(options).into(image);
-            user_setting.setVisibility(View.VISIBLE);
-        }if (null != user_info && !"".equals(user_info)) {
-            userInfo = CommonMethod.getUserInfo(user_info).getData();
-
-            getUserInfo.setUserInfo(userInfo);
-
-            user_name.setText(userInfo.getNickname());
-            user_id.setText(userInfo.getUsername());
-            Glide.with(this).load(R.drawable.avatar).apply(options).into(image);
-            user_setting.setVisibility(View.VISIBLE);
-        } else {
-            setUserInfoAsNoLogin();
-        }
-    }
-
-    private void setUserInfoAsNoLogin() {
-        user_setting.setVisibility(View.INVISIBLE);
-        Glide.with(this).load(R.drawable.girl).apply(options).into(image);
-        user_name.setText(this.getString(R.string.string_click_login));
-        user_id.setText("");
-    }
-
+    /**
+     * 分类
+     */
     private void addChildViews() {
 
         UserInfoOneLineView mySent = new UserInfoOneLineView(getContext())
@@ -204,18 +177,12 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
 
     }
 
-    private void loadPortrait() {
-
-    }
 
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.user_field:
                 toUserInfoPage();
-//                Intent intent = new Intent(getActivity(), UserInfoActivity.class);
-//                startActivity(intent);
                 break;
             case R.id.user_pic:
                 toUserInfoPage();
@@ -226,11 +193,12 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
         }
     }
 
+    /**
+     * 查看用户登录状态，并且返回跳转页面 - 未登录跳转到登录页面
+     */
     private void toUserInfoPage() {
-        String commonResponse = sharedPreferencesHelper.get("user_info", "").toString();
-
         Intent intent;
-        if(getUserInfo.getIfAuth()) {
+        if (getUserInfo.ifLogin()) {
             intent = new Intent(getActivity(), UserInfoActivity.class);
         } else {
             intent = new Intent(getActivity(), LoginActivity.class);
@@ -238,6 +206,40 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
         startActivity(intent);
     }
 
+    /**
+     * 用户登录之后的显示text
+     */
+    private void setUserInfo() {
+        if (getUserInfo.ifLogin() && null != getUserInfo.getUserInfo() && !"".equals(getUserInfo.getUserInfo())) {
+            userInfo = getUserInfo.getUserInfo().getData();
+            user_name.setText(userInfo.getNickname());
+            user_id.setText(userInfo.getUsername());
+            String avatarUrl = userInfo.getAvatarUrl();
+            if (null == avatarUrl || "".equals(avatarUrl)) {
+                Glide.with(this).load(R.drawable.avatar).apply(options).into(image);
+            } else {
+                Glide.with(this).load(avatarUrl).apply(options).into(image);
+            }
+            user_setting.setVisibility(View.VISIBLE);
+        } else {
+            setUserInfoAsNoLogin();
+        }
+    }
+
+    /**
+     * 用户未登录显示的text
+     */
+    private void setUserInfoAsNoLogin() {
+        //隐藏登出icon
+        user_setting.setVisibility(View.INVISIBLE);
+        Glide.with(this).load(R.drawable.defaultpic).apply(options).into(image);
+        user_name.setText(this.getString(R.string.string_click_login));
+        user_id.setText("");
+    }
+
+    /**
+     * 登出
+     */
     private void logOut() {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setTitle("退出登录")
@@ -247,9 +249,8 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 sharedPreferencesHelper.remove("user_info");
-                                sharedPreferencesHelper.remove("auth");
-                                setUserInfo();
-//                                getActivity().finish();
+                                sharedPreferencesHelper.put("auth",false);
+                                setUserInfoAsNoLogin();
                             }
                         }).setNegativeButton(this.getString(R.string.string_cancel_btn),
                         new DialogInterface.OnClickListener() {
@@ -288,15 +289,16 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
 
     @Override
     public void onRootClick(View view) {
-//        if(!getUserInfo.getIfAuth()) {
-//            Toast.makeText(getContext(), "请先进行登录", Toast.LENGTH_SHORT).show();
-//            startActivity(new Intent(getActivity(),LoginActivity.class));
-//        }
+        if (!getUserInfo.ifLogin()) {
+            Toast.makeText(getContext(), "请先进行登录", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+            return;
+        }
         int position = 0;
         switch ((String) view.getTag()) {
             case "mySent":
                 position = 1;
-                startActivity(new Intent(getActivity(),MyPubishActivity.class));
+                startActivity(new Intent(getActivity(), MyPubishActivity.class));
                 break;
 //            case "myComment":
 //                position = 2;
@@ -304,18 +306,17 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
 //                break;
             case "myCollect":
                 position = 3;
-                startActivity(new Intent(getActivity(),MyCollectActivity.class));
+                startActivity(new Intent(getActivity(), MyCollectActivity.class));
                 break;
             case "myFollow":
                 position = 4;
-                startActivity(new Intent(getActivity(),MyFollowActivity.class));
+                startActivity(new Intent(getActivity(), MyFollowActivity.class));
                 break;
 //            case "suggFeedback":
 //                position = 5;
 //                startActivity(new Intent(getActivity(),FeedbackActivity.class));
 //                break;
         }
-        Toast.makeText(getContext(), "点击了第" + position + "行", Toast.LENGTH_SHORT).show();
     }
 
     /**

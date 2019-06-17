@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +54,8 @@ public class LoginActivity extends AppCompatActivity {
     private View progress;
     private View mInputLayout;
     private float mWidth, mHeight;
-    private LinearLayout mName, mPsw;
+    private LinearLayout mName;
+    private RelativeLayout mPsw;
     private EditText user_mobile_no, user_mobile_vercode;
 
     private int countSeconds = 60;//倒计时秒数
@@ -82,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         progress = findViewById(R.id.layout_progress);
         mInputLayout = findViewById(R.id.input_layout);
         mName = (LinearLayout) findViewById(R.id.input_layout_name);
-        mPsw = (LinearLayout) findViewById(R.id.input_layout_psw);
+        mPsw = (RelativeLayout) findViewById(R.id.input_layout_psw);
         get_verify_code_btn = (TextView) findViewById(R.id.get_verify_code_btn);
         user_mobile_no = (EditText) findViewById(R.id.user_mobile_no);
         user_mobile_vercode = (EditText) findViewById(R.id.user_mobile_vercode);
@@ -224,7 +226,7 @@ public class LoginActivity extends AppCompatActivity {
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Failed"+e, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -280,23 +282,19 @@ public class LoginActivity extends AppCompatActivity {
 
                     Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
 
-                    getUserInfo.setIfAuth(true);
-
                     CommonResponse<UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
                     if (null != userInfoBean.getData()) {
-                        getUserInfo.setUserInfo(userInfoBean.getData());
+//                        getUserInfo.setUserInfo(userInfoBean.getData());
                         sharedPreferencesHelper.put("user_info", response);
                         sharedPreferencesHelper.put("auth", true);
                         finish();
                     } else {
                         recovery();
                         Toast.makeText(LoginActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
-
                     }
                 } else {
                     recovery();
                     Toast.makeText(LoginActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
-
                 }
 
             }

@@ -64,16 +64,28 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
         RequestOptions options = new RequestOptions().placeholder(R.drawable.explore)
                 .error(R.drawable.explore).circleCropTransform();
         if("".equals(publish.getItem_image()) || null == publish.getItem_image()) {
-            Glide.with(mContext).load(R.drawable.explore_actived).apply(options).into(v.item_image);
+            Glide.with(mContext).load(R.drawable.pic).apply(options).into(v.item_image);
         } else {
             Glide.with(mContext).load(publish.getItem_image()).apply(options).into(v.item_image);
         }
 
         v.item_name.setText(publish.getItem_name());
         v.item_content.setText(publish.getItem_content());
-        v.abb_type.setText(publish.getAbb_type());
-        v.abb_likedCount.setText(publish.getAbb_likedCount());
-        v.create_time.setText(publish.getCreate_time().toString());
+        String abbr_type = publish.getAbb_type();
+        String abbr_type_name = "词条";
+        switch (abbr_type){
+            case "0":
+                abbr_type_name = "词条";
+                break;
+            case "1":
+                abbr_type_name = "心得";
+                break;
+        }
+        v.abb_type.setText(abbr_type_name);
+        String liked_count = publish.getAbb_likedCount();
+        int point = liked_count.indexOf(".");
+        v.abb_likedCount.setText(liked_count.substring(0,point));
+        v.create_time.setText(publish.getCreate_time());
     }
 
     @Override
@@ -88,7 +100,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
         public ViewHolder(@NonNull View v) {
             super(v);
             item_image = v.findViewById(R.id.item_image);
-            create_time = v.findViewById(R.id.create_time);
+            create_time = v.findViewById(R.id.abbr_create_time);
             abb_likedCount = v.findViewById(R.id.abb_likedCount);
             abb_type = v.findViewById(R.id.abb_type);
             item_name = v.findViewById(R.id.item_name);

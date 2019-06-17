@@ -6,7 +6,7 @@ public class UserInfo {
     private Long id;
     private String username;
     private String nickname;
-    private String roleid;
+    private String roleId;
     private String point;
     private String avatarUrl;
     private String gender;
@@ -45,12 +45,12 @@ public class UserInfo {
         this.nickname = nickname;
     }
 
-    public String getRoleid() {
-        return roleid;
+    public String getRoleId() {
+        return roleId;
     }
 
-    public void setRoleid(String roleid) {
-        this.roleid = roleid;
+    public void setRoleId(String roleid) {
+        this.roleId = roleid;
     }
 
     public String getPoint() {

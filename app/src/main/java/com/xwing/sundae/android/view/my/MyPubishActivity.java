@@ -57,17 +57,16 @@ public class MyPubishActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_pubish);
 
-        userInfo = getUserInfo.getUserInfo();
+        getUserInfo = new GetUserInfo(this);
+        if(null != getUserInfo) {
+            userInfo = getUserInfo.getUserInfo().getData();
+            getMyPublishList();
+        }
 
         header_title = findViewById(R.id.header_title);
         header_title.setText("我的发布");
 
         recyclerView = (RecyclerView) findViewById(R.id.publish_rv);
-
-
-
-        getMyPublishList();
-
 
     }
 
