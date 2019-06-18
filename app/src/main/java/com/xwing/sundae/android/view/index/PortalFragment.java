@@ -1,7 +1,5 @@
 package com.xwing.sundae.android.view.index;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,8 +21,8 @@ import com.xwing.sundae.android.customview.SearchRoundCTACardView;
 import com.xwing.sundae.android.model.BaseImage;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.ComplexListModel;
-import com.xwing.sundae.android.model.IndexBannerImage;
-import com.xwing.sundae.android.model.IndexRecommendListModel;
+import com.xwing.sundae.android.model.IndexBannerModel;
+import com.xwing.sundae.android.model.AbbreviationBaseModel;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
@@ -183,12 +181,12 @@ public class PortalFragment extends Fragment {
                 Log.d("dkdebug", "response" + response);
                 Gson gson = new Gson();
                 try{
-                    CommonResponse<List<IndexBannerImage>> responseIndexBannerImage =
-                            (CommonResponse<List<IndexBannerImage>>)gson.fromJson(response,
-                                    new TypeToken<CommonResponse<List<IndexBannerImage>>>() {}.getType());
-                    final List<IndexBannerImage> indexBannerImage = responseIndexBannerImage.getData();
+                    CommonResponse<List<IndexBannerModel>> responseIndexBannerImage =
+                            (CommonResponse<List<IndexBannerModel>>)gson.fromJson(response,
+                                    new TypeToken<CommonResponse<List<IndexBannerModel>>>() {}.getType());
+                    final List<IndexBannerModel> indexBannerModel = responseIndexBannerImage.getData();
                     List<BaseImage> displayImages = new ArrayList<BaseImage>();
-                    for(IndexBannerImage item : indexBannerImage){
+                    for(IndexBannerModel item : indexBannerModel){
                         displayImages.add(new BaseImage(item.getImage().getPath()));
                     }
 
@@ -198,7 +196,7 @@ public class PortalFragment extends Fragment {
                     banner.setOnBannerListener(new OnBannerListener() {
                         @Override
                         public void OnBannerClick(int position) {
-                            Toast.makeText(getContext(), "open url=" + indexBannerImage.get(position).getHtmlUrl(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "open url=" + indexBannerModel.get(position).getHtmlUrl(), Toast.LENGTH_SHORT).show();
                         }
                     });
                     banner.start();
@@ -227,12 +225,12 @@ public class PortalFragment extends Fragment {
                 Log.d("dkdebug", "response" + response);
                 Gson gson = new Gson();
                 try{
-                    CommonResponse<List<IndexRecommendListModel>> responseIndexRecommendList =
-                            (CommonResponse<List<IndexRecommendListModel>>)gson.fromJson(response,
-                                    new TypeToken<CommonResponse<List<IndexRecommendListModel>>>() {}.getType());
-                    final List<IndexRecommendListModel> dataList = responseIndexRecommendList.getData();
+                    CommonResponse<List<AbbreviationBaseModel>> responseIndexRecommendList =
+                            (CommonResponse<List<AbbreviationBaseModel>>)gson.fromJson(response,
+                                    new TypeToken<CommonResponse<List<AbbreviationBaseModel>>>() {}.getType());
+                    final List<AbbreviationBaseModel> dataList = responseIndexRecommendList.getData();
                     List<BaseImage> displayImages = new ArrayList<BaseImage>();
-                    for(IndexRecommendListModel item : dataList){
+                    for(AbbreviationBaseModel item : dataList){
                         String[] imageArray = {item.getImageList().get(0).getPath(),
                                 item.getImageList().get(1).getPath(),
                                 item.getImageList().get(2).getPath()};

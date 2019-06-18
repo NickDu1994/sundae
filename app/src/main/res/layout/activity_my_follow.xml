@@ -5,34 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".android.view.my.MyFollowActivity">
-        <com.andview.refreshview.XRefreshView xmlns:tools="http://schemas.android.com/tools"
-            xmlns:xrefreshview="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/follower_list_wrapper"
+
+    <com.andview.refreshview.XRefreshView xmlns:tools="http://schemas.android.com/tools"
+        xmlns:xrefreshview="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/follower_list_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:orientation="vertical"
+        xrefreshview:isHeightMatchParent="true"
+        xrefreshview:isWidthMatchParent="true">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#fff"
-            android:orientation="vertical"
-            xrefreshview:isHeightMatchParent="true"
-            xrefreshview:isWidthMatchParent="true">
-            <LinearLayout
+            android:orientation="vertical">
+            <fragment
+                android:id="@+id/fragment_title"
+                android:name="com.xwing.sundae.android.view.header.CommonMyHeader"
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <fragment
-                    android:id="@+id/fragment_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:name="com.xwing.sundae.android.view.header.CommonMyHeader"
-                    />
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#F5F6FA"/>
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </LinearLayout>
+                android:background="#F5F6FA" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </LinearLayout>
 
-        </com.andview.refreshview.XRefreshView>
+    </com.andview.refreshview.XRefreshView>
 
 </android.support.constraint.ConstraintLayout>

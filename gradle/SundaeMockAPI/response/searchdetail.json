@@ -1,0 +1,21 @@
+{
+  "status": 200,
+  "msg": "success",
+  "data": {
+    "id": 156024294666505,
+    "userId": null,
+    "abbrName": "hah",
+    "fullName": "ahiuqwuegwqu",
+    "content": "hjasjdhaskdkjas",
+    "imageId": null,
+    "dataStatus": null,
+    "createTime": "2019-06-12 19:03:59 ",
+    "createBy": 156075465683544,
+    "imageList": [],
+    "lastUpdateTime": "2019-06-04 19:03:44 ",
+    "type": null,
+    "likedCount": null,
+    "visitedCount": null,
+    "image": null
+  }
+}

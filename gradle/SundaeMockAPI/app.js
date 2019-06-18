@@ -50,15 +50,25 @@ app.get('/abbreviation/getRecommendedEntryList', function (req, res) {
    });
 })
  
- app.post('/abbreviation/getOneEntryDetail',jsonParser, function (req, res) {
+app.post('/abbreviation/getOneEntryDetail',jsonParser, function (req, res) {
    console.log("接收到 POST 请求," + "body=");
    console.dir(req.body);
-   fs.readFile( __dirname + "/response/" + "getOneEntry.json", 'utf8', function (err, data) {
+   fs.readFile( __dirname + "/response/" + "searchdetail.json", 'utf8', function (err, data) {
        console.log( "response:",data );
        res.send( data );
    });
 })
  
+app.post('/abbreviation/searchAbbreviation',jsonParser, function (req, res) {
+   console.log("接收到 POST 请求," + "body=");
+   console.dir(req.body);
+   fs.readFile( __dirname + "/response/" + "searchlist.json", 'utf8', function (err, data) {
+       console.log( "response:",data );
+       res.send( data );
+   });
+})
+
+
 //  POST 请求
 app.post('/list',jsonParser, function (req, res) {
    console.log("接收到 POST 请求," + "body=");

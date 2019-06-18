@@ -1,7 +1,5 @@
 package com.xwing.sundae.android.view.index;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,12 +22,18 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.CustomeButtonGroupView;
+import com.xwing.sundae.android.model.CommonResponse;
+import com.xwing.sundae.android.model.SearchSuggestionModel;
+import com.xwing.sundae.android.util.CallBackUtil;
+import com.xwing.sundae.android.util.Constant;
+import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.SharedPreferencesUtil;
 import com.xwing.sundae.android.view.MainActivity;
 
-import org.sufficientlysecure.htmltextview.HtmlAssetsImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
@@ -37,7 +41,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import okhttp3.Call;
 
 public class SearchFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -133,10 +138,12 @@ public class SearchFragment extends Fragment {
                 //Noting
             }
         });
-        mainEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mainEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction())) {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                Log.d("dk","enter setOnEditorActionListener" + event);
+                if ((event != null && KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction())) {
+                    Log.d("dk","click the enter button");
                     SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance(getContext());
                     String currentKeywordNote = spUtil.getSP("keyword_note");
                     Log.d("dk","dkdebug currentKeywordNote=" +currentKeywordNote);
@@ -179,8 +186,10 @@ public class SearchFragment extends Fragment {
         String[] testName = spUtil.getSP("keyword_note").split(",");
         String[] testName2 = {"apple2","title2","layout2","LinearLayout2","new2","child2"};
         CustomeButtonGroupView customeButtonGroupView = getActivity().findViewById(R.id.historyPanel);
+        customeButtonGroupView.setTitle("搜索历史");
         customeButtonGroupView.setTagList(testName);
         CustomeButtonGroupView customeButtonGroupView2 = getActivity().findViewById(R.id.hotPanel);
+        customeButtonGroupView2.setTitle("热门搜索");
         customeButtonGroupView2.setTagList(testName2);
     }
 
@@ -205,22 +214,57 @@ public class SearchFragment extends Fragment {
 
     public void handleInput(String keyword){
         listView = getActivity().findViewById(R.id.listContainer);
-        for(int i=0;i<5;i++){
-            Map<String,String> map = new HashMap<String,String>();
-            map.put("label", "数据列1-");
-            keywordList.add(map);
-        }
-        SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), keywordList, R.layout.item_search_result, new String[]{"label"}, new int[]{R.id.label});
-        listView.setAdapter(simpleAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        String url = Constant.globalServerUrl + "/abbreviation/searchAbbreviation";
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("keyWords",keyword);
+        OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getContext(), "position=" + position, Toast.LENGTH_SHORT).show();
-                displayController(PANEL_DETAIL);
-                HtmlTextView htmlTextView = (HtmlTextView) getActivity().findViewById(R.id.html_text);
-                htmlTextView.setHtml("<h2>This content come from html</h2><p>This content come from html</p><img src=\"https://img.alicdn.com/tfs/TB1Fym0cUCF3KVjSZJnXXbnHFXa-760-460.jpg\"/>",
-                        new HtmlHttpImageGetter(htmlTextView));
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug onFailure", "e=" + e);
+            }
+
+            @Override
+            public void onResponse(String response) {
+                keywordList.clear();
+                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug", "response" + response);
+                Gson gson = new Gson();
+                try{
+                    CommonResponse<List<SearchSuggestionModel>> responseSearchSuggestionList =
+                            (CommonResponse<List<SearchSuggestionModel>>)gson.fromJson(response,
+                                    new TypeToken<CommonResponse<List<SearchSuggestionModel>>>() {}.getType());
+                    final List<SearchSuggestionModel> dataList = responseSearchSuggestionList.getData();
+                    for(SearchSuggestionModel item : dataList){
+                        Map<String,String> map = new HashMap<String,String>();
+                        map.put("label", item.getAbbr_name() + " " + item.getFull_name());
+                        map.put("id", item.getId());
+                        keywordList.add(map);
+                    }
+
+                    SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), keywordList, R.layout.item_search_result, new String[]{"label"}, new int[]{R.id.label});
+                    listView.setAdapter(simpleAdapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            Toast.makeText(getContext(), "position=" + position + keywordList.get(position).get("id"), Toast.LENGTH_SHORT).show();
+                            displayController(PANEL_DETAIL);
+                            HtmlTextView htmlTextView = (HtmlTextView) getActivity().findViewById(R.id.html_text);
+                            htmlTextView.setHtml("<h2>This content come from html</h2><p>This content come from html</p><img src=\"https://img.alicdn.com/tfs/TB1Fym0cUCF3KVjSZJnXXbnHFXa-760-460.jpg\"/>",
+                                    new HtmlHttpImageGetter(htmlTextView));
+                        }
+                    });
+
+                } catch (Exception e) {
+                    Log.d("dkdebug onResponse", "e=" + e);
+                }
             }
         });
+//        for(int i=0;i<5;i++){
+//            Map<String,String> map = new HashMap<String,String>();
+//            map.put("label", "数据列1-");
+//            keywordList.add(map);
+//        }
+
     }
 }

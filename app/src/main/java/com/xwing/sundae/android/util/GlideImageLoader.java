@@ -7,7 +7,6 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.xwing.sundae.android.model.BaseImage;
-import com.xwing.sundae.android.model.IndexBannerImage;
 import com.youth.banner.loader.ImageLoader;
 
 import java.io.ByteArrayOutputStream;

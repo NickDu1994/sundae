@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        getUserInfo = new GetUserInfo(this);
         sharedPreferencesHelper = new SharedPreferencesHelper(LoginActivity.this, "user");
 
         initView();
@@ -281,12 +281,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (null != map_res.get("status") && "200.0".equals(map_res.get("status").toString())) {
 
                     Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-
-                    CommonResponse<UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
+                    sharedPreferencesHelper.put("user_info", response);
+                    sharedPreferencesHelper.put("auth", true);
+                    CommonResponse<UserInfo> userInfoBean = getUserInfo.getUserInfo();
                     if (null != userInfoBean.getData()) {
-//                        getUserInfo.setUserInfo(userInfoBean.getData());
-                        sharedPreferencesHelper.put("user_info", response);
-                        sharedPreferencesHelper.put("auth", true);
                         finish();
                     } else {
                         recovery();

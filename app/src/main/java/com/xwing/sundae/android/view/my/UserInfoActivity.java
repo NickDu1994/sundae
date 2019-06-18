@@ -5,12 +5,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +38,7 @@ import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.GlideImageLoader;
 import com.xwing.sundae.android.util.OkhttpUtil;
+import com.xwing.sundae.android.util.PostImageUtil;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.view.GetUserInfo;
 import com.yanzhenjie.permission.AndPermission;
@@ -116,6 +121,8 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     private static final int CROP_SMALL_PICTURE = 2;
 
     protected static Uri tempUri;
+
+    private static final String IMAGE_FILE_NAME = "user_head_icon.jpg";
 
 
     @Override
@@ -211,30 +218,8 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE)
                 .start();
-    }
 
-    /**
-     * 裁剪图片方法实现
-     *
-     * @param uri
-     */
-    protected void startPhotoZoom(Uri uri) {
-        if (uri == null) {
-            Log.i("tag", "The uri is not exist.");
-        }
-        tempUri = uri;
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, "image/*");
-        // 设置裁剪
-        intent.putExtra("crop", "true");
-        // aspectX aspectY 是宽高的比例
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        // outputX outputY 是裁剪图片宽高
-        intent.putExtra("outputX", 150);
-        intent.putExtra("outputY", 150);
-        intent.putExtra("return-data", true);
-        startActivityForResult(intent, CROP_SMALL_PICTURE);
+//        CommonMethod.mkdirSundaeDirectory();
     }
 
     /**
@@ -243,25 +228,21 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
      * @param data
      */
     protected void setImageToView(Intent data) {
-        Bundle extras = data.getExtras();
-        if (extras != null) {
-            Bitmap photo = extras.getParcelable("data");
-            String photoBase64 = GlideImageLoader.bitmapToBase64(photo);
-            uploadImage(photoBase64);
-//            photo = Utils.toRoundBitmap(photo, tempUri); // 这个时候的图片已经被处理成圆形的了
-//            iv_personal_icon.setImageBitmap(photo);
-            Glide.with(this)
-                    .load(photo)
-                    .into(info_user_pic);
-//            uploadPic(photo);
-        }
+        Uri uri = data.getData();
+        info_user_pic.setImageURI(uri);
+
+        Bitmap bitmap = ((BitmapDrawable) (info_user_pic).getDrawable()).getBitmap();
+        String base64Image = PostImageUtil.imgToBase64(50, bitmap);
+
+        uploadImage(base64Image);
     }
 
-    private void uploadImage(String photoBase64) {
+    private void uploadImage(String base64) {
+
         String url = Constant.REQUEST_URL_MY + "/image/upload/img";
 
         HashMap<String, String> paramsMap = new HashMap<>();
-        paramsMap.put("uploadFile", photoBase64);
+        paramsMap.put("uploadFile", base64);
 
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
@@ -271,6 +252,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 
             @Override
             public void onResponse(String response) {
+
                 String res = response;
                 Toast.makeText(UserInfoActivity.this, "upload succ", Toast.LENGTH_SHORT).show();
             }
@@ -290,19 +272,10 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case CHOOSE_PICTURE: // 选择本地照片
-                        Intent openAlbumIntent = new Intent(
-                                Intent.ACTION_GET_CONTENT);
-                        openAlbumIntent.setType("image/*");
-                        startActivityForResult(openAlbumIntent, CHOOSE_PICTURE);
+                        choosePic();
                         break;
                     case TAKE_PICTURE: // 拍照
-                        Intent openCameraIntent = new Intent(
-                                MediaStore.ACTION_IMAGE_CAPTURE);
-                        tempUri = Uri.fromFile(new File(Environment
-                                .getExternalStorageDirectory(), "image.jpg"));
-                        // 指定照片保存路径（SD卡），image.jpg为一个临时文件，每次拍照后这个图片都会被替换
-                        openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
-                        startActivityForResult(openCameraIntent, TAKE_PICTURE);
+                        takePic();
                         break;
                 }
             }
@@ -310,24 +283,63 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         builder.create().show();
     }
 
+    /**
+     * 选择图片方法
+     */
+    private void choosePic() {
+        Log.e("Maggie Image", "choose pic");
+        Intent openAlbumIntent = new Intent(Intent.ACTION_PICK);
+        openAlbumIntent.setType("image/*");
+        openAlbumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        if (openAlbumIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(openAlbumIntent, CHOOSE_PICTURE);
+        } else {
+            Toast.makeText(UserInfoActivity.this, "未找到图片查看器", Toast.LENGTH_SHORT).show();
+        }
+        startActivityForResult(openAlbumIntent, CHOOSE_PICTURE);
+    }
+
+    /**
+     * 拍照方法
+     */
+    private void takePic() {
+        Log.e("Maggie Image", "take pic");
+        Intent intent;
+        Uri pictureUri;
+        //也就是我之前创建的存放头像的文件夹（目录）
+        File pictureFile = new File(CommonMethod.getSundaeRootDirectory(), IMAGE_FILE_NAME);
+        // 判断当前系统
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            //这一句非常重要
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            //""中的内容是随意的，但最好用package名.provider名的形式，清晰明了
+            pictureUri = FileProvider.getUriForFile(this,
+                    "com.xwing.sundae.file", pictureFile);
+        } else {
+            intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            pictureUri = Uri.fromFile(pictureFile);
+        }
+        // 去拍照,拍照的结果存到oictureUri对应的路径中
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
+        Log.e("maggietest", "before take photo" + pictureUri.toString());
+        startActivityForResult(intent, TAKE_PICTURE);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) { // 如果返回码是可以用的
+            Uri uri;
             switch (requestCode) {
                 case TAKE_PICTURE:
-                    startPhotoZoom(tempUri); // 开始对图片进行裁剪处理
+                    setImageToView(data);
                     break;
                 case CHOOSE_PICTURE:
-                    startPhotoZoom(data.getData()); // 开始对图片进行裁剪处理
-                    break;
-                case CROP_SMALL_PICTURE:
-                    if (data != null) {
-                        setImageToView(data); // 让刚才选择裁剪得到的图片显示在界面上
-                    }
+                    setImageToView(data);
                     break;
             }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
@@ -428,10 +440,10 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 
                 Toast.makeText(UserInfoActivity.this, "更新信息成功", Toast.LENGTH_SHORT).show();
                 try {
-                    CommonResponse<com.xwing.sundae.android.model.UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
-                    getUserInfo.setUserInfo(userInfoBean.getData());
                     sharedPreferencesHelper.remove("user_info");
                     sharedPreferencesHelper.put("user_info", response);
+                    CommonResponse<UserInfo> userInfoBean = getUserInfo.getUserInfo();
+                    getUserInfo.setUserInfo(userInfoBean.getData());
                     finish();
                 } catch (Exception e) {
                     Log.v("update user failed", "error" + e);

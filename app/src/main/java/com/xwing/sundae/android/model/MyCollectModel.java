@@ -10,7 +10,7 @@ public class MyCollectModel {
     /**
      * 收藏id
      */
-    private String item_id;
+    private Long item_id;
     /**
      * 收藏的封面图片
      */
@@ -34,7 +34,7 @@ public class MyCollectModel {
 
     public MyCollectModel(){}
 
-    public MyCollectModel(String item_id, String item_image, String item_name, String item_content, String collect_author, String collect_time) {
+    public MyCollectModel(Long item_id, String item_image, String item_name, String item_content, String collect_author, String collect_time) {
         this.item_id = item_id;
         this.item_image = item_image;
         this.item_name = item_name;
@@ -43,11 +43,11 @@ public class MyCollectModel {
         this.collect_time = collect_time;
     }
 
-    public String getItem_id() {
+    public Long getItem_id() {
         return item_id;
     }
 
-    public void setItem_id(String item_id) {
+    public void setItem_id(Long item_id) {
         this.item_id = item_id;
     }
 

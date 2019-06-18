@@ -198,13 +198,11 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
 
             @Override
             public void onResponse(String response) {
-
+                sharedPreferencesHelper.remove("user_info");
+                sharedPreferencesHelper.put("user_info", response);
                 Toast.makeText(EditUserInfoActivity.this, "更新信息成功", Toast.LENGTH_SHORT).show();
                 try {
-                    CommonResponse<UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
-//                    getUserInfo.setUserInfo(userInfoBean.getData());
-                    sharedPreferencesHelper.remove("user_info");
-                    sharedPreferencesHelper.put("user_info", response);
+                    CommonResponse<UserInfo> userInfoBean = getUserInfo.getUserInfo();
                     finish();
                 } catch (Exception e) {
                     Log.v("loginPostRequestError", "error" + e);

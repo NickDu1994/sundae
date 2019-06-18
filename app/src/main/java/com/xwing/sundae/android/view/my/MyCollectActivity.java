@@ -85,7 +85,7 @@ public class MyCollectActivity extends AppCompatActivity {
     }
 
     private void getCollectList() {
-        initMockData();
+//        initMockData();
 
         handler.post(new Runnable() {
             @Override
@@ -99,19 +99,19 @@ public class MyCollectActivity extends AppCompatActivity {
     }
 
     private void initMockData() {
-        for(int i = 0; i < 20; i++){
-            MyCollectModel collect = new MyCollectModel(
-                    "15604030425_2018",
-                    "",
-                    "EXCUSE ME!",
-                    "dudusuaodaodaondandsoansdpaodaopdapodaonanpasda",
-                    "Dong Sheng",
-                    "2018-09-09"
-            );
-            collectList.add(collect);
-        }
-        Gson gson = new Gson();
-        Log.e("collectList",gson.toJson(collectList));
+//        for(int i = 0; i < 20; i++){
+//            MyCollectModel collect = new MyCollectModel(
+//                    (Long) 150_304_252_018,
+//                    "",
+//                    "EXCUSE ME!",
+//                    "dudusuaodaodaondandsoansdpaodaopdapodaonanpasda",
+//                    "Dong Sheng",
+//                    "2018-09-09"
+//            );
+//            collectList.add(collect);
+//        }
+//        Gson gson = new Gson();
+//        Log.e("collectList",gson.toJson(collectList));
     }
 
     private void getMyCollectList() {
@@ -155,7 +155,7 @@ public class MyCollectActivity extends AppCompatActivity {
             @Override
             public void onDel(int pos) {
                 if (pos >= 0 && pos < collectList.size()) {
-                    String remove_entryid = collectList.get(pos).getItem_id();
+                    Long remove_entryid = collectList.get(pos).getItem_id();
                     Long user_id = userInfo.getId();
                     // call remove api
                     removeCollect(user_id,remove_entryid,pos);
@@ -189,12 +189,12 @@ public class MyCollectActivity extends AppCompatActivity {
         });
     }
 
-    private void removeCollect(Long user_id,String remove_userid,final int pos) {
+    private void removeCollect(Long user_id, Long remove_userid, final int pos) {
         String url = Constant.REQUEST_URL_MY + "/collection/removeCollect";
 
         HashMap<String,String> paramsMap = new HashMap<>();
         paramsMap.put("userId", user_id.toString());
-        paramsMap.put("entryId", remove_userid);
+        paramsMap.put("entryId", remove_userid.toString());
 
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override

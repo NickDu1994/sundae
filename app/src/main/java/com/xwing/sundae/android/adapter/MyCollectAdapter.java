@@ -101,14 +101,14 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
             }
         });
 
-//        viewHolder.btnCancelFollow.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (null != mOnSwipeListener) {
-//                    mOnSwipeListener.onDel(viewHolder.getAdapterPosition());
-//                }
-//            }
-//        });
+        viewHolder.btnCancelFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != mOnSwipeListener) {
+                    mOnSwipeListener.onDel(viewHolder.getAdapterPosition());
+                }
+            }
+        });
 
         (viewHolder.collect_field).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,7 +139,7 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
             collect_author = v.findViewById(R.id.collect_author);
             collect_time = v.findViewById(R.id.collect_time);
             collect_field = v.findViewById(R.id.collect_field);
-//            btnCancelFollow = v.findViewById(R.id.btnCancelFollow);
+            btnCancelFollow = v.findViewById(R.id.btnCancelCollect);
         }
     }
 
