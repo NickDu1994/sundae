@@ -48,4 +48,5 @@ dependencies {
 
     implementation 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
     implementation "com.android.support:design:28"
+    implementation 'com.github.florent37:materialtextfield:1.0.7'
 }

@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements
                 hideFragment(fragmentTransaction);
                 switch (position){
                     case 0:  // index
+
                         if(mIndexFragment == null){
                             mIndexFragment = IndexFragment.newInstance("","");
                             fragmentTransaction.add(R.id.mainContainer, mIndexFragment);
@@ -111,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                         break;*/
                     case 1:  // post
-                        List<Fragment> fragmentslist =  fragmentManager.getFragments();
+                        /*List<Fragment> fragmentslist =  fragmentManager.getFragments();
                         boolean existflag= false;
                         for(Fragment f :fragmentslist){
                             if(f ==mPostFragment){
@@ -123,8 +124,10 @@ public class MainActivity extends AppCompatActivity implements
                             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
                         } else {
                             fragmentTransaction.show(mPostFragment);
-                        }
+                        }*/
                        // showMoreWindow(getWindow().getDecorView().findViewById(R.id.mainContainer));
+
+                        showMoreWindow(findViewById(R.id.mainContainer));
                         //For navigation logic, go to below
                         break;
                     case 3:  // message
@@ -136,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements
                         }
                         break;
                     case 2:  // my
+
                         boolean isLogin = false;//Todo
 //                        if(isLogin) {
                             if(mMyFragment == null){
@@ -182,6 +186,10 @@ public class MainActivity extends AppCompatActivity implements
         fragmentTransaction.commit();
     }
 
+    public void hidePostFragment(){
+        fragmentTransaction.hide(mPostFragment);
+
+    }
     private void hideFragment(FragmentTransaction transaction){
         if (mIndexFragment != null){
             transaction.hide(mIndexFragment);
@@ -223,10 +231,13 @@ public class MainActivity extends AppCompatActivity implements
         mMoreWindow.hideMoreWindow();
         Toast.makeText(this, "点击了词条", Toast.LENGTH_SHORT).show();
         if(mPostFragment == null){
-            mPostFragment = PostFragment.newInstance("","");
+            mPostFragment = PostFragment.newInstance("1","");
+
             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
         } else {
-            fragmentTransaction.show(mPostFragment);
+            fragmentTransaction.remove(mPostFragment);
+            mPostFragment = PostFragment.newInstance("1","");
+            fragmentTransaction.add(R.id.mainContainer, mPostFragment);
 
         }
         fragmentTransaction.commit();
@@ -234,8 +245,20 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void clickXinDe(View view) {
+        fragmentTransaction = fragmentManager.beginTransaction();
         mMoreWindow.hideMoreWindow();
-        Toast.makeText(this, "点击了心得", Toast.LENGTH_SHORT).show();
+        if(mPostFragment == null){
+            mPostFragment = PostFragment.newInstance("2","");
+            fragmentTransaction.add(R.id.mainContainer, mPostFragment);
+        } else {
+            fragmentTransaction.remove(mPostFragment);
+            mPostFragment = PostFragment.newInstance("2","");
+            fragmentTransaction.add(R.id.mainContainer, mPostFragment);
+
+        }
+        fragmentTransaction.commit();
+       // mMoreWindow.hideMoreWindow();
+       // Toast.makeText(this, "点击了心得", Toast.LENGTH_SHORT).show();
     }
 
     public void triggerBottomNavigationBar(boolean isShow){

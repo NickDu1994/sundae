@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.florent37.materialtextfield.MaterialTextField;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.LoadingView;
@@ -82,6 +83,8 @@ public class PostFragment extends Fragment {
     private final int REQUEST_CODE_PICKER = 100;
     private EditText editText1;
     private EditText editText2;
+    private MaterialTextField materialTextField1;
+    private  MaterialTextField materialTextField2;
     public PostFragment() {
         // Required empty public constructor
     }
@@ -127,7 +130,8 @@ public class PostFragment extends Fragment {
         postBackShow=(ImageView) view.findViewById(R.id.post_back_show1) ;
         postBackShow2=(ImageView) view.findViewById(R.id.post_back_show2) ;
         postBackShow3=(ImageView) view.findViewById(R.id.post_back_show3) ;
-
+        postBackShow2.setVisibility(View.INVISIBLE);
+        postBackShow3.setVisibility(View.INVISIBLE);
         mEditor.setEditorHeight(200);
         mEditor.setEditorFontSize(22);
         mEditor.setEditorFontColor(Color.BLACK);
@@ -138,13 +142,20 @@ public class PostFragment extends Fragment {
         //mEditor.setBackground("https://raw.githubusercontent.com/wasabeef/art/master/chip.jpg");
         mEditor.setPlaceholder("请输入正文");
         //mEditor.setInputEnabled(false);
+        materialTextField1 = view.findViewById(R.id.post_edit_t1);
+        materialTextField2 = view.findViewById(R.id.post_edit_t2);
         editText1 = view.findViewById(R.id.post_edit1);
         editText2= view.findViewById(R.id.post_edit2);
+        if(mParam1!=null&&mParam1.equals("2")){
+            materialTextField2.setVisibility(View.INVISIBLE);
+        }else{
+            materialTextField2.setVisibility(View.VISIBLE);
+        }
         editText1.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                GradientDrawable drawable = new GradientDrawable();
+              /*  GradientDrawable drawable = new GradientDrawable();
                 drawable.setCornerRadius(15);
                // drawable.setGradientRadius(20);
                 drawable.setStroke(2,Color.GRAY);
@@ -153,7 +164,7 @@ public class PostFragment extends Fragment {
                     editText1.setBackground(drawable);
                 }else{
                     editText1.setBackgroundDrawable(drawable);
-                }
+                }*/
 
 
             }
@@ -162,7 +173,7 @@ public class PostFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                GradientDrawable drawable = new GradientDrawable();
+              /*  GradientDrawable drawable = new GradientDrawable();
                 drawable.setCornerRadius(15);
                 drawable.setStroke(2,Color.GRAY);
                 if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
@@ -171,7 +182,7 @@ public class PostFragment extends Fragment {
                 }else{
                     editText2.setBackgroundDrawable(drawable);
                 }
-
+*/
             }
         });
 
@@ -407,9 +418,9 @@ public class PostFragment extends Fragment {
         view.findViewById(R.id.post_back).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                PostFragment postFragment = (PostFragment)getFragmentManager().findFragmentById(R.id.mainContainer);
-                getFragmentManager().beginTransaction().hide(postFragment).commit();
-
+               // PostFragment postFragment = (PostFragment)getFragmentManager().findFragmentById(R.id.mainContainer);
+               // getFragmentManager().beginTransaction().hide(mpostFragment).commit();
+                ((MainActivity)getActivity()).hidePostFragment();
 
             }
         });
@@ -425,7 +436,10 @@ public class PostFragment extends Fragment {
                 String title1 = editText1.getText().toString();
                 String title2 = editText2.getText().toString();
                 if(editText1==null||editText1.length()<=0){
-                    GradientDrawable drawable = new GradientDrawable();
+                    materialTextField1.expand();
+                    materialTextField1.setBackgroundColor(Color.RED);
+                    materialTextField1.setHasFocus(true);
+                   /* GradientDrawable drawable = new GradientDrawable();
                     drawable.setCornerRadius(15);
                     drawable.setStroke(2,Color.RED);
                     if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
@@ -433,10 +447,11 @@ public class PostFragment extends Fragment {
                         editText1.setBackground(drawable);
                     }else{
                         editText1.setBackgroundDrawable(drawable);
-                    }
+                    }*/
                     return;
                 }else if(editText2==null||editText2.length()<=0){
-                    GradientDrawable drawable = new GradientDrawable();
+                    materialTextField2.expand();
+                    /*GradientDrawable drawable = new GradientDrawable();
                     drawable.setCornerRadius(15);
                     drawable.setStroke(2,Color.RED);
                     if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
@@ -444,7 +459,7 @@ public class PostFragment extends Fragment {
                         editText2.setBackground(drawable);
                     }else{
                         editText2.setBackgroundDrawable(drawable);
-                    }
+                    }*/
                     return;
                 }
                 if((postBackShow).getDrawable()==null||(postBackShow2).getDrawable()==null||(postBackShow3).getDrawable()==null){
@@ -469,6 +484,7 @@ public class PostFragment extends Fragment {
                 paramMap.put("backgroundImage",base64Image);
                 paramMap.put("backgroundImage2",base64Image2);
                 paramMap.put("backgroundImage3",base64Image3);
+                paramMap.put("type",mParam1);
                 if(content!=null){
                     paramMap.put("content",content);
                 }
@@ -553,6 +569,7 @@ public class PostFragment extends Fragment {
                 postBackShowuri = uri;
                 postBackShow.setBackgroundResource(0);
                 postBackShow.setImageURI(uri);
+                postBackShow2.setVisibility(View.VISIBLE);
             }
 
 
@@ -576,6 +593,7 @@ public class PostFragment extends Fragment {
                 postBackShowuri2= uri;
                 postBackShow2.setBackgroundResource(0);
                 postBackShow2.setImageURI(uri);
+                postBackShow3.setVisibility(View.VISIBLE);
             }
 
 
