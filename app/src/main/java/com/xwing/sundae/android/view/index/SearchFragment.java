@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -26,9 +27,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.CustomeButtonGroupView;
+import com.xwing.sundae.android.model.AbbreviationBaseModel;
+import com.xwing.sundae.android.model.AbbreviationPlusModel;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.SearchSuggestionModel;
 import com.xwing.sundae.android.util.CallBackUtil;
+import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.SharedPreferencesUtil;
@@ -52,6 +56,9 @@ public class SearchFragment extends Fragment {
     private static final int PANEL_SUGGESTION = 1;
     private static final int PANEL_LIST = 2;
     private static final int PANEL_DETAIL = 3;
+    private String currentEntryId = "";
+    private boolean isLike = false;
+    private boolean isSave = false;
 
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -99,7 +106,6 @@ public class SearchFragment extends Fragment {
         }
 
         fragmentManager = getFragmentManager();
-
 
     }
 
@@ -177,6 +183,8 @@ public class SearchFragment extends Fragment {
             }
         });
 
+
+
         SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance(getContext());
         Log.d("dk","dkdebug");
         if(spUtil.getSP("keyword_note")!= null){
@@ -191,6 +199,35 @@ public class SearchFragment extends Fragment {
         CustomeButtonGroupView customeButtonGroupView2 = getActivity().findViewById(R.id.hotPanel);
         customeButtonGroupView2.setTitle("热门搜索");
         customeButtonGroupView2.setTagList(testName2);
+
+
+        final ImageView saveIV = getActivity().findViewById(R.id.detailSave);
+        saveIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isSave){
+                    saveIV.setImageResource(R.drawable.heart_fill);
+                    isSave = true;
+                }else {
+                    saveIV.setImageResource(R.drawable.heart);
+                    isSave = false;
+                }
+            }
+        });
+
+        final ImageView likeIV = getActivity().findViewById(R.id.detailLike);
+        likeIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isLike){
+                    likeIV.setImageResource(R.drawable.dislike);
+                    isLike = true;
+                }else {
+                    likeIV.setImageResource(R.drawable.like);
+                    isLike = false;
+                }
+            }
+        });
     }
 
     public void displayController(int panelName){
@@ -248,10 +285,7 @@ public class SearchFragment extends Fragment {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Toast.makeText(getContext(), "position=" + position + keywordList.get(position).get("id"), Toast.LENGTH_SHORT).show();
-                            displayController(PANEL_DETAIL);
-                            HtmlTextView htmlTextView = (HtmlTextView) getActivity().findViewById(R.id.html_text);
-                            htmlTextView.setHtml("<h2>This content come from html</h2><p>This content come from html</p><img src=\"https://img.alicdn.com/tfs/TB1Fym0cUCF3KVjSZJnXXbnHFXa-760-460.jpg\"/>",
-                                    new HtmlHttpImageGetter(htmlTextView));
+                            showDetail(dataList.get(position).getId());
                         }
                     });
 
@@ -260,11 +294,54 @@ public class SearchFragment extends Fragment {
                 }
             }
         });
-//        for(int i=0;i<5;i++){
-//            Map<String,String> map = new HashMap<String,String>();
-//            map.put("label", "数据列1-");
-//            keywordList.add(map);
-//        }
+
+    }
+
+    public void showDetail(String entryId) {
+
+        displayController(PANEL_DETAIL);
+
+
+        String url = Constant.globalServerUrl + "/abbreviation/getOneEntryDetail";
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("entryId",entryId);
+        OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug onFailure", "e=" + e);
+            }
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug", "response" + response);
+                Gson gson = new Gson();
+                try{
+                    CommonResponse<AbbreviationPlusModel> responseAbbreviation =
+                            (CommonResponse<AbbreviationPlusModel>)gson.fromJson(response,
+                                    new TypeToken<CommonResponse<AbbreviationPlusModel>>() {}.getType());
+                    final AbbreviationPlusModel data = responseAbbreviation.getData();
+                    TextView detailTitleTV = getActivity().findViewById(R.id.detailTitle);
+                    detailTitleTV.setText(data.getAbbrName());
+                    TextView detailFullnameTV = getActivity().findViewById(R.id.detailFullname);
+                    detailFullnameTV.setText(data.getFullName());
+
+                    HtmlTextView htmlTextView = (HtmlTextView) getActivity().findViewById(R.id.html_text);
+                    htmlTextView.setHtml(data.getContent(),
+                            new HtmlHttpImageGetter(htmlTextView));
+
+                    TextView createTimeTV = getActivity().findViewById(R.id.create_time);
+                    createTimeTV.setText(CommonMethod.CalculateTimeUntilNow(data.getCreateTime()));
+                    TextView authorTV = getActivity().findViewById(R.id.author);
+                    authorTV.setText(data.getCreateBy());
+                    TextView likeTV = getActivity().findViewById(R.id.like_number);
+                    likeTV.setText(data.getLikedCount() + "获赞");
+                } catch (Exception e) {
+                    Log.d("dkdebug onResponse", "e=" + e);
+                }
+            }
+        });
 
     }
 }
