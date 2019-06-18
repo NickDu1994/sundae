@@ -6,6 +6,7 @@ import android.util.LayoutDirection;
 import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xwing.sundae.R;
@@ -18,24 +19,33 @@ import co.lujun.androidtagview.TagView;
 
 public class CustomeButtonGroupView extends LinearLayout {
     private Context mContext;
+    private String[] mTagList;
+    TagContainerLayout mTagContainerLayout;
 
     public CustomeButtonGroupView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         LayoutInflater.from(context).inflate(R.layout.customeview_buttongroup_view, this);
-        initView2();
+        mTagContainerLayout = (TagContainerLayout) findViewById(R.id.tagcontainerLayout);
     }
 
-    private static String[] testName = {"apple","title","layout","LinearLayout","new","child"};
+    public void setTitle(String title){
+        TextView textView = (TextView) findViewById(R.id.buttonGroupTitle);
+        textView.setText(title);
+    }
 
+    public void setTagList(String[] tagList){
+        mTagList = tagList;
+        initView2();
+    }
 
     public void initView2() {
        LinearLayout parentLL = (LinearLayout) findViewById(R.id.tagcontainerLayout);
        List<String> list = new ArrayList<>();
-       for (int i = 0; i < testName.length; i++) {
-            list.add(testName[i]);
+       for (int i = 0; i < mTagList.length; i++) {
+            list.add(mTagList[i]);
        }
-       TagContainerLayout mTagContainerLayout = (TagContainerLayout) findViewById(R.id.tagcontainerLayout);
+
        mTagContainerLayout.setTags(list);
 
         mTagContainerLayout.setOnTagClickListener(new TagView.OnTagClickListener() {
@@ -48,6 +58,8 @@ public class CustomeButtonGroupView extends LinearLayout {
         });
     }
 
-
+    public void removeAllTag(){
+        mTagContainerLayout.removeAllTags();
+    }
 
 }

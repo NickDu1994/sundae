@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
+//        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this,"user");
+//        sharedPreferencesHelper.clear();
         setDefaultFragment();
         initView();
     }

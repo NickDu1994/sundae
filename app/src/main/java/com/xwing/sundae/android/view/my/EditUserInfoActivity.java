@@ -14,18 +14,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.UserInfoEditLineView;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
-import com.xwing.sundae.android.model.VerifyCode;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
+import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.view.GetUserInfo;
-import com.xwing.sundae.android.view.LoginActivity;
 
 import java.util.HashMap;
 
@@ -39,25 +37,21 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
     private static final String USER_INFO_TYPE_GENDER = "gender";
     private static final String USER_INFO_TYPE_REGION = "region";
 
-    private static final String REQUEST_URL = "http://192.168.31.30:8080/user";
-//    private static final String REQUEST_URL_MY = "http://192.168.31.17:8080/user";
-    private static final String REQUEST_URL_MY = "http://101.225.90.186:8080/user";
-
-
     LinearLayout user_info_edit_lines;
     TextView edit_line_cancel, edit_text_value;
     Button edit_line_save;
 
     UserInfoEditLineView userInfoEditLineView;
     SharedPreferencesHelper sharedPreferencesHelper;
-    UserInfo userInfo = new UserInfo();
+    GetUserInfo getUserInfo = new GetUserInfo(this);
+    UserInfo userInfo;
 
     Gson gson = new Gson();
 
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        userInfo = new GetUserInfo(this).getUserInfo().getData();
+        userInfo = getUserInfo.getUserInfo().getData();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_line);
 
@@ -113,6 +107,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
 
     /**
      * 界面click事件
+     *
      * @param v
      */
     @Override
@@ -135,12 +130,12 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
 
         String edit_value = "";
 
-        switch (edit_type){
+        switch (edit_type) {
             case USER_INFO_TYPE_NICKNAME:
                 edit_value = checkName();
                 break;
             case USER_INFO_TYPE_GENDER:
-                String gender_text = "0".equals(UserInfoEditLineView.getGenderByOper())?"男":"女";
+                String gender_text = "0".equals(UserInfoEditLineView.getGenderByOper()) ? "男" : "女";
                 edit_value = UserInfoEditLineView.getGenderByOper();
                 userInfo.setGender(edit_value);
                 break;
@@ -152,16 +147,16 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
         //call save info api
 //        UserInfoActivity.setUserInfo(userInfo);
 
-        updateUserInfoPost(edit_type,edit_value);
+        updateUserInfoPost(edit_type, edit_value);
 
     }
 
     /**
      * 检查姓名编辑是否为空，不为空时进行修改后的赋值
      */
-    private String checkName(){
+    private String checkName() {
         String name = UserInfoEditLineView.getName();
-        if(null == name || "".equals(name)) {
+        if (null == name || "".equals(name)) {
             noNameAlert();
             return "";
         }
@@ -188,14 +183,12 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-    private void updateUserInfoPost(String editType,String editValue) {
-        GetUserInfo userInfo = new GetUserInfo(this);
-        Long user_id = userInfo.getUserInfo().getData().getId();
-        String url = REQUEST_URL_MY + "/modify/" + user_id;
+    private void updateUserInfoPost(String editType, String editValue) {
+        Long user_id = userInfo.getId();
+        String url = Constant.REQUEST_URL_MY + "/user/modify/" + user_id;
 
         HashMap<String, String> paramsMap = new HashMap<>();
-        paramsMap.put(editType,editValue);
-        String request_json = CommonMethod.mapToJson(paramsMap);
+        paramsMap.put(editType, editValue);
 
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
@@ -205,16 +198,14 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
 
             @Override
             public void onResponse(String response) {
-
+                sharedPreferencesHelper.remove("user_info");
+                sharedPreferencesHelper.put("user_info", response);
                 Toast.makeText(EditUserInfoActivity.this, "更新信息成功", Toast.LENGTH_SHORT).show();
-                try{
-                    CommonResponse<UserInfo> userInfoBean = CommonMethod.getUserInfo(response);
-                    UserInfoActivity.setUserInfo(userInfoBean.getData());
-                    sharedPreferencesHelper.remove("user_info");
-                    sharedPreferencesHelper.put("user_info", response);
+                try {
+                    CommonResponse<UserInfo> userInfoBean = getUserInfo.getUserInfo();
                     finish();
                 } catch (Exception e) {
-                    Log.v("loginPostRequestError","error" + e);
+                    Log.v("loginPostRequestError", "error" + e);
                 }
             }
         });

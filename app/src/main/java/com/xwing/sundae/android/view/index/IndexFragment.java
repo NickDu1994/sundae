@@ -3,42 +3,16 @@ package com.xwing.sundae.android.view.index;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
-import com.xwing.sundae.android.adapter.ComplexListAdapter;
-import com.xwing.sundae.android.customview.SearchRoundCTACardView;
-import com.xwing.sundae.android.model.BaseImage;
-import com.xwing.sundae.android.model.CommonResponse;
-import com.xwing.sundae.android.model.ComplexListModel;
-import com.xwing.sundae.android.model.IndexBannerImage;
-import com.xwing.sundae.android.util.CallBackUtil;
-import com.xwing.sundae.android.util.CommonMethod;
-import com.xwing.sundae.android.util.Constant;
-import com.xwing.sundae.android.util.GlideImageLoader;
-import com.xwing.sundae.android.util.OkhttpUtil;
-import com.xwing.sundae.android.view.MainActivity;
-import com.youth.banner.Banner;
-import com.youth.banner.listener.OnBannerListener;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import okhttp3.Call;
 
 /**
  * A simple {@link Fragment} subclass.

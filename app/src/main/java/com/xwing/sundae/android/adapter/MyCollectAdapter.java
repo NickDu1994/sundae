@@ -74,7 +74,12 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
         RequestOptions options = new RequestOptions().placeholder(R.drawable.defaultpic).circleCropTransform();
         viewHolder.item_name.setText(collect.getItem_name());
         viewHolder.item_content.setText(collect.getItem_content());
-        Glide.with(mContext).load(collect.getItem_image()).apply(options).into(viewHolder.item_image);
+
+        if("".equals(collect.getItem_image()) || null == collect.getItem_image()) {
+            Glide.with(mContext).load(R.drawable.pic).apply(options).into(viewHolder.item_image);
+        } else {
+            Glide.with(mContext).load(collect.getItem_image()).apply(options).into(viewHolder.item_image);
+        }
         viewHolder.collect_author.setText(collect.getCollect_author());
         viewHolder.collect_time.setText(collect.getCollect_time());
 
@@ -96,14 +101,14 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
             }
         });
 
-//        viewHolder.btnCancelFollow.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (null != mOnSwipeListener) {
-//                    mOnSwipeListener.onDel(viewHolder.getAdapterPosition());
-//                }
-//            }
-//        });
+        viewHolder.btnCancelFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != mOnSwipeListener) {
+                    mOnSwipeListener.onDel(viewHolder.getAdapterPosition());
+                }
+            }
+        });
 
         (viewHolder.collect_field).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +139,7 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
             collect_author = v.findViewById(R.id.collect_author);
             collect_time = v.findViewById(R.id.collect_time);
             collect_field = v.findViewById(R.id.collect_field);
-//            btnCancelFollow = v.findViewById(R.id.btnCancelFollow);
+            btnCancelFollow = v.findViewById(R.id.btnCancelCollect);
         }
     }
 

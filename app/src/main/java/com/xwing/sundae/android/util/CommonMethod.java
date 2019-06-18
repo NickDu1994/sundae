@@ -1,10 +1,22 @@
 package com.xwing.sundae.android.util;
 
+import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,10 +32,17 @@ import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.view.LoginActivity;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -187,41 +206,175 @@ public class CommonMethod {
         return jsonStr;
     }
 
-    /**
-     * 判断用户是否登录
-     *
-     * @param response
-     * @return boolean
-     */
-    public static boolean ifLogin(String response) {
-        CommonResponse<UserInfo> userInfoCommonResponse = getUserInfo(response);
-        if(!"".equals(response) && null!=userInfoCommonResponse) {
-            if(userInfoCommonResponse.getStatus() == 200) {
-                return true;
+
+    public static String CalculateTimeUntilNow(String time) {
+        long nowTime = System.currentTimeMillis(); // 获取当前时间的毫秒数
+        String msg = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 指定时间格式
+        Date setTime = null; // 指定时间
+        try {
+            setTime = sdf.parse(time); // 将字符串转换为指定的时间格式
+        } catch (ParseException e) {
+
+            e.printStackTrace();
+        }
+        long reset = setTime.getTime(); // 获取指定时间的毫秒数
+        long dateDiff = nowTime - reset;
+        if (dateDiff < 0) {
+            msg = "输入的时间不对";
+        } else {
+            long dateTemp1 = dateDiff / 1000; // 秒
+            long dateTemp2 = dateTemp1 / 60; // 分钟
+            long dateTemp3 = dateTemp2 / 60; // 小时
+            long dateTemp4 = dateTemp3 / 24; // 天数
+            long dateTemp5 = dateTemp4 / 30; // 月数
+            long dateTemp6 = dateTemp5 / 12; // 年数
+            if (dateTemp6 > 0) {
+                msg = dateTemp6 + "年前";
+            } else if (dateTemp5 > 0) {
+                msg = dateTemp5 + "个月前";
+            } else if (dateTemp4 > 0) {
+                msg = dateTemp4 + "天前";
+            } else if (dateTemp3 > 0) {
+                msg = dateTemp3 + "小时前";
+            } else if (dateTemp2 > 0) {
+                msg = dateTemp2 + "分钟前";
+            } else if (dateTemp1 > 0) {
+                msg = "刚刚";
             }
         }
-        return false;
-//        return (getUserInfo(response))!=null && (getUserInfo(response).getData().getAuth().equals("true"));
+        return msg;
     }
 
+    private static final String MySundaeRootDirectory = Environment.getExternalStorageDirectory() + File.separator+"Sundae";
+
+    public static String getSundaeRootDirectory(){
+        return MySundaeRootDirectory;
+    }
+
+    public static void mkdirSundaeDirectory(){
+        boolean isSdCardExist = Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED);// 判断sdcard是否存在
+        if (isSdCardExist) {
+            File SundaeRoot = new File(getSundaeRootDirectory());
+            if (!SundaeRoot.exists()) {
+                try {
+                    SundaeRoot.mkdir();
+                    Log.d(Constant.TAG, "mkdir success");
+                } catch (Exception e) {
+                    Log.e(Constant.TAG, "exception->" + e.toString());
+                }
+            }
+        }
+    }
+
+    public static Uri getImageUri(Context context, Intent data){
+        String imagePath = null;
+        Uri uri = data.getData();
+        if(Build.VERSION.SDK_INT >= 19){
+            if(DocumentsContract.isDocumentUri(context,uri)){
+                String docId = DocumentsContract.getDocumentId(uri);
+                if("com.android.providers.media.documents".equals(uri.getAuthority())){
+                    String id = docId.split(":")[1];
+                    String selection = MediaStore.Images.Media._ID+"="+id;
+                    imagePath = getImagePath(context,MediaStore.Images.Media.EXTERNAL_CONTENT_URI,selection);
+                }else if("com.android.providers.downloads.documents".equals(uri.getAuthority())){
+                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),Long.valueOf(docId));
+                    imagePath = getImagePath(context,contentUri,null);
+                }
+            }else if("content".equalsIgnoreCase(uri.getScheme())){
+                imagePath = getImagePath(context,uri,null);
+            }else if("file".equalsIgnoreCase(uri.getScheme())){
+                imagePath = uri.getPath();
+            }
+        }else{
+            uri= data.getData();
+            imagePath = getImagePath(context,uri,null);
+        }
+        File file = new File(imagePath);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            uri = FileProvider.getUriForFile(context,
+                    "com.example.mypet.fileprovider", file);
+        } else {
+            uri = Uri.fromFile(file);
+        }
+
+        return uri;
+    }
+
+    private static String getImagePath(Context context,Uri uri, String selection) {
+        String path = null;
+        Cursor cursor = context.getContentResolver().query(uri,null,selection,null,null);
+        if(cursor != null){
+            if(cursor.moveToFirst()){
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        return path;
+    }
 
     /**
-     * 判断用户是否登录
+     * 通过uri获取图片并进行压缩
      *
-     * @param response
-     * @return userInfoBean
+     * @param uri
      */
-    public static CommonResponse<UserInfo> getUserInfo(String response) {
-        Log.d("maggieTest","getUserInfo");
-        if(!"".equals(response) && null!=response) {
-            Gson gson = new Gson();
-            CommonResponse<UserInfo> userInfoBean =
-                    (CommonResponse<UserInfo>) gson.fromJson(response,
-                            new TypeToken<CommonResponse<UserInfo>>() {
-                            }.getType());
-            return userInfoBean;
+    public static Bitmap getBitmapFormUri(Activity ac, Uri uri) throws FileNotFoundException, IOException {
+        InputStream input = ac.getContentResolver().openInputStream(uri);
+        BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
+        onlyBoundsOptions.inJustDecodeBounds = true;
+        onlyBoundsOptions.inDither = true;//optional
+        onlyBoundsOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
+        BitmapFactory.decodeStream(input, null, onlyBoundsOptions);
+        input.close();
+        int originalWidth = onlyBoundsOptions.outWidth;
+        int originalHeight = onlyBoundsOptions.outHeight;
+        if ((originalWidth == -1) || (originalHeight == -1))
+            return null;
+        //图片分辨率以480x800为标准
+        float hh = 800f;//这里设置高度为800f
+        float ww = 480f;//这里设置宽度为480f
+        //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
+        int be = 1;//be=1表示不缩放
+        if (originalWidth > originalHeight && originalWidth > ww) {//如果宽度大的话根据宽度固定大小缩放
+            be = (int) (originalWidth / ww);
+        } else if (originalWidth < originalHeight && originalHeight > hh) {//如果高度高的话根据宽度固定大小缩放
+            be = (int) (originalHeight / hh);
         }
-        return null;
+        if (be <= 0)
+            be = 1;
+        //比例压缩
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inSampleSize = be;//设置缩放比例
+        bitmapOptions.inDither = true;//optional
+        bitmapOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;//optional
+        input = ac.getContentResolver().openInputStream(uri);
+        Bitmap bitmap = BitmapFactory.decodeStream(input, null, bitmapOptions);
+        input.close();
+
+        return compressImage(bitmap);//再进行质量压缩
+    }
+
+    /**
+     * 质量压缩方法
+     *
+     * @param image
+     * @return
+     */
+    public static Bitmap compressImage(Bitmap image) {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        int options = 100;
+        while (baos.toByteArray().length / 1024 > 100) {  //循环判断如果压缩后图片是否大于100kb,大于继续压缩
+            baos.reset();//重置baos即清空baos
+            //第一个参数 ：图片格式 ，第二个参数： 图片质量，100为最高，0为最差  ，第三个参数：保存压缩后的数据的流
+            image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
+            options -= 10;//每次都减少10
+        }
+        ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
+        Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//把ByteArrayInputStream数据生成图片
+        return bitmap;
     }
 
 }

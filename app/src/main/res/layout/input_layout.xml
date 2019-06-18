@@ -43,37 +43,42 @@
             android:layout_marginBottom="5dip"
             android:background="#eeeeee" />
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/input_layout_psw"
             android:layout_width="match_parent"
             android:layout_height="50sp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:gravity="center_vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="28sp"
+                    android:src="@drawable/vercode" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="28sp"
-                android:src="@drawable/vercode" />
+                <EditText
+                    android:id="@+id/user_mobile_vercode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dip"
+                    android:background="#00000000"
+                    android:hint="@string/string_verify_code"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:padding="5dip"
+                    android:textSize="16sp" />
+            </LinearLayout>
 
-            <EditText
-                android:id="@+id/user_mobile_vercode"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dip"
-                android:background="#00000000"
-                android:hint="@string/string_verify_code"
-                android:inputType="number"
-                android:maxLength="6"
-                android:padding="5dip"
-                android:textSize="16sp" />
+
             <TextView
                 android:id="@+id/get_verify_code_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="100sp"
                 android:layout_height="wrap_content"
                 android:text="@string/string_get_verify_code"
                 android:background="#ffffff"
-                android:layout_marginLeft="140sp"
+                android:layout_alignParentRight="true"
                 />
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

@@ -5,5 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".android.view.my.MyPubishActivity">
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <fragment
+            android:id="@+id/fragment_title"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:name="com.xwing.sundae.android.view.header.CommonMyHeader"
+            />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/publish_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#F5F6FA"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.xwing.sundae.android.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -15,8 +16,12 @@ import com.xwing.sundae.android.util.SharedPreferencesHelper;
  * Time: 13:41
  */
 public class GetUserInfo {
-    public static SharedPreferencesHelper sharedPreferencesHelper;
-    Context context;
+    public SharedPreferencesHelper sharedPreferencesHelper;
+    public static Context context;
+
+    public static UserInfo userInfo = new UserInfo();
+
+    public static Boolean ifAuth = false;
 
     /**
      * 构造器
@@ -25,6 +30,7 @@ public class GetUserInfo {
      */
     public GetUserInfo(Context context) {
         this.context = context;
+        sharedPreferencesHelper = new SharedPreferencesHelper(context, "user");
     }
 
     /**
@@ -32,9 +38,8 @@ public class GetUserInfo {
      *
      * @return
      */
-    public GetUserInfo getSharePreferenceObj() {
-        sharedPreferencesHelper = new SharedPreferencesHelper(this.context, "user");
-        return this;
+    public SharedPreferencesHelper getSharePreferenceObj() {
+        return this.sharedPreferencesHelper;
     }
 
     /**
@@ -43,30 +48,46 @@ public class GetUserInfo {
      * @return userInfoBean
      */
     public CommonResponse<UserInfo> getUserInfo() {
-        getSharePreferenceObj();
-        String response = sharedPreferencesHelper.get("user_info", "").toString();
-        CommonResponse<UserInfo> userInfoBean = new CommonResponse<UserInfo>();
+
+        String response = sharedPreferencesHelper.get("user_info","").toString();
+
+        if ("".equals(response)) {
+            return null;
+        }
+
         Log.d("maggieTest", "getUserInfo");
         if (!"".equals(response) && null != response) {
             Gson gson = new Gson();
-            userInfoBean = (CommonResponse<UserInfo>) gson.fromJson(response,
-                            new TypeToken<CommonResponse<UserInfo>>() {
-                            }.getType());
+            CommonResponse<UserInfo> userInfoBean = gson.fromJson(response,
+                    new TypeToken<CommonResponse<UserInfo>>() {
+                    }.getType());
             return userInfoBean;
         }
-        return userInfoBean;
+        return null;
     }
+
+    public static void setUserInfo(UserInfo info) {
+        userInfo = info;
+    }
+
 
     /**
      * 判断用户登录状态
+     *
      * @return
      */
     public boolean ifLogin() {
-        CommonResponse<UserInfo> userInfoCommonResponse = getUserInfo();
-        if (null != userInfoCommonResponse && userInfoCommonResponse.getStatus()==200) {
-            return true;
+        if (null == getUserInfo() || "".equals(getUserInfo())) {
+            return false;
         }
-        return false;
+        UserInfo userInfoCommonResponse = getUserInfo().getData();
+        int status = getUserInfo().getStatus();
+        if (200==status && null != userInfoCommonResponse) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
 }

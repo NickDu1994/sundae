@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +31,14 @@ import android.widget.Toast;
 import com.github.florent37.materialtextfield.MaterialTextField;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.util.CallBackUtil;
+import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.LoadingView;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.PostImageUtil;
+import com.xwing.sundae.android.view.GetUserInfo;
+import com.xwing.sundae.android.view.LoginActivity;
 import com.xwing.sundae.android.view.MainActivity;
+import com.xwing.sundae.android.view.index.IndexFragment;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,6 +89,12 @@ public class PostFragment extends Fragment {
     private final int REQUEST_CODE_PICKER = 100;
     private EditText editText1;
     private EditText editText2;
+    private IndexFragment mIndexFragment;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
+
+    GetUserInfo getUserInfo;
+
     private MaterialTextField materialTextField1;
     private  MaterialTextField materialTextField2;
     public PostFragment() {
@@ -115,44 +127,53 @@ public class PostFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-
+        fragmentManager = getFragmentManager();
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.fragment_post, container, false);
-        // Inflate the layout for this fragment
-        mEditor = (RichEditor) view.findViewById(R.id.editor);
-        loadingView = view.findViewById(R.id.loadingView);
-        loadingView.setVisibility(View.INVISIBLE);
-        postBackShow=(ImageView) view.findViewById(R.id.post_back_show1) ;
-        postBackShow2=(ImageView) view.findViewById(R.id.post_back_show2) ;
-        postBackShow3=(ImageView) view.findViewById(R.id.post_back_show3) ;
-        postBackShow2.setVisibility(View.INVISIBLE);
-        postBackShow3.setVisibility(View.INVISIBLE);
-        mEditor.setEditorHeight(200);
-        mEditor.setEditorFontSize(22);
-        mEditor.setEditorFontColor(Color.BLACK);
-        //mEditor.setEditorBackgroundColor(Color.BLUE);
-        //mEditor.setBackgroundColor(Color.BLUE);
-        //mEditor.setBackgroundResource(R.drawable.bg);
-        mEditor.setPadding(10, 10, 10, 10);
-        //mEditor.setBackground("https://raw.githubusercontent.com/wasabeef/art/master/chip.jpg");
-        mEditor.setPlaceholder("请输入正文");
-        //mEditor.setInputEnabled(false);
-        materialTextField1 = view.findViewById(R.id.post_edit_t1);
-        materialTextField2 = view.findViewById(R.id.post_edit_t2);
-        editText1 = view.findViewById(R.id.post_edit1);
-        editText2= view.findViewById(R.id.post_edit2);
-        if(mParam1!=null&&mParam1.equals("2")){
-            materialTextField2.setVisibility(View.INVISIBLE);
-        }else{
-            materialTextField2.setVisibility(View.VISIBLE);
-        }
-        editText1.setOnClickListener(new View.OnClickListener() {
-
+        View view =null;
+        getUserInfo = new GetUserInfo(getActivity());
+        if (null == getUserInfo || null == getUserInfo.getUserInfo() || "".equals(getUserInfo.getUserInfo())) {
+            Toast.makeText(getContext(), "请先进行登录", Toast.LENGTH_SHORT).show();
+            mIndexFragment = new IndexFragment();
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.mainContainer, mIndexFragment);
+            fragmentTransaction.commit();
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+        } else {
+            view = inflater.inflate(R.layout.fragment_post, container, false);
+            // Inflate the layout for this fragment
+            mEditor = (RichEditor) view.findViewById(R.id.editor);
+            loadingView = view.findViewById(R.id.loadingView);
+            loadingView.setVisibility(View.INVISIBLE);
+            postBackShow = (ImageView) view.findViewById(R.id.post_back_show1);
+            postBackShow2 = (ImageView) view.findViewById(R.id.post_back_show2);
+            postBackShow3 = (ImageView) view.findViewById(R.id.post_back_show3);
+            postBackShow2.setVisibility(View.INVISIBLE);
+            postBackShow3.setVisibility(View.INVISIBLE);
+            mEditor.setEditorHeight(200);
+            mEditor.setEditorFontSize(22);
+            mEditor.setEditorFontColor(Color.BLACK);
+            //mEditor.setEditorBackgroundColor(Color.BLUE);
+            //mEditor.setBackgroundColor(Color.BLUE);
+            //mEditor.setBackgroundResource(R.drawable.bg);
+            mEditor.setPadding(10, 10, 10, 10);
+            //mEditor.setBackground("https://raw.githubusercontent.com/wasabeef/art/master/chip.jpg");
+            mEditor.setPlaceholder("请输入正文");
+            //mEditor.setInputEnabled(false);
+            materialTextField1 = view.findViewById(R.id.post_edit_t1);
+            materialTextField2 = view.findViewById(R.id.post_edit_t2);
+            editText1 = view.findViewById(R.id.post_edit1);
+            editText2 = view.findViewById(R.id.post_edit2);
+            if(mParam1!=null&&mParam1.equals("2")){
+                materialTextField2.setVisibility(View.INVISIBLE);
+            }else{
+                materialTextField2.setVisibility(View.VISIBLE);
+            }
+            editText1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
               /*  GradientDrawable drawable = new GradientDrawable();
@@ -167,9 +188,9 @@ public class PostFragment extends Fragment {
                 }*/
 
 
-            }
-        });
-        editText2.setOnClickListener(new View.OnClickListener() {
+                }
+            });
+            editText2.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -186,191 +207,216 @@ public class PostFragment extends Fragment {
             }
         });
 
-        // = (TextView) view.findViewById(R.id.preview);
-        mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
-            @Override public void onTextChange(String text) {
-                content = text;
-                Log.d(TAG, " post onTextChange: "+content);
-               // mPreview.setText(text);
-            }
-        });
-        postBackShow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, null);
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                startActivityForResult(intent, 2);
+            // = (TextView) view.findViewById(R.id.preview);
+            mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
+                @Override
+                public void onTextChange(String text) {
+                    content = text;
+                    Log.d(TAG, " post onTextChange: " + content);
+                    // mPreview.setText(text);
+                }
+            });
+            postBackShow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, null);
+                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                    startActivityForResult(intent, 2);
 
-            }
-        });
-        postBackShow2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, null);
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                startActivityForResult(intent, 4);
+                }
+            });
+            postBackShow2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, null);
+                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                    startActivityForResult(intent, 4);
 
-            }
-        });
-        postBackShow3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, null);
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                startActivityForResult(intent, 5);
+                }
+            });
+            postBackShow3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, null);
+                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                    startActivityForResult(intent, 5);
 
-            }
-        });
+                }
+            });
 
-        view.findViewById(R.id.action_undo).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.undo();
-            }
-        });
+            view.findViewById(R.id.action_undo).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.undo();
+                }
+            });
 
-        view.findViewById(R.id.action_redo).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.redo();
-            }
-        });
+            view.findViewById(R.id.action_redo).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.redo();
+                }
+            });
 
-        view.findViewById(R.id.action_bold).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setBold();
-            }
-        });
+            view.findViewById(R.id.action_bold).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setBold();
+                }
+            });
 
-        view.findViewById(R.id.action_italic).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setItalic();
-            }
-        });
+            view.findViewById(R.id.action_italic).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setItalic();
+                }
+            });
 
-        view.findViewById(R.id.action_subscript).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setSubscript();
-            }
-        });
+            view.findViewById(R.id.action_subscript).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setSubscript();
+                }
+            });
 
-        view.findViewById(R.id.action_superscript).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setSuperscript();
-            }
-        });
+            view.findViewById(R.id.action_superscript).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setSuperscript();
+                }
+            });
 
-        view.findViewById(R.id.action_strikethrough).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setStrikeThrough();
-            }
-        });
+            view.findViewById(R.id.action_strikethrough).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setStrikeThrough();
+                }
+            });
 
-        view.findViewById(R.id.action_underline).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setUnderline();
-            }
-        });
+            view.findViewById(R.id.action_underline).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setUnderline();
+                }
+            });
 
-        view.findViewById(R.id.action_heading1).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setHeading(1);
-            }
-        });
+            view.findViewById(R.id.action_heading1).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setHeading(1);
+                }
+            });
 
-        view.findViewById(R.id.action_heading2).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setHeading(2);
-            }
-        });
+            view.findViewById(R.id.action_heading2).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setHeading(2);
+                }
+            });
 
-        view.findViewById(R.id.action_heading3).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setHeading(3);
-            }
-        });
+            view.findViewById(R.id.action_heading3).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setHeading(3);
+                }
+            });
 
-        view.findViewById(R.id.action_heading4).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setHeading(4);
-            }
-        });
+            view.findViewById(R.id.action_heading4).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setHeading(4);
+                }
+            });
 
-        view.findViewById(R.id.action_heading5).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setHeading(5);
-            }
-        });
+            view.findViewById(R.id.action_heading5).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setHeading(5);
+                }
+            });
 
-        view.findViewById(R.id.action_heading6).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setHeading(6);
-            }
-        });
+            view.findViewById(R.id.action_heading6).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setHeading(6);
+                }
+            });
 
-        view.findViewById(R.id.action_txt_color).setOnClickListener(new View.OnClickListener() {
-            private boolean isChanged;
+            view.findViewById(R.id.action_txt_color).setOnClickListener(new View.OnClickListener() {
+                private boolean isChanged;
 
-            @Override public void onClick(View v) {
-                mEditor.setTextColor(isChanged ? Color.BLACK : Color.RED);
-                isChanged = !isChanged;
-            }
-        });
+                @Override
+                public void onClick(View v) {
+                    mEditor.setTextColor(isChanged ? Color.BLACK : Color.RED);
+                    isChanged = !isChanged;
+                }
+            });
 
-        view.findViewById(R.id.action_bg_color).setOnClickListener(new View.OnClickListener() {
-            private boolean isChanged;
+            view.findViewById(R.id.action_bg_color).setOnClickListener(new View.OnClickListener() {
+                private boolean isChanged;
 
-            @Override public void onClick(View v) {
-                mEditor.setTextBackgroundColor(isChanged ? Color.TRANSPARENT : Color.YELLOW);
-                isChanged = !isChanged;
-            }
-        });
+                @Override
+                public void onClick(View v) {
+                    mEditor.setTextBackgroundColor(isChanged ? Color.TRANSPARENT : Color.YELLOW);
+                    isChanged = !isChanged;
+                }
+            });
 
-        view.findViewById(R.id.action_indent).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setIndent();
-            }
-        });
+            view.findViewById(R.id.action_indent).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setIndent();
+                }
+            });
 
-        view.findViewById(R.id.action_outdent).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setOutdent();
-            }
-        });
+            view.findViewById(R.id.action_outdent).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setOutdent();
+                }
+            });
 
-        view.findViewById(R.id.action_align_left).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setAlignLeft();
-            }
-        });
+            view.findViewById(R.id.action_align_left).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setAlignLeft();
+                }
+            });
 
-        view.findViewById(R.id.action_align_center).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setAlignCenter();
-            }
-        });
+            view.findViewById(R.id.action_align_center).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setAlignCenter();
+                }
+            });
 
-        view.findViewById(R.id.action_align_right).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setAlignRight();
-            }
-        });
+            view.findViewById(R.id.action_align_right).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setAlignRight();
+                }
+            });
 
-        view.findViewById(R.id.action_blockquote).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setBlockquote();
-            }
-        });
+            view.findViewById(R.id.action_blockquote).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setBlockquote();
+                }
+            });
 
-        view.findViewById(R.id.action_insert_bullets).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setBullets();
-            }
-        });
+            view.findViewById(R.id.action_insert_bullets).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setBullets();
+                }
+            });
 
-        view.findViewById(R.id.action_insert_numbers).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.setNumbers();
-            }
-        });
+            view.findViewById(R.id.action_insert_numbers).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.setNumbers();
+                }
+            });
 
        /* view.findViewById(R.id.action_insert_image).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) { Intent intent = new Intent(Intent.ACTION_PICK, null);
@@ -381,39 +427,39 @@ public class PostFragment extends Fragment {
             }
         });*/
 
-        view.findViewById(R.id.action_insert_link).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                LayoutInflater factory = LayoutInflater.from(getActivity());
+            view.findViewById(R.id.action_insert_link).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LayoutInflater factory = LayoutInflater.from(getActivity());
 
-                final View textEntryView = factory.inflate(R.layout.post_dialog_hyperlink, null);
-                final EditText editTextName = (EditText) textEntryView.findViewById(R.id.hpeditText1);
-                final EditText editTextlink = (EditText)textEntryView.findViewById(R.id.hpeditText2);
-                new AlertDialog.Builder(getActivity()).setTitle(" ")
+                    final View textEntryView = factory.inflate(R.layout.post_dialog_hyperlink, null);
+                    final EditText editTextName = (EditText) textEntryView.findViewById(R.id.hpeditText1);
+                    final EditText editTextlink = (EditText) textEntryView.findViewById(R.id.hpeditText2);
+                    new AlertDialog.Builder(getActivity()).setTitle(" ")
 
-                        .setView(textEntryView)
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                String input1 = editTextName.getText().toString();
-                                String input2 = editTextName.getText().toString();
-                                if (input1.equals("")||input2.equals("")) {
-                                    Toast.makeText(getActivity().getApplicationContext(), "内容不能为空！" , Toast.LENGTH_LONG).show();
+                            .setView(textEntryView)
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String input1 = editTextName.getText().toString();
+                                    String input2 = editTextName.getText().toString();
+                                    if (input1.equals("") || input2.equals("")) {
+                                        Toast.makeText(getActivity().getApplicationContext(), "内容不能为空！", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        mEditor.insertLink(input2, input1);
+                                    }
                                 }
-                                else {
-                                    mEditor.insertLink(input2, input1);
-                                }
-                            }
-                        })
-                        .setNegativeButton("取消", null).show();
+                            })
+                            .setNegativeButton("取消", null).show();
 
 
-
-            }
-        });
-        view.findViewById(R.id.action_insert_checkbox).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                mEditor.insertTodo();
-            }
-        });
+                }
+            });
+            view.findViewById(R.id.action_insert_checkbox).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mEditor.insertTodo();
+                }
+            });
 
         view.findViewById(R.id.post_back).setOnClickListener(new View.OnClickListener(){
             @Override
@@ -422,12 +468,12 @@ public class PostFragment extends Fragment {
                // getFragmentManager().beginTransaction().hide(mpostFragment).commit();
                 ((MainActivity)getActivity()).hidePostFragment();
 
-            }
-        });
-        view.findViewById(R.id.post_enter).setOnClickListener(new View.OnClickListener() {
+                }
+            });
+            view.findViewById(R.id.post_enter).setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
+                @Override
+                public void onClick(View v) {
 
 
                 String base64Image="";
@@ -464,91 +510,94 @@ public class PostFragment extends Fragment {
                 }
                 if((postBackShow).getDrawable()==null||(postBackShow2).getDrawable()==null||(postBackShow3).getDrawable()==null){
 
-                    Toast.makeText(getActivity().getApplicationContext(),"请上传3张图片",Toast.LENGTH_SHORT).show();
-                    return;
-                }else {
-                    Bitmap bitmap = ((BitmapDrawable) (postBackShow).getDrawable()).getBitmap();
+                        Toast.makeText(getActivity().getApplicationContext(), "请上传3张图片", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else {
+                        Bitmap bitmap = ((BitmapDrawable) (postBackShow).getDrawable()).getBitmap();
 
-                     base64Image = PostImageUtil.imgToBase64(50, bitmap);
-                    Bitmap bitmap2 = ((BitmapDrawable) (postBackShow2).getDrawable()).getBitmap();
+                        base64Image = PostImageUtil.imgToBase64(50, bitmap);
+                        Bitmap bitmap2 = ((BitmapDrawable) (postBackShow2).getDrawable()).getBitmap();
 
-                    base64Image = PostImageUtil.imgToBase64(50, bitmap);
-                    Bitmap bitmap3 = ((BitmapDrawable) (postBackShow3).getDrawable()).getBitmap();
+                        base64Image = PostImageUtil.imgToBase64(50, bitmap);
+                        Bitmap bitmap3 = ((BitmapDrawable) (postBackShow3).getDrawable()).getBitmap();
 
-                    base64Image = PostImageUtil.imgToBase64(50, bitmap);
-                    Log.d(TAG, "base64Image: " + base64Image);
-                }
-                Map<String, String > paramMap  =  new HashMap<>();
-                paramMap.put("title1",title1);
-                paramMap.put("title2",title2);
-                paramMap.put("backgroundImage",base64Image);
-                paramMap.put("backgroundImage2",base64Image2);
-                paramMap.put("backgroundImage3",base64Image3);
-                paramMap.put("type",mParam1);
-                if(content!=null){
-                    paramMap.put("content",content);
-                }
-                loadingView.setVisibility(View.VISIBLE);
-                loadingView.showLoading();
+                        base64Image = PostImageUtil.imgToBase64(50, bitmap);
+                        Log.d(TAG, "base64Image: " + base64Image);
+                    }
+                    Map<String, String> paramMap = new HashMap<>();
+                    Long userId = getUserInfo.getUserInfo().getData().getId();
+                    paramMap.put("userId", userId.toString());
+                    paramMap.put("title1", title1);
+                    paramMap.put("title2", title2);
+                    paramMap.put("backgroundImage", base64Image);
+                    paramMap.put("backgroundImage2", base64Image2);
+                    paramMap.put("backgroundImage3", base64Image3);
+                    paramMap.put("type",mParam1);
+                    if (content != null) {
+                        paramMap.put("content", content);
+                    }
+                    loadingView.setVisibility(View.VISIBLE);
+                    loadingView.showLoading();
 
-                OkhttpUtil.okHttpPost("http://10.0.2.2:8080/abbreviation/upload", paramMap, new CallBackUtil<Response>() {
-                            @Override
-                            public Response onParseResponse(Call call, Response response) {
-                                return response;
-                            }
-
-                            @Override
-                            public void onFailure(Call call, Exception e) {
-                                e.printStackTrace();
-                                Log.d(TAG, "onFailure: ..."+e.getMessage());
-                            }
-
-                            @Override
-                            public void onResponse(Response response) {
-                                try {
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            loadingView.showSuccess();
-                                        }
-                                    });
-                                    Log.d(TAG, "onResponse: "+response.body().string());
-                                    ((MainActivity)getActivity()).gotoMyFragment();
-                                }catch (Exception e){
-                                    e.printStackTrace();
+                    OkhttpUtil.okHttpPost("http://10.0.2.2:8080/abbreviation/upload", paramMap, new CallBackUtil<Response>() {
+                                @Override
+                                public Response onParseResponse(Call call, Response response) {
+                                    return response;
                                 }
 
+                                @Override
+                                public void onFailure(Call call, Exception e) {
+                                    e.printStackTrace();
+                                    Log.d(TAG, "onFailure: ..." + e.getMessage());
+                                }
+
+                                @Override
+                                public void onResponse(Response response) {
+                                    try {
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                loadingView.showSuccess();
+                                            }
+                                        });
+                                        Log.d(TAG, "onResponse: " + response.body().string());
+                                        ((MainActivity) getActivity()).gotoMyFragment();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
                             }
+                    );
+                    List<File> fileList = new ArrayList<>();
+
+                    File file = new File(getImagePath(postBackShowuri, ""));
+
+                    File file2 = new File(getImagePath(postBackShowuri2, ""));
+                    File file3 = new File(getImagePath(postBackShowuri3, ""));
+                    fileList.add(file);
+                    fileList.add(file2);
+                    fileList.add(file3);
+                    OkhttpUtil.okHttpUploadListFile("http://10.0.2.2:8080/image/upload/img", fileList, "uploadFile", "image", new CallBackUtil() {
+                        @Override
+                        public Object onParseResponse(Call call, Response response) {
+                            return response;
                         }
-                );
-                List<File> fileList = new ArrayList<>();
 
-                File file = new File(getImagePath(postBackShowuri,""));
+                        @Override
+                        public void onFailure(Call call, Exception e) {
 
-                File file2 = new File(getImagePath(postBackShowuri2,""));
-                File file3 = new File(getImagePath(postBackShowuri3,""));
-                fileList.add(file);
-                fileList.add(file2);
-                fileList.add(file3);
-                OkhttpUtil.okHttpUploadListFile("http://10.0.2.2:8080/image/upload/img", fileList, "uploadFile", "image", new CallBackUtil() {
-                    @Override
-                    public Object onParseResponse(Call call, Response response) {
-                        return response;
-                    }
+                        }
 
-                    @Override
-                    public void onFailure(Call call, Exception e) {
+                        @Override
+                        public void onResponse(Object response) {
+                            Log.d(TAG, "onResponse: " + response.toString());
 
-                    }
-
-                    @Override
-                    public void onResponse(Object response) {
-                        Log.d(TAG, "onResponse: "+response.toString());
-
-                    }
-                });
-            }
-        });
+                        }
+                    });
+                }
+            });
+        }
         return view;
     }
 
