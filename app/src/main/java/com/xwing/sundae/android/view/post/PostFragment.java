@@ -518,10 +518,10 @@ public class PostFragment extends Fragment {
                         base64Image = PostImageUtil.imgToBase64(50, bitmap);
                         Bitmap bitmap2 = ((BitmapDrawable) (postBackShow2).getDrawable()).getBitmap();
 
-                        base64Image = PostImageUtil.imgToBase64(50, bitmap);
+                        base64Image2 = PostImageUtil.imgToBase64(50, bitmap2);
                         Bitmap bitmap3 = ((BitmapDrawable) (postBackShow3).getDrawable()).getBitmap();
 
-                        base64Image = PostImageUtil.imgToBase64(50, bitmap);
+                        base64Image3 = PostImageUtil.imgToBase64(50, bitmap3);
                         Log.d(TAG, "base64Image: " + base64Image);
                     }
                     Map<String, String> paramMap = new HashMap<>();
