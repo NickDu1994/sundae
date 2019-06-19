@@ -45,7 +45,10 @@ public class ExploreFragment extends Fragment implements View.OnClickListener {
     FollowAdapter followAdapter;
     private Handler handler = new Handler();
     private FollowFragment followFragment;
-    private RankFragment rankFragment;
+    private RankTabFragment rankTabFragment;
+
+    FragmentManager fm;
+    FragmentTransaction transaction;
 
     private TextView followBtn, rankBtn;
 
@@ -72,11 +75,10 @@ public class ExploreFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setDefaultFragment() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
+        fm = getFragmentManager();
+        transaction = fm.beginTransaction();
         followFragment = FollowFragment.newInstance("","");
         transaction.add(R.id.list_container, followFragment).commit();
-
     }
 
     @Override
@@ -123,31 +125,44 @@ public class ExploreFragment extends Fragment implements View.OnClickListener {
         setDefaultFragment();
     }
 
+    private void hideFragment(FragmentTransaction transaction){
+        if (followFragment != null){
+            transaction.hide(followFragment);
+        }
+
+        if(rankTabFragment != null){
+            transaction.hide(rankTabFragment);
+        }
+    }
+
     @Override
     public void onClick(View v) {
-        FragmentManager fm = getFragmentManager();
         // 开启Fragment事务
-        FragmentTransaction transaction = fm.beginTransaction();
+        transaction = fm.beginTransaction();
+        hideFragment(transaction);
 
         switch (v.getId())
         {
             case R.id.follow_btn:
                 if (followFragment == null)
                 {
-                    followFragment = new FollowFragment();
+                    followFragment = FollowFragment.newInstance("","");
+                    transaction.add(R.id.list_container, followFragment);
+                } else {
+                    transaction.show(followFragment);
                 }
-                // 使用当前Fragment的布局替代id_content的控件
-                transaction.replace(R.id.list_container, followFragment);
-                //控件颜色
+
                 followBtn.setTextColor(getResources().getColor(R.color.colorMainTheme));
                 rankBtn.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
                 break;
             case R.id.rank_btn:
-                if (rankFragment == null)
+                if (rankTabFragment == null)
                 {
-                    rankFragment = new RankFragment();
+                    rankTabFragment = RankTabFragment.newInstance("","");
+                    transaction.add(R.id.list_container, rankTabFragment);
+                } else {
+                    transaction.show(rankTabFragment);
                 }
-                transaction.replace(R.id.list_container, rankFragment);
                 //控件颜色
                 followBtn.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
                 rankBtn.setTextColor(getResources().getColor(R.color.colorMainTheme));
@@ -212,16 +227,16 @@ public class ExploreFragment extends Fragment implements View.OnClickListener {
     }
 
     public void initMockData() {
-        for(int i = 0; i < 10; i++){
-            FollowModel follow = new FollowModel(
-                    "蛋蛋评价了一个词条",
-                    "2天前",
-                    "WTF",
-                    "This is a content for sundae app usingThis is a content for sundae app usingThis is a content for sundae app using",
-                    "https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg"
-            );
-            followList.add(follow);
-        }
+//        for(int i = 0; i < 10; i++){
+//            FollowModel follow = new FollowModel(
+//                    "蛋蛋评价了一个词条",
+//                    "2天前",
+//                    "WTF",
+//                    "This is a content for sundae app usingThis is a content for sundae app usingThis is a content for sundae app using",
+//                    "https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg"
+//            );
+//            followList.add(follow);
+//        }
     }
 
     private void setPullandRefresh() {

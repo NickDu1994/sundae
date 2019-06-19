@@ -70,16 +70,16 @@ public class MyCommentActivity extends AppCompatActivity {
     }
 
     public void initMockData() {
-        for(int i = 0; i < 10; i++){
-            FollowModel follow = new FollowModel(
-                    "蛋蛋评价了一个词条",
-                    "2天前",
-                    "WTF",
-                    "This is a content for sundae app usingThis is a content for sundae app usingThis is a content for sundae app using",
-                    "https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg"
-            );
-            commentList.add(follow);
-        }
+//        for(int i = 0; i < 10; i++){
+//            FollowModel follow = new FollowModel(
+//                    "蛋蛋评价了一个词条",
+//                    "2天前",
+//                    "WTF",
+//                    "This is a content for sundae app usingThis is a content for sundae app usingThis is a content for sundae app using",
+//                    "https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg"
+//            );
+//            commentList.add(follow);
+//        }
     }
 
     private void setPullandRefresh() {

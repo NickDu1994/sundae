@@ -49,7 +49,7 @@
                     android:layout_height="15dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="10dp"
                     android:background="#00FFFFFF"
                     android:src="@drawable/close"/>
             </LinearLayout>

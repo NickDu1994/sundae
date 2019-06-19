@@ -149,14 +149,10 @@ public class SearchFragment extends Fragment {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 Log.d("dk","enter setOnEditorActionListener" + event);
                 if ((event != null && KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction())) {
-                    Log.d("dk","click the enter button");
                     SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance(getContext());
                     String currentKeywordNote = spUtil.getSP("keyword_note");
-                    Log.d("dk","dkdebug currentKeywordNote=" +currentKeywordNote);
                     currentKeywordNote = mainEditText.getText().toString() + "," + currentKeywordNote;
-                    Log.d("dk","dkdebug new currentKeywordNote=" +currentKeywordNote);
                     spUtil.putSP("keyword_note",currentKeywordNote);
-                    Log.d("dk","dkdebug currentKeywordNote=" +spUtil.getSP("keyword_note"));
                     return true;
                 }
                 return false;

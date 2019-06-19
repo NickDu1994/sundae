@@ -24,6 +24,7 @@ import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.view.GetUserInfo;
+import com.xwing.sundae.android.view.LoginActivity;
 
 import java.util.HashMap;
 
@@ -43,7 +44,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
 
     UserInfoEditLineView userInfoEditLineView;
     SharedPreferencesHelper sharedPreferencesHelper;
-    GetUserInfo getUserInfo = new GetUserInfo(this);
+    GetUserInfo getUserInfo;
     UserInfo userInfo;
 
     Gson gson = new Gson();
@@ -51,6 +52,17 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        getUserInfo = new GetUserInfo(this);
+
+        sharedPreferencesHelper = new SharedPreferencesHelper(this,"user");
+
+        if(null == getUserInfo && "".equals(getUserInfo))   {
+            Toast.makeText(EditUserInfoActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(EditUserInfoActivity.this, LoginActivity.class));
+            return;
+        }
+
         userInfo = getUserInfo.getUserInfo().getData();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_line);
@@ -198,11 +210,10 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
 
             @Override
             public void onResponse(String response) {
-                sharedPreferencesHelper.remove("user_info");
                 sharedPreferencesHelper.put("user_info", response);
                 Toast.makeText(EditUserInfoActivity.this, "更新信息成功", Toast.LENGTH_SHORT).show();
                 try {
-                    CommonResponse<UserInfo> userInfoBean = getUserInfo.getUserInfo();
+//                    CommonResponse<UserInfo> userInfoBean = getUserInfo.getUserInfo();
                     finish();
                 } catch (Exception e) {
                     Log.v("loginPostRequestError", "error" + e);

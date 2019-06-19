@@ -19,6 +19,7 @@
             android:text="搜索历史" />
 
         <ImageView
+            android:id="@+id/buttonGroupCleanButton"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_alignParentRight="true"

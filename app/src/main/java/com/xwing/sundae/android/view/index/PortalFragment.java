@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.adapter.ComplexListAdapter;
 import com.xwing.sundae.android.customview.SearchRoundCTACardView;
+import com.xwing.sundae.android.model.AbbreviationPlusModel;
 import com.xwing.sundae.android.model.BaseImage;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.ComplexListModel;
@@ -225,21 +226,27 @@ public class PortalFragment extends Fragment {
                 Log.d("dkdebug", "response" + response);
                 Gson gson = new Gson();
                 try{
-                    CommonResponse<List<AbbreviationBaseModel>> responseIndexRecommendList =
-                            (CommonResponse<List<AbbreviationBaseModel>>)gson.fromJson(response,
-                                    new TypeToken<CommonResponse<List<AbbreviationBaseModel>>>() {}.getType());
-                    final List<AbbreviationBaseModel> dataList = responseIndexRecommendList.getData();
+                    CommonResponse<List<AbbreviationPlusModel>> responseIndexRecommendList =
+                            (CommonResponse<List<AbbreviationPlusModel>>)gson.fromJson(response,
+                                    new TypeToken<CommonResponse<List<AbbreviationPlusModel>>>() {}.getType());
+                    final List<AbbreviationPlusModel> dataList = responseIndexRecommendList.getData();
                     List<BaseImage> displayImages = new ArrayList<BaseImage>();
-                    for(AbbreviationBaseModel item : dataList){
-                        String[] imageArray = {item.getImageList().get(0).getPath(),
-                                item.getImageList().get(1).getPath(),
-                                item.getImageList().get(2).getPath()};
+                    for(AbbreviationPlusModel item : dataList){
+                        List<String> imageList = new ArrayList<>();
+                        if(item.getImageList().size() != 0){
+                            for(IndexBannerModel.Image imageUrl : item.getImageList()){
+                                imageList.add(imageUrl.getPath());
+                            }
+                        }else {
+                            imageList.add("https://img-bss.csdn.net/201903111202548906.png");
+                        }
+
                         ComplexListModel complexListModel = new ComplexListModel(
                                 item.getAbbrName() + " " + item.getFullName(),
                                 item.getContent(),
-                                imageArray,
+                                imageList.toArray(new String[imageList.size()]),
                                 true,
-                                "???",
+                                item.getVisitedCount() + "次阅读",
                                 CalculateTimeUntilNow(item.getCreateTime())
                         );
                         complexListModelList.add(complexListModel);
@@ -257,7 +264,7 @@ public class PortalFragment extends Fragment {
                     recyclerView.setAdapter(complexListAdapter);
 
                 } catch (Exception e) {
-                    Log.d("dkdebug onResponse", "e=" + e);
+                    Log.d("dkdebug", "e=" + e);
                 }
             }
         });

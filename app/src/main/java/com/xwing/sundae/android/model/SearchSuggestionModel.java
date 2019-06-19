@@ -14,13 +14,8 @@ public class SearchSuggestionModel {
     private String abbr_name;
     private String full_name;
     private String create_time;
-    private String user_id;
     private String id;
-    private String data_status;
-    private String image_id;
-    private String type;
-    private List<String> content;
-    private String dsadasd;
+    private String content;
     private String _version_;
 
     public String getCreate_by() {
@@ -63,14 +58,6 @@ public class SearchSuggestionModel {
         this.create_time = create_time;
     }
 
-    public String getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
-    }
-
     public String getId() {
         return id;
     }
@@ -79,44 +66,12 @@ public class SearchSuggestionModel {
         this.id = id;
     }
 
-    public String getData_status() {
-        return data_status;
-    }
-
-    public void setData_status(String data_status) {
-        this.data_status = data_status;
-    }
-
-    public String getImage_id() {
-        return image_id;
-    }
-
-    public void setImage_id(String image_id) {
-        this.image_id = image_id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public List<String> getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(List<String> content) {
+    public void setContent(String content) {
         this.content = content;
-    }
-
-    public String getDsadasd() {
-        return dsadasd;
-    }
-
-    public void setDsadasd(String dsadasd) {
-        this.dsadasd = dsadasd;
     }
 
     public String get_version_() {

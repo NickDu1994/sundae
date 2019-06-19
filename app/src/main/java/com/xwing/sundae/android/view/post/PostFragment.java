@@ -539,7 +539,9 @@ public class PostFragment extends Fragment {
                     loadingView.setVisibility(View.VISIBLE);
                     loadingView.showLoading();
 
-                    OkhttpUtil.okHttpPost("http://10.0.2.2:8080/abbreviation/upload", paramMap, new CallBackUtil<Response>() {
+                    String url = Constant.REQUEST_URL_MY + "/abbreviation/upload";
+
+                    OkhttpUtil.okHttpPost(url, paramMap, new CallBackUtil<Response>() {
                                 @Override
                                 public Response onParseResponse(Call call, Response response) {
                                     return response;
@@ -560,7 +562,7 @@ public class PostFragment extends Fragment {
                                                 loadingView.showSuccess();
                                             }
                                         });
-                                        Log.d(TAG, "onResponse: " + response.body().string());
+//                                        Log.d(TAG, "onResponse: " + response.body().string());
                                         ((MainActivity) getActivity()).gotoMyFragment();
                                     } catch (Exception e) {
                                         e.printStackTrace();
