@@ -172,7 +172,8 @@ public class MyFollowActivity extends AppCompatActivity {
                 try {
                     Map<String, Object> map_res = gson.fromJson(response, Map.class);
                     Object data = map_res.get("data");
-                    MyFollowerModel[] myFollowerModels = gson.fromJson(data.toString(), MyFollowerModel[].class);
+                    String json_data = gson.toJson(data);
+                    MyFollowerModel[] myFollowerModels = gson.fromJson(json_data, MyFollowerModel[].class);
                     followList.addAll(Arrays.asList(myFollowerModels));
 
                     afterResponse(followList);

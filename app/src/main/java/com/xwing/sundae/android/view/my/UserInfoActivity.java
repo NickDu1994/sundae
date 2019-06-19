@@ -129,7 +129,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
-
+        sharedPreferencesHelper = new SharedPreferencesHelper(this,"user");
         getUserInfo = new GetUserInfo(this);
 
         initView();

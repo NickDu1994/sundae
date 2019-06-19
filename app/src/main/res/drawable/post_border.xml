@@ -9,8 +9,8 @@
     <!-- 主体背景颜色值 -->
     <item android:top="0dp"> <!--设置只有底部有边框-->
         <shape>
-            <solid android:color="#4879ff" />
-            <!--<gradient-->
+            <solid android:color="#4879FF" />
+                       <!--<gradient-->
                 <!--android:angle="0"-->
                 <!--android:startColor="#e0f0e9"-->
                 <!--android:endColor="#758a99" />-->

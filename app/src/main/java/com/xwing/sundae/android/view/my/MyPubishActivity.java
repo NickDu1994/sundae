@@ -107,7 +107,8 @@ public class MyPubishActivity extends AppCompatActivity {
                 try {
                     Map<String, Object> map_res = gson.fromJson(response, Map.class);
                     Object data = map_res.get("data");
-                    MyPublishModel[] myPublishModels = gson.fromJson(data.toString(), MyPublishModel[].class);
+                    String json_data = gson.toJson(data);
+                    MyPublishModel[] myPublishModels = gson.fromJson(json_data, MyPublishModel[].class);
                     publishList.addAll(Arrays.asList(myPublishModels));
 
                     afterResponse(publishList);

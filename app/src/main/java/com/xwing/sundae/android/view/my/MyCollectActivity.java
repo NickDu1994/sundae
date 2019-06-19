@@ -136,7 +136,8 @@ public class MyCollectActivity extends AppCompatActivity {
                 try {
                     Map<String, Object> map_res = gson.fromJson(response, Map.class);
                     Object data = map_res.get("data");
-                    MyCollectModel[] myCollectModels = gson.fromJson(data.toString(), MyCollectModel[].class);
+                    String json_data = gson.toJson(data);
+                    MyCollectModel[] myCollectModels = gson.fromJson(json_data, MyCollectModel[].class);
                     collectList.addAll(Arrays.asList(myCollectModels));
 
                     afterResponse(collectList);

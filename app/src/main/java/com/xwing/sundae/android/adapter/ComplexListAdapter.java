@@ -38,9 +38,15 @@ public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.
         ComplexListModel complexListModel = mDataList.get(i);
         viewHolder.mainTextview.setText(complexListModel.getMainTitle());
         viewHolder.mainContentTextview.setText(complexListModel.getMainContent());
-        Glide.with(mContext).load(complexListModel.getImagesList()[0]).into(viewHolder.mainImageview1);
-        Glide.with(mContext).load(complexListModel.getImagesList()[1]).into(viewHolder.mainImageview2);
-        Glide.with(mContext).load(complexListModel.getImagesList()[2]).into(viewHolder.mainImageview3);
+        if(complexListModel.getImagesList().length >= 1){
+            Glide.with(mContext).load(complexListModel.getImagesList()[0]).into(viewHolder.mainImageview1);
+        }
+        if(complexListModel.getImagesList().length >= 2){
+            Glide.with(mContext).load(complexListModel.getImagesList()[1]).into(viewHolder.mainImageview2);
+        }
+        if(complexListModel.getImagesList().length >= 3) {
+            Glide.with(mContext).load(complexListModel.getImagesList()[2]).into(viewHolder.mainImageview3);
+        }
         viewHolder.recommendTextview.setVisibility(complexListModel.isAdditionalInformation1() ? View.VISIBLE : View.INVISIBLE);
         viewHolder.viewnumberTextview.setText(complexListModel.getAdditionalInformation2());
         viewHolder.createtimeTextview.setText(complexListModel.getAdditionalInformation3());
