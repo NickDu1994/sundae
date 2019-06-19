@@ -186,7 +186,7 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#03A9F4"
+                android:background="#4879ff"
                 >
 
                 <LinearLayout
