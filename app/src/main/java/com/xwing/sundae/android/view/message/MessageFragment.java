@@ -3,12 +3,36 @@ package com.xwing.sundae.android.view.message;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.andview.refreshview.XRefreshView;
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import com.xwing.sundae.R;
+import com.xwing.sundae.android.adapter.MessageAdapter;
+import com.xwing.sundae.android.model.MessageModel;
+import com.xwing.sundae.android.model.UserInfo;
+import com.xwing.sundae.android.util.CallBackUtil;
+import com.xwing.sundae.android.util.Constant;
+import com.xwing.sundae.android.util.OkhttpUtil;
+import com.xwing.sundae.android.view.GetUserInfo;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +53,17 @@ public class MessageFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private List<MessageModel> messageList = new ArrayList<>();
+
+    XRefreshView xRefreshView;
+    RecyclerView recyclerView;
+    MessageAdapter messageAdapter;
+    private Handler handler = new Handler();
+    UserInfo userInfo;
+    GetUserInfo getUserInfo;
+    int currentPage = 0;
+    Boolean isLast = false;
 
     public MessageFragment() {
         // Required empty public constructor
@@ -68,6 +103,31 @@ public class MessageFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_message, container, false);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        xRefreshView = getActivity().findViewById(R.id.message_list_wrapper);
+        recyclerView = (RecyclerView) getActivity().findViewById(R.id.message_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
+            @Override
+            public boolean canScrollVertically() {
+                return true;
+            }
+        });
+        recyclerView.setHasFixedSize(true);
+        messageAdapter = new MessageAdapter(messageList, getContext());
+        recyclerView.setAdapter(messageAdapter);
+
+        getUserInfo = new GetUserInfo(getActivity());
+        if(null != getUserInfo) {
+            userInfo = getUserInfo.getUserInfo().getData();
+            getMessageList();
+        }
+
+        setPullandRefresh();
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -105,5 +165,97 @@ public class MessageFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void getMessageList() {
+        String url = Constant.REQUEST_URL_MY + "/message/getMessageList";
+        Long user_id = userInfo.getId();
+
+        HashMap<String,String> paramsMap = new HashMap<>();
+        paramsMap.put("userId", user_id.toString());
+        paramsMap.put("page", Integer.toString(currentPage));
+        OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(getContext(), "getMessageList Failed", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+                Gson gson = new Gson();
+                Log.e("loginPostRequest", "getMessageList" + response);
+
+                try {
+                    Map<String, Object> map_res = gson.fromJson(response, Map.class);
+                    LinkedTreeMap data = (LinkedTreeMap)map_res.get("data");
+                    Object content = data.get("content");
+                    isLast = (Boolean) data.get("last");
+                    String tmp = gson.toJson(content);
+                    MessageModel[] messageModels = gson.fromJson(tmp, MessageModel[].class);
+                    messageList.addAll(Arrays.asList(messageModels));
+
+//                    afterResponse(followList);
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            messageAdapter.notifyDataSetChanged();
+                            xRefreshView.stopRefresh();
+                            xRefreshView.stopLoadMore();
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("loginPostRequestError", "error" + e);
+                }
+            }
+        });
+    }
+
+    private void setPullandRefresh() {
+        xRefreshView.setPinnedTime(1000);
+        //如果刷新时不想让里面的列表滑动，可以这么设置
+        xRefreshView.setPinnedContent(false);
+        xRefreshView.setMoveForHorizontal(true);
+        //允许下拉刷新
+        xRefreshView.setPullRefreshEnable(true);
+        xRefreshView.setPullLoadEnable(true);
+        xRefreshView.setAutoLoadMore(false);
+//        adapter.setCustomLoadMoreView(new XRefreshViewFooter(this));
+        xRefreshView.enableReleaseToLoadMore(false);
+        xRefreshView.enableRecyclerViewPullUp(true);
+        xRefreshView.enablePullUpWhenLoadCompleted(false);
+//        xRefreshView.setEmptyView(R.layout.layout_empty_view);//添加empty_view
+
+        xRefreshView.setXRefreshViewListener(new XRefreshView.SimpleXRefreshListener() {
+
+            @Override
+            public void onRefresh(boolean isPullDown) {
+                //super.onRefresh(isPullDown);
+                xRefreshView.setLoadComplete(false);
+                messageList.clear();
+                currentPage = 0;
+                isLast = false;
+                getMessageList();
+//                xRefreshView.stopRefresh();
+            }
+
+            @Override
+            public void onLoadMore(boolean isSilence) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!isLast) {
+                            currentPage++;
+                            getMessageList();
+                        } else {
+                            xRefreshView.stopLoadMore();
+                        }
+
+                    }
+                }, 2000);
+            }
+        });
     }
 }

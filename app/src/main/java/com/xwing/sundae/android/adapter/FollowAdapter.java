@@ -36,11 +36,13 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
 
         FollowModel follow = mDatas.get(position);
-        viewHolder.eventDesc.setText(follow.getEventDesc());
-        viewHolder.eventTime.setText(follow.getEventTime());
-        viewHolder.itemName.setText(follow.getItemName());
-        viewHolder.itemContent.setText(follow.getItemContent());
-        Glide.with(mContext).load(follow.getItemImage()).into(viewHolder.itemImage);
+        viewHolder.eventDesc.setText(follow.getEvent_desc());
+        viewHolder.eventTime.setText(follow.getEvent_time());
+        viewHolder.itemName.setText(follow.getItem_name());
+        viewHolder.itemContent.setText(follow.getItem_content());
+        Glide.with(mContext).load(follow.getItem_image()).into(viewHolder.itemImage);
+        viewHolder.itemUsername.setText(follow.getItem_username());
+        Glide.with(mContext).load(follow.getItem_avatar()).into(viewHolder.itemAvatar);
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +59,8 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
         TextView itemName;
         TextView itemContent;
         ImageView itemImage;
+        TextView itemUsername;
+        ImageView itemAvatar;
 
         public ViewHolder(View v) {
             super(v);
@@ -65,6 +69,8 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
             itemName = (TextView) v.findViewById(R.id.item_name);
             itemContent = (TextView) v.findViewById(R.id.item_content);
             itemImage = (ImageView) v.findViewById(R.id.item_image);
+            itemUsername= (TextView) v.findViewById(R.id.item_username);
+            itemAvatar = (ImageView) v.findViewById(R.id.item_avatar);
         }
     }
 

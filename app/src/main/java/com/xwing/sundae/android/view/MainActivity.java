@@ -2,7 +2,6 @@ package com.xwing.sundae.android.view;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -23,8 +22,6 @@ import com.xwing.sundae.android.view.index.IndexFragment;
 import com.xwing.sundae.android.view.message.MessageFragment;
 import com.xwing.sundae.android.view.my.MyFragment;
 import com.xwing.sundae.android.view.post.PostFragment;
-
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -81,9 +78,9 @@ public class MainActivity extends AppCompatActivity implements
 
         mBottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.index_actived, "首页").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.index).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
-//                .addItem(new BottomNavigationItem(R.drawable.explore_actived, "发现").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.explore).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
+                .addItem(new BottomNavigationItem(R.drawable.explore_actived, "发现").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.explore).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
                 .addItem(new BottomNavigationItem(R.drawable.post_actived, "发布").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.post).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
-//                .addItem(new BottomNavigationItem(R.drawable.message_actived, "消息").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.message).setInActiveColorResource(R.color.colorNavigationBarInactivedText).setBadgeItem(mShapeBadgeItem))
+                .addItem(new BottomNavigationItem(R.drawable.message_actived, "消息").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.message).setInActiveColorResource(R.color.colorNavigationBarInactivedText).setBadgeItem(mShapeBadgeItem))
                 .addItem(new BottomNavigationItem(R.drawable.my_actived, "我").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.my).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
                 .setFirstSelectedPosition(lastSelectedPosition)
                 .initialise();
@@ -105,15 +102,15 @@ public class MainActivity extends AppCompatActivity implements
                             fragmentTransaction.show(mIndexFragment);
                         }
                         break;
-                   /* case 1:  // explore
+                    case 1:  // explore
                         if(mExploreFragment == null){
                             mExploreFragment = ExploreFragment.newInstance("","");
                             fragmentTransaction.add(R.id.mainContainer, mExploreFragment);
                         } else {
                             fragmentTransaction.show(mExploreFragment);
                         }
-                        break;*/
-                    case 1:  // post
+                        break;
+                    case 2:  // post
                         /*List<Fragment> fragmentslist =  fragmentManager.getFragments();
                         boolean existflag= false;
                         for(Fragment f :fragmentslist){
@@ -140,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements
                             fragmentTransaction.show(mMessageFragment);
                         }
                         break;
-                    case 2:  // my
+                    case 4:  // my
 
                         boolean isLogin = false;//Todo
 //                        if(isLogin) {

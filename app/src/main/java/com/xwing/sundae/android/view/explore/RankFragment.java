@@ -3,12 +3,22 @@ package com.xwing.sundae.android.view.explore;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.andview.refreshview.XRefreshView;
 import com.xwing.sundae.R;
+import com.xwing.sundae.android.adapter.RankAdapter;
+import com.xwing.sundae.android.model.RankModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +39,11 @@ public class RankFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private List<RankModel> rankList = new ArrayList<>();
+    XRefreshView xRefreshView;
+    RankAdapter rankAdapter;
+    private Handler handler = new Handler();
 
     public RankFragment() {
         // Required empty public constructor
@@ -65,7 +80,29 @@ public class RankFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_rank, container, false);
+        View view = inflater.inflate(R.layout.fragment_rank, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rank_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
+            @Override
+            public boolean canScrollVertically() {
+                return true;
+            }
+        });
+        recyclerView.setHasFixedSize(true);
+        rankAdapter = new RankAdapter(rankList, getContext());
+        recyclerView.setAdapter(rankAdapter);
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        xRefreshView = getActivity().findViewById(R.id.rank_list_wrapper);
+
+
+        getRankList();
+//        setPullandRefresh();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -105,5 +142,72 @@ public class RankFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void getRankList() {
+        initMockData();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                rankAdapter.notifyDataSetChanged();
+                xRefreshView.stopRefresh();
+                xRefreshView.stopLoadMore();
+
+            }
+        });
+    }
+
+    public void initMockData() {
+        for(int i = 0; i < 8; i++){
+            RankModel rank = new RankModel(
+                    i+1,
+                    "2天前",
+                    mParam1,
+                    "This is a content for sundae app usingThis is a content for sundae app usingThis is a content for sundae app using",
+                    "https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg",
+                    "https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg",
+                    "蛋蛋",
+                    "33人喜欢"
+            );
+            rankList.add(rank);
+        }
+    }
+
+    private void setPullandRefresh() {
+        xRefreshView.setPinnedTime(1000);
+        //如果刷新时不想让里面的列表滑动，可以这么设置
+        xRefreshView.setPinnedContent(false);
+        xRefreshView.setMoveForHorizontal(true);
+        //允许下拉刷新
+        xRefreshView.setPullRefreshEnable(false);
+        xRefreshView.setPullLoadEnable(false);
+        xRefreshView.setAutoLoadMore(false);
+//        adapter.setCustomLoadMoreView(new XRefreshViewFooter(this));
+        xRefreshView.enableReleaseToLoadMore(false);
+        xRefreshView.enableRecyclerViewPullUp(true);
+        xRefreshView.enablePullUpWhenLoadCompleted(false);
+//        xRefreshView.setEmptyView(R.layout.layout_empty_view);//添加empty_view
+
+        xRefreshView.setXRefreshViewListener(new XRefreshView.SimpleXRefreshListener() {
+
+            @Override
+            public void onRefresh(boolean isPullDown) {
+                //super.onRefresh(isPullDown);
+                xRefreshView.setLoadComplete(false);
+                getRankList();
+//                xRefreshView.stopRefresh();
+            }
+
+            @Override
+            public void onLoadMore(boolean isSilence) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        getRankList();
+                    }
+                }, 2000);
+            }
+        });
     }
 }
