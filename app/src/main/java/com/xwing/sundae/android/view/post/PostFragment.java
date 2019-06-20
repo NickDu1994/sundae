@@ -1,4 +1,5 @@
 package com.xwing.sundae.android.view.post;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -6,15 +7,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -22,7 +18,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,20 +37,13 @@ import com.xwing.sundae.android.view.LoginActivity;
 import com.xwing.sundae.android.view.MainActivity;
 import com.xwing.sundae.android.view.index.IndexFragment;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import jp.wasabeef.richeditor.RichEditor;
 import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 
 /**
@@ -175,41 +163,7 @@ public class PostFragment extends Fragment {
             }else{
                 materialTextField2.setVisibility(View.VISIBLE);
             }
-            editText1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              /*  GradientDrawable drawable = new GradientDrawable();
-                drawable.setCornerRadius(15);
-               // drawable.setGradientRadius(20);
-                drawable.setStroke(2,Color.GRAY);
-                if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                {
-                    editText1.setBackground(drawable);
-                }else{
-                    editText1.setBackgroundDrawable(drawable);
-                }*/
 
-
-                }
-            });
-            editText2.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-              /*  GradientDrawable drawable = new GradientDrawable();
-                drawable.setCornerRadius(15);
-                drawable.setStroke(2,Color.GRAY);
-                if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                {
-                    editText2.setBackground(drawable);
-                }else{
-                    editText2.setBackgroundDrawable(drawable);
-                }
-*/
-            }
-        });
-
-            // = (TextView) view.findViewById(R.id.preview);
             mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
                 @Override
                 public void onTextChange(String text) {
@@ -232,9 +186,7 @@ public class PostFragment extends Fragment {
                            // .setImagePaths(mImagePaths)//设置历史选择记录
                             .setImageLoader(new GlideLoader())//设置自定义图片加载器
                             .start(getActivity(), 6);
-//                    Intent intent = new Intent(Intent.ACTION_PICK, null);
-//                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
- //                   startActivityForResult(intent, 2);
+
 
                 }
             });
@@ -252,9 +204,7 @@ public class PostFragment extends Fragment {
                            // .setImagePaths(mImagePaths)//设置历史选择记录
                             .setImageLoader(new GlideLoader())//设置自定义图片加载器
                             .start(getActivity(), 4);
-//                    Intent intent = new Intent(Intent.ACTION_PICK, null);
-//                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-//                    startActivityForResult(intent, 4);
+
 
                 }
             });
@@ -606,32 +556,7 @@ public class PostFragment extends Fragment {
                                 }
                             }
                     );
-                    /*List<File> fileList = new ArrayList<>();
 
-                    File file = new File(getImagePath(postBackShowuri, ""));
-
-                    File file2 = new File(getImagePath(postBackShowuri2, ""));
-                    File file3 = new File(getImagePath(postBackShowuri3, ""));
-                    fileList.add(file);
-                    fileList.add(file2);
-                    fileList.add(file3);
-                    OkhttpUtil.okHttpUploadListFile("http://10.0.2.2:8080/image/upload/img", fileList, "uploadFile", "image", new CallBackUtil() {
-                        @Override
-                        public Object onParseResponse(Call call, Response response) {
-                            return response;
-                        }
-
-                        @Override
-                        public void onFailure(Call call, Exception e) {
-
-                        }
-
-                        @Override
-                        public void onResponse(Object response) {
-                            Log.d(TAG, "onResponse: " + response.toString());
-
-                        }
-                    });*/
                 }
             });
        }
@@ -693,12 +618,7 @@ public class PostFragment extends Fragment {
                    postBackShow3.setImageURI(postBackShowuri3);
                    postBackShow3.setVisibility(View.VISIBLE);
                }
-//                Uri uri = data.getData();
-//                postBackShowuri2= uri;
-//                postBackShow2.setBackgroundResource(0);
-//                postBackShow2.setImageURI(uri);
-//                postBackShow3.setVisibility(View.VISIBLE);
-               // }
+
 
            }
         }
