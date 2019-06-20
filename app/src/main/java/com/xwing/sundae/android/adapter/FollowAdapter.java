@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.FollowModel;
 
@@ -40,7 +41,14 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
         viewHolder.eventTime.setText(follow.getEvent_time());
         viewHolder.itemName.setText(follow.getItem_name());
         viewHolder.itemContent.setText(follow.getItem_content());
-        Glide.with(mContext).load(follow.getItem_image()).into(viewHolder.itemImage);
+        String avatarUrl = follow.getItem_image();
+        RequestOptions options = new RequestOptions().circleCropTransform();
+        if(null == avatarUrl || "".equals(avatarUrl)) {
+            Glide.with(mContext).load(R.drawable.defaultpic).apply(options).into(viewHolder.itemImage);
+        } else {
+            Glide.with(mContext).load(avatarUrl).apply(options).into(viewHolder.itemImage);
+        }
+
         viewHolder.itemUsername.setText(follow.getItem_username());
         Glide.with(mContext).load(follow.getItem_avatar()).into(viewHolder.itemAvatar);
 

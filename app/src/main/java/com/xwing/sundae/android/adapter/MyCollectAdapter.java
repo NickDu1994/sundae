@@ -71,12 +71,12 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
     public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
         MyCollectModel collect = mDatas.get(i);
 
-        RequestOptions options = new RequestOptions().placeholder(R.drawable.defaultpic).circleCropTransform();
+        RequestOptions options = new RequestOptions().error(R.drawable.explore_actived).circleCropTransform();
         viewHolder.item_name.setText(collect.getItem_name());
         viewHolder.item_content.setText(collect.getItem_content());
 
         if("".equals(collect.getItem_image()) || null == collect.getItem_image()) {
-            Glide.with(mContext).load(R.drawable.pic).apply(options).into(viewHolder.item_image);
+            Glide.with(mContext).load(R.drawable.explore_actived).apply(options).into(viewHolder.item_image);
         } else {
             Glide.with(mContext).load(collect.getItem_image()).apply(options).into(viewHolder.item_image);
         }

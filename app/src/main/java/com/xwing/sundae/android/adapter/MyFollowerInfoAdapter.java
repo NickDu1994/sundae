@@ -26,7 +26,7 @@ import java.util.List;
  * Date: 2019/6/6
  * Time: 17:34
  */
-public class MyFollowerInfoAdapter extends RecyclerView.Adapter<MyFollowerInfoAdapter.ViewHolder>{
+public class MyFollowerInfoAdapter extends RecyclerView.Adapter<MyFollowerInfoAdapter.ViewHolder> {
 
     /**
      * 传到adapter内的数据
@@ -43,6 +43,7 @@ public class MyFollowerInfoAdapter extends RecyclerView.Adapter<MyFollowerInfoAd
     private LayoutInflater mInfalter;
 
     private MyFollowerInfoAdapter.onSwipeListener mOnSwipeListener;
+
     /**
      * 和Activity通信的接口
      */
@@ -52,10 +53,11 @@ public class MyFollowerInfoAdapter extends RecyclerView.Adapter<MyFollowerInfoAd
 
     /**
      * 构造器
+     *
      * @param data
      * @param context
      */
-    public MyFollowerInfoAdapter(List<MyFollowerModel> data,Context context) {
+    public MyFollowerInfoAdapter(List<MyFollowerModel> data, Context context) {
         this.mDatas = data;
         this.mContext = context;
         mInfalter = LayoutInflater.from(context);
@@ -76,9 +78,15 @@ public class MyFollowerInfoAdapter extends RecyclerView.Adapter<MyFollowerInfoAd
         viewHolder.followTime.setText(follow.getFollowTime());
         viewHolder.sentCounts.setText(follow.getSentCounts());
         viewHolder.getPraisedCounts.setText(follow.getGetPraisedCounts());
-        RequestOptions options = new RequestOptions().placeholder(R.drawable.defaultpic)
+        RequestOptions options = new RequestOptions()
                 .error(R.drawable.defaultpic).circleCropTransform();
-        Glide.with(mContext).load(follow.getFollow_avatarUrl()).apply(options).into(viewHolder.follow_avatarUrl);
+        String avatarUrl = follow.getFollow_avatarUrl();
+        if(null == avatarUrl || "".equals(avatarUrl)) {
+            Glide.with(mContext).load(R.drawable.defaultpic).apply(options).into(viewHolder.follow_avatarUrl);
+        } else {
+            Glide.with(mContext).load(avatarUrl).apply(options).into(viewHolder.follow_avatarUrl);
+        }
+
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +131,7 @@ public class MyFollowerInfoAdapter extends RecyclerView.Adapter<MyFollowerInfoAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView follow_avatarUrl;
-        TextView followTime,sentCounts,getPraisedCounts,follow_username;
+        TextView followTime, sentCounts, getPraisedCounts, follow_username;
         Button btnCancelFollow;
         LinearLayout follow_field;
 

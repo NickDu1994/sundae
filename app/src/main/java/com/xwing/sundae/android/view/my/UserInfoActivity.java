@@ -134,12 +134,32 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 
         initView();
         initEvent();
-        showUserPic();
+//        showUserPic();
+        userInfo = getUserInfo.getUserInfo().getData();
+        RequestOptions options = new RequestOptions().
+                    circleCropTransform();
+        Glide.with(this)
+                .load(userInfo.getAvatarUrl())
+                .apply(options)
+                .into(info_user_pic);
 
-        if (null != getUserInfo.getUserInfo() && !"".equals(getUserInfo.getUserInfo())) {
-            userInfo = getUserInfo.getUserInfo().getData();
-            add_info_list(userInfo);
-        }
+//        if (null !=userInfo && !"".equals(userInfo)) {
+//
+//            RequestOptions options = new RequestOptions().
+//                    circleCropTransform();
+//            if(null != userInfo.getAvatarUrl() && "".equals(userInfo.getAvatarUrl())) {
+//                Glide.with(this)
+//                        .load(userInfo.getAvatarUrl())
+//                        .apply(options)
+//                        .into(info_user_pic);
+//            } else {
+//                Glide.with(this)
+//                        .load(R.drawable.defaultpic)
+//                        .apply(options)
+//                        .into(info_user_pic);
+//            }
+//            add_info_list(userInfo);
+//        }
 
         requestPermission();
     }
@@ -171,7 +191,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     /**
      * 将用户可编辑的列表通过自定义view传入
      */
-    private void add_info_list(com.xwing.sundae.android.model.UserInfo userinfo) {
+    private void add_info_list(UserInfo userinfo) {
         info_list.removeAllViews();
         // 加入昵称列
         UserInfoOneLineView nick_name = new UserInfoOneLineView(this)
@@ -234,7 +254,9 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         Bitmap bitmap = ((BitmapDrawable) (info_user_pic).getDrawable()).getBitmap();
         String base64Image = PostImageUtil.imgToBase64(50, bitmap);
 
-        uploadImage(base64Image);
+        updateUserInfoPost("avatar",base64Image);
+
+//        uploadImage(base64Image);
     }
 
     private void uploadImage(String base64) {
@@ -304,24 +326,39 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
      */
     private void takePic() {
         Log.e("Maggie Image", "take pic");
-        Intent intent;
+//        Intent intent;
         Uri pictureUri;
-        //也就是我之前创建的存放头像的文件夹（目录）
-        File pictureFile = new File(CommonMethod.getSundaeRootDirectory(), IMAGE_FILE_NAME);
-        // 判断当前系统
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            //这一句非常重要
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            //""中的内容是随意的，但最好用package名.provider名的形式，清晰明了
-            pictureUri = FileProvider.getUriForFile(this,
-                    "com.xwing.sundae.file", pictureFile);
-        } else {
-            intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            pictureUri = Uri.fromFile(pictureFile);
-        }
-        // 去拍照,拍照的结果存到oictureUri对应的路径中
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File cameraSavePath = new File(Environment.getExternalStorageDirectory().getPath()
+                + File.separator + Environment.DIRECTORY_DCIM + "/Camera/" + System.currentTimeMillis() + ".jpg");
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            pictureUri = FileProvider.getUriForFile(this, this.getPackageName() + ".fileProvider", cameraSavePath);
+//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//        } else {
+//            pictureUri = Uri.fromFile(cameraSavePath);
+//        }
+        pictureUri = Uri.fromFile(cameraSavePath);
+
         intent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
+
+        //也就是我之前创建的存放头像的文件夹（目录）
+//        File pictureFile = new File(CommonMethod.getSundaeRootDirectory(), IMAGE_FILE_NAME);
+//        // 判断当前系统
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//            intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            //这一句非常重要
+//            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            //""中的内容是随意的，但最好用package名.provider名的形式，清晰明了
+//            pictureUri = FileProvider.getUriForFile(this,
+//                    "com.xwing.sundae.file", pictureFile);
+//        } else {
+//            intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            pictureUri = Uri.fromFile(pictureFile);
+//        }
+        // 去拍照,拍照的结果存到oictureUri对应的路径中
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, pictureUri);
         Log.e("maggietest", "before take photo" + pictureUri.toString());
         startActivityForResult(intent, TAKE_PICTURE);
     }
@@ -442,8 +479,8 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                 try {
                     sharedPreferencesHelper.remove("user_info");
                     sharedPreferencesHelper.put("user_info", response);
-                    CommonResponse<UserInfo> userInfoBean = getUserInfo.getUserInfo();
-                    getUserInfo.setUserInfo(userInfoBean.getData());
+//                    CommonResponse<UserInfo> userInfoBean = getUserInfo.getUserInfo();
+//                    getUserInfo.setUserInfo(userInfoBean.getData());
                     finish();
                 } catch (Exception e) {
                     Log.v("update user failed", "error" + e);
