@@ -462,7 +462,7 @@ public class PostFragment extends Fragment {
                     materialTextField1.setHasFocus(true);
 
                     return;
-                }else if(editText2==null||editText2.length()<=0){
+                }else if(mParam1.equals("1")&&(editText2==null||editText2.length()<=0)){
                     materialTextField2.expand();
 
                     return;
