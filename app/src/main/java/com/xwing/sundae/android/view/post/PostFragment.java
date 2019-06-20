@@ -634,7 +634,7 @@ public class PostFragment extends Fragment {
                     });*/
                 }
             });
-        }
+       }
         return view;
     }
 
@@ -672,40 +672,47 @@ public class PostFragment extends Fragment {
             }
         }
        else  if (requestCode == 4) {
-            // 从相册返回的数据
-            //if (data != null) {
-                // 得到图片的全路径
-                if(mImagePaths!=null&&mImagePaths.size()==1){
-                    postBackShowuri2= Uri.parse(mImagePaths.get(0));
-                    postBackShow2.setBackgroundResource(0);
-                    postBackShow2.setImageURI(postBackShowuri2);
-                    postBackShow2.setVisibility(View.VISIBLE);
-                    postBackShow3.setVisibility(View.VISIBLE);
-                }
-                 else if(mImagePaths!=null&&mImagePaths.size()==2){
-                    postBackShowuri3= Uri.parse(mImagePaths.get(1));
-                    postBackShow3.setBackgroundResource(0);
-                    postBackShow3.setImageURI(postBackShowuri3);
-                    postBackShow3.setVisibility(View.VISIBLE);
-                }
+           if(data!=null) {
+               mImagePaths = data.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES);
+               // 从相册返回的数据
+               //if (data != null) {
+               // 得到图片的全路径
+               if (mImagePaths != null && mImagePaths.size() == 1) {
+                   postBackShowuri2 = Uri.parse(mImagePaths.get(0));
+                   postBackShow2.setBackgroundResource(0);
+                   postBackShow2.setImageURI(postBackShowuri2);
+                   postBackShow2.setVisibility(View.VISIBLE);
+                   postBackShow3.setVisibility(View.VISIBLE);
+               } else if (mImagePaths != null && mImagePaths.size() == 2) {
+                   postBackShowuri2 = Uri.parse(mImagePaths.get(0));
+                   postBackShow2.setBackgroundResource(0);
+                   postBackShow2.setImageURI(postBackShowuri2);
+                   postBackShow2.setVisibility(View.VISIBLE);
+                   postBackShowuri3 = Uri.parse(mImagePaths.get(1));
+                   postBackShow3.setBackgroundResource(0);
+                   postBackShow3.setImageURI(postBackShowuri3);
+                   postBackShow3.setVisibility(View.VISIBLE);
+               }
 //                Uri uri = data.getData();
 //                postBackShowuri2= uri;
 //                postBackShow2.setBackgroundResource(0);
 //                postBackShow2.setImageURI(uri);
 //                postBackShow3.setVisibility(View.VISIBLE);
-           // }
+               // }
 
-
+           }
         }
         else if (requestCode == 5) {
-            // 从相册返回的数据
-            //if (data != null) {
-                if(mImagePaths!=null&&mImagePaths.size()==1){
-                    postBackShowuri3= Uri.parse(mImagePaths.get(0));
+            if(data!=null) {
+                mImagePaths = data.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES);
+                // 从相册返回的数据
+                //if (data != null) {
+                if (mImagePaths != null && mImagePaths.size() == 1) {
+                    postBackShowuri3 = Uri.parse(mImagePaths.get(0));
                     postBackShow3.setBackgroundResource(0);
                     postBackShow3.setImageURI(postBackShowuri3);
                     postBackShow3.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     postBackShow3.setVisibility(View.VISIBLE);
                 }
                 // 得到图片的全路径
@@ -713,35 +720,45 @@ public class PostFragment extends Fragment {
 //                postBackShowuri3= uri;
 //                postBackShow3.setBackgroundResource(0);
 //                postBackShow3.setImageURI(uri);
-           // }
-
-
+                // }
+            }
         }
         else if (requestCode == 6) {
-            mImagePaths = data.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES);
-            Log.d(TAG, "onActivityResult: 666 " +mImagePaths);
-            // 从相册返回的数据
-                if(mImagePaths!=null&&mImagePaths.size()==1){
-                    postBackShowuri= Uri.parse(mImagePaths.get(0));
+            if(data!=null) {
+                mImagePaths = data.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES);
+                Log.d(TAG, "onActivityResult: 666 " + mImagePaths);
+                // 从相册返回的数据
+                if (mImagePaths != null && mImagePaths.size() == 1) {
+                    postBackShowuri = Uri.parse(mImagePaths.get(0));
                     postBackShow.setBackgroundResource(0);
                     postBackShow.setImageURI(postBackShowuri);
                     postBackShow.setVisibility(View.VISIBLE);
                     postBackShow2.setVisibility(View.VISIBLE);
-                }
-                 else if(mImagePaths!=null&&mImagePaths.size()==2){
-                    postBackShowuri2= Uri.parse(mImagePaths.get(1));
+                } else if (mImagePaths != null && mImagePaths.size() == 2) {
+                    postBackShowuri = Uri.parse(mImagePaths.get(0));
+                    postBackShow.setBackgroundResource(0);
+                    postBackShow.setImageURI(postBackShowuri);
+                    postBackShow.setVisibility(View.VISIBLE);
+                    postBackShowuri2 = Uri.parse(mImagePaths.get(1));
                     postBackShow2.setBackgroundResource(0);
                     postBackShow2.setImageURI(postBackShowuri2);
                     postBackShow2.setVisibility(View.VISIBLE);
                     postBackShow3.setVisibility(View.VISIBLE);
-                }
-                 else if(mImagePaths!=null&&mImagePaths.size()==3){
-                    postBackShowuri3= Uri.parse(mImagePaths.get(2));
+                } else if (mImagePaths != null && mImagePaths.size() == 3) {
+                    postBackShowuri = Uri.parse(mImagePaths.get(0));
+                    postBackShow.setBackgroundResource(0);
+                    postBackShow.setImageURI(postBackShowuri);
+                    postBackShow.setVisibility(View.VISIBLE);
+                    postBackShowuri2 = Uri.parse(mImagePaths.get(1));
+                    postBackShow2.setBackgroundResource(0);
+                    postBackShow2.setImageURI(postBackShowuri2);
+                    postBackShow2.setVisibility(View.VISIBLE);
+                    postBackShowuri3 = Uri.parse(mImagePaths.get(2));
                     postBackShow3.setBackgroundResource(0);
                     postBackShow3.setImageURI(postBackShowuri3);
                     postBackShow3.setVisibility(View.VISIBLE);
                 }
-
+            }
         }
 
     }
