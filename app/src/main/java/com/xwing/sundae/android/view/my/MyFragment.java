@@ -65,7 +65,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
     private OnFragmentInteractionListener mListener;
 
     // set the user all pics as circle && placeholder
-    RequestOptions options = new RequestOptions().placeholder(R.drawable.defaultpic).circleCropTransform();
+    RequestOptions options = new RequestOptions().error(R.drawable.defaultpic).circleCropTransform();
 
     public MyFragment() {
         // Required empty public constructor
@@ -216,10 +216,12 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
             user_id.setText(userInfo.getUsername());
             String avatarUrl = userInfo.getAvatarUrl();
             if (null == avatarUrl || "".equals(avatarUrl)) {
-                Glide.with(this).load(R.drawable.avatar).apply(options).into(image);
+                Glide.with(this).load(R.drawable.defaultpic).apply(options).into(image);
             } else {
                 Glide.with(this).load(avatarUrl).apply(options).into(image);
             }
+//            Glide.with(this).load("http://localhost:808/images/user/156031376172435/141b54f3-b618-4171-8558-f0d346b5a8af.jpg").apply(options).into(image);
+
             user_setting.setVisibility(View.VISIBLE);
         } else {
             setUserInfoAsNoLogin();

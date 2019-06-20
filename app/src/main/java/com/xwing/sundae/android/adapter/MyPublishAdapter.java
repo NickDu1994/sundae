@@ -68,11 +68,16 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
         } else {
             Glide.with(mContext).load(publish.getItem_image()).apply(options).into(v.item_image);
         }
+        if(null != publish.getItem_name()) {
+            v.item_name.setText(publish.getItem_name());
+        }
 
-        v.item_name.setText(publish.getItem_name());
         v.item_content.setText(publish.getItem_content());
         String abbr_type = publish.getAbb_type();
         String abbr_type_name = "词条";
+        if(null == abbr_type || "".equals(abbr_type)) {
+            abbr_type_name = "";
+        }
         switch (abbr_type){
             case "0":
                 abbr_type_name = "词条";

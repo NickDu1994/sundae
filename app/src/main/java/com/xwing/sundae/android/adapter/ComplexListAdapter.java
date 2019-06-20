@@ -47,7 +47,7 @@ public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.
         if(complexListModel.getImagesList().length >= 3) {
             Glide.with(mContext).load(complexListModel.getImagesList()[2]).into(viewHolder.mainImageview3);
         }
-        viewHolder.recommendTextview.setVisibility(complexListModel.isAdditionalInformation1() ? View.VISIBLE : View.INVISIBLE);
+//        viewHolder.recommendTextview.setVisibility(complexListModel.isAdditionalInformation1() ? View.VISIBLE : View.INVISIBLE);
         viewHolder.viewnumberTextview.setText(complexListModel.getAdditionalInformation2());
         viewHolder.createtimeTextview.setText(complexListModel.getAdditionalInformation3());
     }
@@ -74,7 +74,7 @@ public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.
             mainImageview1 = view.findViewById(R.id.main_image_1);
             mainImageview2 = view.findViewById(R.id.main_image_2);
             mainImageview3 = view.findViewById(R.id.main_image_3);
-            recommendTextview = view.findViewById(R.id.recommend);
+//            recommendTextview = view.findViewById(R.id.recommend);
             viewnumberTextview = view.findViewById(R.id.view_number);
             createtimeTextview = view.findViewById(R.id.create_time);
         }

@@ -1,5 +1,6 @@
 package com.xwing.sundae.android.view.index;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,7 @@ import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.CustomeButtonGroupView;
 import com.xwing.sundae.android.model.AbbreviationBaseModel;
+import com.xwing.sundae.android.model.AbbreviationDetailModel;
 import com.xwing.sundae.android.model.AbbreviationPlusModel;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.SearchSuggestionModel;
@@ -36,7 +38,10 @@ import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.SharedPreferencesUtil;
+import com.xwing.sundae.android.view.GetUserInfo;
+import com.xwing.sundae.android.view.LoginActivity;
 import com.xwing.sundae.android.view.MainActivity;
+import com.xwing.sundae.android.view.my.EditUserInfoActivity;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
@@ -69,6 +74,8 @@ public class SearchFragment extends Fragment {
     private LinearLayout listPanel;
     private LinearLayout detailPanel;
     private ListView listView;
+    private ImageView likeIV;
+    private ImageView saveIV;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -197,33 +204,38 @@ public class SearchFragment extends Fragment {
         customeButtonGroupView2.setTagList(testName2);
 
 
-        final ImageView saveIV = getActivity().findViewById(R.id.detailSave);
+        saveIV = getActivity().findViewById(R.id.detailSave);
         saveIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!isSave){
+                    handleSaveAndLike(currentEntryId, false, "save");
                     saveIV.setImageResource(R.drawable.heart_fill);
                     isSave = true;
                 }else {
+                    handleSaveAndLike(currentEntryId, true, "save");
                     saveIV.setImageResource(R.drawable.heart);
                     isSave = false;
                 }
             }
         });
 
-        final ImageView likeIV = getActivity().findViewById(R.id.detailLike);
+        likeIV = getActivity().findViewById(R.id.detailLike);
         likeIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!isLike){
+                    handleSaveAndLike(currentEntryId, false, "like");
                     likeIV.setImageResource(R.drawable.dislike);
                     isLike = true;
                 }else {
+                    handleSaveAndLike(currentEntryId, true, "like");
                     likeIV.setImageResource(R.drawable.like);
                     isLike = false;
                 }
             }
         });
+
     }
 
     public void displayController(int panelName){
@@ -270,7 +282,7 @@ public class SearchFragment extends Fragment {
                     final List<SearchSuggestionModel> dataList = responseSearchSuggestionList.getData();
                     for(SearchSuggestionModel item : dataList){
                         Map<String,String> map = new HashMap<String,String>();
-                        map.put("label", item.getAbbr_name() + " " + item.getFull_name());
+                        map.put("label", item.getAbbr_name() + " - " + item.getFull_name());
                         map.put("id", item.getId());
                         keywordList.add(map);
                     }
@@ -282,6 +294,7 @@ public class SearchFragment extends Fragment {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             Toast.makeText(getContext(), "position=" + position + keywordList.get(position).get("id"), Toast.LENGTH_SHORT).show();
                             showDetail(dataList.get(position).getId());
+
                         }
                     });
 
@@ -290,16 +303,97 @@ public class SearchFragment extends Fragment {
                 }
             }
         });
-
     }
 
     public void showDetail(String entryId) {
 
         displayController(PANEL_DETAIL);
-
+        currentEntryId = entryId;
 
         String url = Constant.globalServerUrl + "/abbreviation/getOneEntryDetail";
         HashMap<String, String> paramsMap = new HashMap<>();
+        GetUserInfo getUserInfo = new GetUserInfo(getContext());
+        try{
+            paramsMap.put("userId", getUserInfo.getUserInfo().getData().getId().toString());
+        }catch (NullPointerException e) {
+            Log.d("dkdebug NPE", "e=" + e);
+            paramsMap.put("userId","");
+        }
+        paramsMap.put("entryId",entryId);
+        OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug onFailure", "e=" + e);
+            }
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug", "response" + response);
+                Gson gson = new Gson();
+                try{
+                    CommonResponse<AbbreviationDetailModel> responseAbbreviation =
+                            (CommonResponse<AbbreviationDetailModel>)gson.fromJson(response,
+                                    new TypeToken<CommonResponse<AbbreviationDetailModel>>() {}.getType());
+                    final AbbreviationDetailModel data = responseAbbreviation.getData();
+                    TextView detailTitleTV = getActivity().findViewById(R.id.detailTitle);
+                    detailTitleTV.setText(data.getAbbreviation().getAbbrName());
+                    TextView detailFullnameTV = getActivity().findViewById(R.id.detailFullname);
+                    detailFullnameTV.setText(data.getAbbreviation().getFullName());
+
+                    HtmlTextView htmlTextView = (HtmlTextView) getActivity().findViewById(R.id.html_text);
+                    htmlTextView.setHtml(data.getAbbreviation().getContent(),
+                            new HtmlHttpImageGetter(htmlTextView));
+
+                    TextView createTimeTV = getActivity().findViewById(R.id.create_time);
+                    createTimeTV.setText(CommonMethod.CalculateTimeUntilNow(data.getAbbreviation().getCreateTime()));
+                    TextView authorTV = getActivity().findViewById(R.id.author);
+                    authorTV.setText(data.getAbbreviation().getCreateBy());
+                    TextView likeTV = getActivity().findViewById(R.id.like_number);
+                    likeTV.setText(data.getAbbreviation().getLikedCount() + "获赞");
+
+                    if(data.isLike()){
+                        likeIV.setImageResource(R.drawable.like);
+                    }
+
+                    if(data.isCollect()){
+                        saveIV.setImageResource(R.drawable.heart_fill);
+                    }
+                } catch (Exception e) {
+                    Log.d("dkdebug onResponse", "e=" + e);
+                }
+            }
+        });
+
+    }
+
+    public void handleSaveAndLike(String entryId, boolean isEnroll, String type) {
+        String url= "";
+        if("like".equals(type)){
+            if(isEnroll){
+                url = Constant.globalServerUrl + "/abbreviation/like";
+            }else {
+                url = Constant.globalServerUrl + "/abbreviation/removeLike";
+            }
+        }else {
+            if(isEnroll){
+                url = Constant.globalServerUrl + "/collection/abbreviation";
+            }else {
+                url = Constant.globalServerUrl + "/collection/removeCollect";
+            }
+        }
+
+        GetUserInfo getUserInfo = new GetUserInfo(getContext());
+        if(null == getUserInfo && "".equals(getUserInfo))   {
+            Toast.makeText(getContext(), "请先登录", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getContext(), LoginActivity.class));
+            return;
+        }
+        HashMap<String, String> paramsMap = new HashMap<>();
+        if(getUserInfo.getUserInfo().getData() != null){
+            paramsMap.put("userId",getUserInfo.getUserInfo().getData().getId().toString());
+        }
         paramsMap.put("entryId",entryId);
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
@@ -314,30 +408,16 @@ public class SearchFragment extends Fragment {
                 Log.d("dkdebug", "response" + response);
                 Gson gson = new Gson();
                 try{
-                    CommonResponse<AbbreviationPlusModel> responseAbbreviation =
-                            (CommonResponse<AbbreviationPlusModel>)gson.fromJson(response,
-                                    new TypeToken<CommonResponse<AbbreviationPlusModel>>() {}.getType());
-                    final AbbreviationPlusModel data = responseAbbreviation.getData();
-                    TextView detailTitleTV = getActivity().findViewById(R.id.detailTitle);
-                    detailTitleTV.setText(data.getAbbrName());
-                    TextView detailFullnameTV = getActivity().findViewById(R.id.detailFullname);
-                    detailFullnameTV.setText(data.getFullName());
-
-                    HtmlTextView htmlTextView = (HtmlTextView) getActivity().findViewById(R.id.html_text);
-                    htmlTextView.setHtml(data.getContent(),
-                            new HtmlHttpImageGetter(htmlTextView));
-
-                    TextView createTimeTV = getActivity().findViewById(R.id.create_time);
-                    createTimeTV.setText(CommonMethod.CalculateTimeUntilNow(data.getCreateTime()));
-                    TextView authorTV = getActivity().findViewById(R.id.author);
-                    authorTV.setText(data.getCreateBy());
-                    TextView likeTV = getActivity().findViewById(R.id.like_number);
-                    likeTV.setText(data.getLikedCount() + "获赞");
+                    CommonResponse<Object> saveResult =
+                            (CommonResponse<Object>)gson.fromJson(response,
+                                    new TypeToken<CommonResponse<Object>>() {}.getType());
+                    if(saveResult.getStatus() == 200){
+                        Log.d("dkdebug","save success");
+                    }
                 } catch (Exception e) {
                     Log.d("dkdebug onResponse", "e=" + e);
                 }
             }
         });
-
     }
 }
