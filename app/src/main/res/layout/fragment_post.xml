@@ -379,15 +379,16 @@
                     <jp.wasabeef.richeditor.RichEditor
                         android:id="@+id/editor"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
+                        android:layout_height="200dp"
+
                         />
 
                     <TextView
                         android:id="@+id/preview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp" />
+                        android:layout_marginTop="15dp"
+                        />
 
                 </LinearLayout>
             </LinearLayout>
