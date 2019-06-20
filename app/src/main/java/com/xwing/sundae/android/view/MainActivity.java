@@ -1,7 +1,10 @@
 package com.xwing.sundae.android.view;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -270,7 +273,16 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==6||requestCode==4||requestCode==5)
+        {
+           if(mPostFragment!=null){
+               mPostFragment.onActivityResult(requestCode, resultCode, data);
+           }
 
 
-
+        }
+    }
 }

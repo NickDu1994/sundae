@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.xwing.sundae"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -54,4 +54,5 @@ dependencies {
     implementation 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
     implementation "com.android.support:design:28"
     implementation 'com.github.florent37:materialtextfield:1.0.7'
+    implementation 'com.lcw.library:imagepicker:2.2.0'
 }

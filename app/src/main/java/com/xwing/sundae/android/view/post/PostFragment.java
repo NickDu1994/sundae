@@ -29,9 +29,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.florent37.materialtextfield.MaterialTextField;
+import com.lcw.library.imagepicker.ImagePicker;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.Constant;
+import com.xwing.sundae.android.util.GlideLoader;
 import com.xwing.sundae.android.util.LoadingView;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.PostImageUtil;
@@ -92,7 +94,7 @@ public class PostFragment extends Fragment {
     private IndexFragment mIndexFragment;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
-
+    private ArrayList<String> mImagePaths;
     GetUserInfo getUserInfo;
 
     private MaterialTextField materialTextField1;
@@ -219,27 +221,60 @@ public class PostFragment extends Fragment {
             postBackShow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, null);
-                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                    startActivityForResult(intent, 2);
+
+                    ImagePicker.getInstance()
+                            .setTitle("选择背景图")//设置标题
+                            .showCamera(true)//设置是否显示拍照按钮
+                            .showImage(true)//设置是否展示图片
+                            .showVideo(true)//设置是否展示视频
+                            .setMaxCount(3)//设置最大选择图片数目(默认为1，单选)
+                            .setSingleType(true)//设置图片视频不能同时选择
+                            .setImagePaths(mImagePaths)//设置历史选择记录
+                            .setImageLoader(new GlideLoader())//设置自定义图片加载器
+                            .start(getActivity(), 6);
+//                    Intent intent = new Intent(Intent.ACTION_PICK, null);
+//                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+ //                   startActivityForResult(intent, 2);
 
                 }
             });
             postBackShow2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, null);
-                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                    startActivityForResult(intent, 4);
+
+                    ImagePicker.getInstance()
+                            .setTitle("选择背景图")//设置标题
+                            .showCamera(true)//设置是否显示拍照按钮
+                            .showImage(true)//设置是否展示图片
+                            .showVideo(true)//设置是否展示视频
+                            .setMaxCount(2)//设置最大选择图片数目(默认为1，单选)
+                            .setSingleType(true)//设置图片视频不能同时选择
+                            .setImagePaths(mImagePaths)//设置历史选择记录
+                            .setImageLoader(new GlideLoader())//设置自定义图片加载器
+                            .start(getActivity(), 4);
+//                    Intent intent = new Intent(Intent.ACTION_PICK, null);
+//                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+//                    startActivityForResult(intent, 4);
 
                 }
             });
             postBackShow3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, null);
-                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                    startActivityForResult(intent, 5);
+
+                    ImagePicker.getInstance()
+                            .setTitle("选择背景图")//设置标题
+                            .showCamera(true)//设置是否显示拍照按钮
+                            .showImage(true)//设置是否展示图片
+                            .showVideo(true)//设置是否展示视频
+                            .setMaxCount(1)//设置最大选择图片数目(默认为1，单选)
+                            .setSingleType(true)//设置图片视频不能同时选择
+                            .setImagePaths(mImagePaths)//设置历史选择记录
+                            .setImageLoader(new GlideLoader())//设置自定义图片加载器
+                            .start(getActivity(), 5);
+//                    Intent intent = new Intent(Intent.ACTION_PICK, null);
+//                    intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+//                    startActivityForResult(intent, 5);
 
                 }
             });
@@ -522,7 +557,7 @@ public class PostFragment extends Fragment {
                         Bitmap bitmap3 = ((BitmapDrawable) (postBackShow3).getDrawable()).getBitmap();
 
                         base64Image3 = PostImageUtil.imgToBase64(50, bitmap3);
-                        Log.d(TAG, "base64Image: " + base64Image);
+
                     }
                     Map<String, String> paramMap = new HashMap<>();
                     Long userId = getUserInfo.getUserInfo().getData().getId();
@@ -562,7 +597,7 @@ public class PostFragment extends Fragment {
                                                 loadingView.showSuccess();
                                             }
                                         });
-//                                        Log.d(TAG, "onResponse: " + response.body().string());
+                                        Log.d(TAG, "onResponse: " + response.body().string());
                                         ((MainActivity) getActivity()).gotoMyFragment();
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -571,7 +606,7 @@ public class PostFragment extends Fragment {
                                 }
                             }
                     );
-                    List<File> fileList = new ArrayList<>();
+                    /*List<File> fileList = new ArrayList<>();
 
                     File file = new File(getImagePath(postBackShowuri, ""));
 
@@ -596,7 +631,7 @@ public class PostFragment extends Fragment {
                             Log.d(TAG, "onResponse: " + response.toString());
 
                         }
-                    });
+                    });*/
                 }
             });
         }
@@ -638,27 +673,74 @@ public class PostFragment extends Fragment {
         }
        else  if (requestCode == 4) {
             // 从相册返回的数据
-            if (data != null) {
+            //if (data != null) {
                 // 得到图片的全路径
-                Uri uri = data.getData();
-                postBackShowuri2= uri;
-                postBackShow2.setBackgroundResource(0);
-                postBackShow2.setImageURI(uri);
-                postBackShow3.setVisibility(View.VISIBLE);
-            }
+                if(mImagePaths!=null&&mImagePaths.size()==1){
+                    postBackShowuri2= Uri.parse(mImagePaths.get(0));
+                    postBackShow2.setBackgroundResource(0);
+                    postBackShow2.setImageURI(postBackShowuri2);
+                    postBackShow2.setVisibility(View.VISIBLE);
+                    postBackShow3.setVisibility(View.VISIBLE);
+                }
+                 else if(mImagePaths!=null&&mImagePaths.size()==2){
+                    postBackShowuri3= Uri.parse(mImagePaths.get(1));
+                    postBackShow3.setBackgroundResource(0);
+                    postBackShow3.setImageURI(postBackShowuri3);
+                    postBackShow3.setVisibility(View.VISIBLE);
+                }
+//                Uri uri = data.getData();
+//                postBackShowuri2= uri;
+//                postBackShow2.setBackgroundResource(0);
+//                postBackShow2.setImageURI(uri);
+//                postBackShow3.setVisibility(View.VISIBLE);
+           // }
 
 
         }
         else if (requestCode == 5) {
             // 从相册返回的数据
-            if (data != null) {
+            //if (data != null) {
+                if(mImagePaths!=null&&mImagePaths.size()==1){
+                    postBackShowuri3= Uri.parse(mImagePaths.get(0));
+                    postBackShow3.setBackgroundResource(0);
+                    postBackShow3.setImageURI(postBackShowuri3);
+                    postBackShow3.setVisibility(View.VISIBLE);
+                }else{
+                    postBackShow3.setVisibility(View.VISIBLE);
+                }
                 // 得到图片的全路径
-                Uri uri = data.getData();
-                postBackShowuri3= uri;
-                postBackShow3.setBackgroundResource(0);
-                postBackShow3.setImageURI(uri);
-            }
+//                Uri uri = data.getData();
+//                postBackShowuri3= uri;
+//                postBackShow3.setBackgroundResource(0);
+//                postBackShow3.setImageURI(uri);
+           // }
 
+
+        }
+        else if (requestCode == 6) {
+            mImagePaths = data.getStringArrayListExtra(ImagePicker.EXTRA_SELECT_IMAGES);
+            Log.d(TAG, "onActivityResult: 666 " +mImagePaths);
+            // 从相册返回的数据
+                if(mImagePaths!=null&&mImagePaths.size()==1){
+                    postBackShowuri= Uri.parse(mImagePaths.get(0));
+                    postBackShow.setBackgroundResource(0);
+                    postBackShow.setImageURI(postBackShowuri);
+                    postBackShow.setVisibility(View.VISIBLE);
+                    postBackShow2.setVisibility(View.VISIBLE);
+                }
+                 else if(mImagePaths!=null&&mImagePaths.size()==2){
+                    postBackShowuri2= Uri.parse(mImagePaths.get(1));
+                    postBackShow2.setBackgroundResource(0);
+                    postBackShow2.setImageURI(postBackShowuri2);
+                    postBackShow2.setVisibility(View.VISIBLE);
+                    postBackShow3.setVisibility(View.VISIBLE);
+                }
+                 else if(mImagePaths!=null&&mImagePaths.size()==3){
+                    postBackShowuri3= Uri.parse(mImagePaths.get(2));
+                    postBackShow3.setBackgroundResource(0);
+                    postBackShow3.setImageURI(postBackShowuri3);
+                    postBackShow3.setVisibility(View.VISIBLE);
+                }
 
         }
 
