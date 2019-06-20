@@ -147,13 +147,11 @@ public class PostFragment extends Fragment {
             mEditor.setEditorHeight(200);
             mEditor.setEditorFontSize(22);
             mEditor.setEditorFontColor(Color.BLACK);
-            //mEditor.setEditorBackgroundColor(Color.BLUE);
-            //mEditor.setBackgroundColor(Color.BLUE);
-            //mEditor.setBackgroundResource(R.drawable.bg);
+
             mEditor.setPadding(10, 10, 10, 10);
-            //mEditor.setBackground("https://raw.githubusercontent.com/wasabeef/art/master/chip.jpg");
+
             mEditor.setPlaceholder("请输入正文");
-            //mEditor.setInputEnabled(false);
+
             materialTextField1 = view.findViewById(R.id.post_edit_t1);
             materialTextField2 = view.findViewById(R.id.post_edit_t2);
             editText1 = view.findViewById(R.id.post_edit1);
@@ -169,7 +167,7 @@ public class PostFragment extends Fragment {
                 public void onTextChange(String text) {
                     content = text;
                     Log.d(TAG, " post onTextChange: " + content);
-                    // mPreview.setText(text);
+
                 }
             });
             postBackShow.setOnClickListener(new View.OnClickListener() {
@@ -403,14 +401,7 @@ public class PostFragment extends Fragment {
                 }
             });
 
-       /* view.findViewById(R.id.action_insert_image).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) { Intent intent = new Intent(Intent.ACTION_PICK, null);
-                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                startActivityForResult(intent, 3);
 
-
-            }
-        });*/
 
             view.findViewById(R.id.action_insert_link).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -449,8 +440,7 @@ public class PostFragment extends Fragment {
         view.findViewById(R.id.post_back).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-               // PostFragment postFragment = (PostFragment)getFragmentManager().findFragmentById(R.id.mainContainer);
-               // getFragmentManager().beginTransaction().hide(mpostFragment).commit();
+
                 ((MainActivity)getActivity()).hidePostFragment();
 
                 }
@@ -470,27 +460,11 @@ public class PostFragment extends Fragment {
                     materialTextField1.expand();
                     materialTextField1.setBackgroundColor(Color.RED);
                     materialTextField1.setHasFocus(true);
-                   /* GradientDrawable drawable = new GradientDrawable();
-                    drawable.setCornerRadius(15);
-                    drawable.setStroke(2,Color.RED);
-                    if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                    {
-                        editText1.setBackground(drawable);
-                    }else{
-                        editText1.setBackgroundDrawable(drawable);
-                    }*/
+
                     return;
                 }else if(editText2==null||editText2.length()<=0){
                     materialTextField2.expand();
-                    /*GradientDrawable drawable = new GradientDrawable();
-                    drawable.setCornerRadius(15);
-                    drawable.setStroke(2,Color.RED);
-                    if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                    {
-                        editText2.setBackground(drawable);
-                    }else{
-                        editText2.setBackgroundDrawable(drawable);
-                    }*/
+
                     return;
                 }
                 if((postBackShow).getDrawable()==null||(postBackShow2).getDrawable()==null||(postBackShow3).getDrawable()==null){
