@@ -395,20 +395,20 @@
 
         </ScrollView>
 
-        <AbsoluteLayout
+
+    </LinearLayout>
+    <AbsoluteLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        >
+
+        <com.xwing.sundae.android.util.LoadingView
+            android:id="@+id/loadingView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            >
-
-            <com.xwing.sundae.android.util.LoadingView
-                android:id="@+id/loadingView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
-        </AbsoluteLayout>
-    </LinearLayout>
-
+            android:layout_centerInParent="true" />
+    </AbsoluteLayout>
 
 
 </FrameLayout>
