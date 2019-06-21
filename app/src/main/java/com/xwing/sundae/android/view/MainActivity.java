@@ -173,23 +173,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void gotoMyFragment() {
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-       // MyFragment myFragment = new MyFragment();
-        //fragmentTransaction.add(R.id.mainContainer, myFragment);
-        if(mMyFragment == null){
-            fragmentTransaction.remove(mPostFragment);
-            mMyFragment = MyFragment.newInstance("","");
-            fragmentTransaction.add(R.id.mainContainer, mMyFragment);
-        } else {
-            fragmentTransaction.remove(mPostFragment);
-            fragmentTransaction.show(mMyFragment);
-        }
-        fragmentTransaction.commit();
+        mBottomNavigationBar.selectTab(4);
     }
 
     public void hidePostFragment(){
-        fragmentTransaction.hide(mPostFragment);
+        mBottomNavigationBar.selectTab(0);
+      //  fragmentTransaction.hide(mPostFragment);
 
     }
     private void hideFragment(FragmentTransaction transaction){
