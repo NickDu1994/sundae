@@ -509,7 +509,16 @@ public class PostFragment extends Fragment {
                                 @Override
                                 public void onFailure(Call call, Exception e) {
                                     e.printStackTrace();
-                                    Log.d(TAG, "onFailure: ..." + e.getMessage());
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            loadingView.setText("上传失败");
+                                            loadingView.showFail();
+                                        }
+                                    });
+
+                                    ((MainActivity)getActivity()).hidePostFragment();
+
                                 }
 
                                 @Override
@@ -518,6 +527,7 @@ public class PostFragment extends Fragment {
                                         getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
+                                                loadingView.setText("上传成功");
                                                 loadingView.showSuccess();
                                             }
                                         });
