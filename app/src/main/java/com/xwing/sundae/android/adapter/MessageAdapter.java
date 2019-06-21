@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.MessageModel;
+import com.xwing.sundae.android.util.MessageConstant;
 
 import java.util.List;
 
@@ -36,11 +37,37 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
 
         MessageModel message = mDatas.get(position);
-        viewHolder.messageTitle.setText("收到关注");
+        String messageTxt = "";
+        int drawableId = 0;
+        int type = message.getType();
+
+        switch (type) {
+            case 0:
+                messageTxt = MessageConstant.MESSAGE_TYPE_SYSTEM;
+                drawableId = R.drawable.message_system;
+                viewHolder.messageImage.setBackgroundResource(R.drawable.message_system_bg);
+                break;
+            case 1:
+                messageTxt = MessageConstant.MESSAGE_TYPE_LIKE;
+                drawableId = R.drawable.message_like;
+                viewHolder.messageImage.setBackgroundResource(R.drawable.message_like_bg);
+                break;
+            case 2:
+                messageTxt = MessageConstant.MESSAGE_TYPE_FOLLOW;
+                drawableId = R.drawable.message_follow;
+                viewHolder.messageImage.setBackgroundResource(R.drawable.message_follow_bg);
+                break;
+            case 3:
+                messageTxt = MessageConstant.MESSAGE_TYPE_COLLECT;
+                drawableId = R.drawable.message_collection;
+                viewHolder.messageImage.setBackgroundResource(R.drawable.message_collect_bg);
+                break;
+        }
+
+        viewHolder.messageTitle.setText(messageTxt);
         viewHolder.messageContent.setText(message.getContent());
         viewHolder.messageTime.setText("2天前");
-        Glide.with(mContext).load(R.drawable.explore).into(viewHolder.messageImage);
-
+        Glide.with(mContext).load(drawableId).into(viewHolder.messageImage);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

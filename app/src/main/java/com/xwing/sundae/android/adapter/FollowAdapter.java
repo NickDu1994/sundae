@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.FollowModel;
+import com.xwing.sundae.android.util.ImageServerConstant;
 
 import java.util.List;
 
@@ -41,16 +42,17 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
         viewHolder.eventTime.setText(follow.getEvent_time());
         viewHolder.itemName.setText(follow.getItem_name());
         viewHolder.itemContent.setText(follow.getItem_content());
-        String avatarUrl = follow.getItem_image();
+        String avatarUrl = ImageServerConstant.IMAGE_SERVER_URL + follow.getItem_avatar();
+        String itemUrl = follow.getItem_image();
         RequestOptions options = new RequestOptions().circleCropTransform();
         if(null == avatarUrl || "".equals(avatarUrl)) {
-            Glide.with(mContext).load(R.drawable.defaultpic).apply(options).into(viewHolder.itemImage);
+            Glide.with(mContext).load(R.drawable.defaultpic).into(viewHolder.itemImage);
         } else {
-            Glide.with(mContext).load(avatarUrl).apply(options).into(viewHolder.itemImage);
+            Glide.with(mContext).load(itemUrl).into(viewHolder.itemImage);
         }
 
         viewHolder.itemUsername.setText(follow.getItem_username());
-        Glide.with(mContext).load(follow.getItem_avatar()).into(viewHolder.itemAvatar);
+        Glide.with(mContext).load(avatarUrl).apply(options).into(viewHolder.itemAvatar);
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

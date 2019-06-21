@@ -9,34 +9,19 @@
 
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
-        android:id="@+id/details_header"
+        android:id="@+id/info_header"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="0dp"
-        android:background="#323232">
-
-
+        android:layout_height="50sp"
+        android:background="#4879FF">
         <TextView
-            android:id="@+id/follow_btn"
+            android:id="@+id/header-title"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="false"
-            android:gravity="center"
-            android:text="关注"
-            android:textColor="#fff"
-            android:textSize="15sp" />
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="发现"
+            android:textColor="@color/colorSpace"
+            android:textSize="20sp"/>
 
-        <TextView
-            android:id="@+id/rank_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:gravity="center"
-            android:text="榜单"
-            android:textColor="#fff"
-            android:textSize="15sp" />
-        　　
     </RelativeLayout>
 
     <FrameLayout

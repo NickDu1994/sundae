@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.andview.refreshview.XRefreshView;
 import com.xwing.sundae.R;
@@ -29,7 +28,7 @@ import java.util.List;
  * Use the {@link ExploreFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ExploreFragment extends Fragment implements View.OnClickListener {
+public class ExploreFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -50,7 +49,7 @@ public class ExploreFragment extends Fragment implements View.OnClickListener {
     FragmentManager fm;
     FragmentTransaction transaction;
 
-    private TextView followBtn, rankBtn;
+//    private TextView followBtn, rankBtn;
 
     public ExploreFragment() {
         // Required empty public constructor
@@ -115,13 +114,13 @@ public class ExploreFragment extends Fragment implements View.OnClickListener {
 //
 //        getFollowList();
 //        setPullandRefresh();
-        followBtn = (TextView) getActivity().findViewById(R.id.follow_btn);
-        rankBtn = (TextView) getActivity().findViewById(R.id.rank_btn);
-        //控件颜色
-        followBtn.setTextColor(getResources().getColor(R.color.colorMainTheme));
-        rankBtn.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
-        followBtn.setOnClickListener(this);
-        rankBtn.setOnClickListener(this);
+//        followBtn = (TextView) getActivity().findViewById(R.id.follow_btn);
+//        rankBtn = (TextView) getActivity().findViewById(R.id.rank_btn);
+//        //控件颜色
+//        followBtn.setTextColor(getResources().getColor(R.color.colorMainTheme));
+//        rankBtn.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
+//        followBtn.setOnClickListener(this);
+//        rankBtn.setOnClickListener(this);
         setDefaultFragment();
     }
 
@@ -135,43 +134,43 @@ public class ExploreFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        // 开启Fragment事务
-        transaction = fm.beginTransaction();
-        hideFragment(transaction);
-
-        switch (v.getId())
-        {
-            case R.id.follow_btn:
-                if (followFragment == null)
-                {
-                    followFragment = FollowFragment.newInstance("","");
-                    transaction.add(R.id.list_container, followFragment);
-                } else {
-                    transaction.show(followFragment);
-                }
-
-                followBtn.setTextColor(getResources().getColor(R.color.colorMainTheme));
-                rankBtn.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
-                break;
-            case R.id.rank_btn:
-                if (rankTabFragment == null)
-                {
-                    rankTabFragment = RankTabFragment.newInstance("","");
-                    transaction.add(R.id.list_container, rankTabFragment);
-                } else {
-                    transaction.show(rankTabFragment);
-                }
-                //控件颜色
-                followBtn.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
-                rankBtn.setTextColor(getResources().getColor(R.color.colorMainTheme));
-                break;
-        }
-        // transaction.addToBackStack();
-        // 事务提交
-        transaction.commit();
-    }
+//    @Override
+//    public void onClick(View v) {
+//        // 开启Fragment事务
+//        transaction = fm.beginTransaction();
+//        hideFragment(transaction);
+//
+//        switch (v.getId())
+//        {
+//            case R.id.follow_btn:
+//                if (followFragment == null)
+//                {
+//                    followFragment = FollowFragment.newInstance("","");
+//                    transaction.add(R.id.list_container, followFragment);
+//                } else {
+//                    transaction.show(followFragment);
+//                }
+//
+//                followBtn.setTextColor(getResources().getColor(R.color.colorMainTheme));
+//                rankBtn.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
+//                break;
+//            case R.id.rank_btn:
+//                if (rankTabFragment == null)
+//                {
+//                    rankTabFragment = RankTabFragment.newInstance("","");
+//                    transaction.add(R.id.list_container, rankTabFragment);
+//                } else {
+//                    transaction.show(rankTabFragment);
+//                }
+//                //控件颜色
+//                followBtn.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
+//                rankBtn.setTextColor(getResources().getColor(R.color.colorMainTheme));
+//                break;
+//        }
+//        // transaction.addToBackStack();
+//        // 事务提交
+//        transaction.commit();
+//    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
