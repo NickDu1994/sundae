@@ -1,5 +1,6 @@
 package com.xwing.sundae.android.view.index;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,6 +78,7 @@ public class SearchFragment extends Fragment {
     private ListView listView;
     private ImageView likeIV;
     private ImageView saveIV;
+    private Context mContext;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -111,7 +114,7 @@ public class SearchFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        mContext = getActivity();
         fragmentManager = getFragmentManager();
 
     }
@@ -138,7 +141,8 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(count != 0) {
+                Log.d("dkdebug", "onTextChanged s=" + s + "count=" + count);
+                if(s.length() != 0) {
                     displayController(PANEL_LIST);
                     handleInput(s.toString());
                 }else {
@@ -156,7 +160,7 @@ public class SearchFragment extends Fragment {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 Log.d("dk","enter setOnEditorActionListener" + event);
                 if ((event != null && KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction())) {
-                    SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance(getContext());
+                    SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance(mContext);
                     String currentKeywordNote = spUtil.getSP("keyword_note");
                     currentKeywordNote = mainEditText.getText().toString() + "," + currentKeywordNote;
                     spUtil.putSP("keyword_note",currentKeywordNote);
@@ -182,13 +186,14 @@ public class SearchFragment extends Fragment {
         cleanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mainEditText.setText("");
+                Log.d("dkdebug", "click clean button");
+                mainEditText.getText().clear();
             }
         });
 
 
 
-        SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance(getContext());
+        SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance(mContext);
         Log.d("dk","dkdebug");
         if(spUtil.getSP("keyword_note")!= null){
             Log.d("dkdebug keywordNote=", spUtil.getSP("keyword_note"));
@@ -259,41 +264,41 @@ public class SearchFragment extends Fragment {
 
     public void handleInput(String keyword){
         listView = getActivity().findViewById(R.id.listContainer);
-        String url = Constant.globalServerUrl + "/abbreviation/searchAbbreviation";
+        String url = Constant.globalServerUrl + "/search/searchAbbreviation";
         HashMap<String, String> paramsMap = new HashMap<>();
         paramsMap.put("keyWords",keyword);
         Log.d("dkdebug", "request " + "paramsMap=" + paramsMap.toString());
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
                 Log.d("dkdebug onFailure", "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
                 keywordList.clear();
-                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
                 Log.d("dkdebug", "response" + response);
                 Gson gson = new Gson();
                 try{
-                    CommonResponse<List<SearchSuggestionModel>> responseSearchSuggestionList =
-                            (CommonResponse<List<SearchSuggestionModel>>)gson.fromJson(response,
-                                    new TypeToken<CommonResponse<List<SearchSuggestionModel>>>() {}.getType());
-                    final List<SearchSuggestionModel> dataList = responseSearchSuggestionList.getData();
-                    for(SearchSuggestionModel item : dataList){
+                    CommonResponse<List<AbbreviationPlusModel>> responseSearchSuggestionList =
+                            (CommonResponse<List<AbbreviationPlusModel>>)gson.fromJson(response,
+                                    new TypeToken<CommonResponse<List<AbbreviationPlusModel>>>() {}.getType());
+                    final List<AbbreviationPlusModel> dataList = responseSearchSuggestionList.getData();
+                    for(AbbreviationPlusModel item : dataList){
                         Map<String,String> map = new HashMap<String,String>();
-                        map.put("label", item.getAbbr_name() + " - " + item.getFull_name());
+                        map.put("label", item.getAbbrName() + " - " + item.getFullName());
                         map.put("id", item.getId());
                         keywordList.add(map);
                     }
 
-                    SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), keywordList, R.layout.item_search_result, new String[]{"label"}, new int[]{R.id.label});
+                    SimpleAdapter simpleAdapter = new SimpleAdapter(mContext, keywordList, R.layout.item_search_result, new String[]{"label"}, new int[]{R.id.label});
                     listView.setAdapter(simpleAdapter);
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Toast.makeText(getContext(), "position=" + position + keywordList.get(position).get("id"), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "position=" + position + keywordList.get(position).get("id"), Toast.LENGTH_SHORT).show();
                             showDetail(dataList.get(position).getId());
 
                         }
@@ -308,12 +313,15 @@ public class SearchFragment extends Fragment {
 
     public void showDetail(String entryId) {
 
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput (InputMethodManager.SHOW_FORCED, InputMethodManager.RESULT_HIDDEN);
+
         displayController(PANEL_DETAIL);
         currentEntryId = entryId;
 
         String url = Constant.globalServerUrl + "/abbreviation/getOneEntryDetail";
         HashMap<String, String> paramsMap = new HashMap<>();
-        GetUserInfo getUserInfo = new GetUserInfo(getContext());
+        GetUserInfo getUserInfo = new GetUserInfo(mContext);
         try{
             paramsMap.put("userId", getUserInfo.getUserInfo().getData().getId().toString());
         }catch (NullPointerException e) {
@@ -326,13 +334,13 @@ public class SearchFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
                 Log.d("dkdebug onFailure", "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
                 Log.d("dkdebug", "response" + response);
                 Gson gson = new Gson();
                 try{
@@ -358,10 +366,14 @@ public class SearchFragment extends Fragment {
 
                     if(data.isLike()){
                         likeIV.setImageResource(R.drawable.like);
+                    }else {
+                        likeIV.setImageResource(R.drawable.dislike);
                     }
 
                     if(data.isCollect()){
                         saveIV.setImageResource(R.drawable.heart_fill);
+                    }else {
+                        saveIV.setImageResource(R.drawable.heart);
                     }
                 } catch (Exception e) {
                     Log.d("dkdebug onResponse", "e=" + e);
@@ -387,27 +399,30 @@ public class SearchFragment extends Fragment {
             }
         }
 
-        GetUserInfo getUserInfo = new GetUserInfo(getContext());
+        GetUserInfo getUserInfo = new GetUserInfo(mContext);
         if(null == getUserInfo && "".equals(getUserInfo))   {
-            Toast.makeText(getContext(), "请先登录", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(getContext(), LoginActivity.class));
+            Toast.makeText(mContext, "请先登录", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(mContext, LoginActivity.class));
             return;
         }
         HashMap<String, String> paramsMap = new HashMap<>();
-        if(getUserInfo.getUserInfo().getData() != null){
-            paramsMap.put("userId",getUserInfo.getUserInfo().getData().getId().toString());
+        try{
+            paramsMap.put("userId", getUserInfo.getUserInfo().getData().getId().toString());
+        }catch (NullPointerException e) {
+            Log.d("dkdebug NPE", "e=" + e);
+            paramsMap.put("userId","");
         }
         paramsMap.put("entryId",entryId);
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
                 Log.d("dkdebug onFailure", "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
                 Log.d("dkdebug", "response" + response);
                 Gson gson = new Gson();
                 try{
