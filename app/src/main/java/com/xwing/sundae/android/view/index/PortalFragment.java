@@ -1,5 +1,6 @@
 package com.xwing.sundae.android.view.index;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -29,6 +31,8 @@ import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.GlideImageLoader;
 import com.xwing.sundae.android.util.OkhttpUtil;
+import com.xwing.sundae.android.view.IndexDetailActivity;
+import com.xwing.sundae.android.view.LoginActivity;
 import com.xwing.sundae.android.view.MainActivity;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
@@ -46,6 +50,8 @@ public class PortalFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private IndexDetailFragment mIndexDetailFragment;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -160,8 +166,9 @@ public class PortalFragment extends Fragment {
         });
     }
 
-    public void initMockData() {
-
+    public void openIndexDetail() {
+        Intent intent= new Intent(getContext(), IndexDetailActivity.class);
+        getActivity().startActivity(intent);
     }
 
     public void getNews(){
@@ -222,7 +229,7 @@ public class PortalFragment extends Fragment {
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
                 Log.d("dkdebug", "response" + response);
                 Gson gson = new Gson();
                 try{
@@ -246,7 +253,7 @@ public class PortalFragment extends Fragment {
                                 item.getContent(),
                                 imageList.toArray(new String[imageList.size()]),
                                 true,
-                                item.getVisitedCount() + "次阅读",
+                                (item.getVisitedCount() != null)? item.getVisitedCount(): "0" + "次阅读",
                                 CalculateTimeUntilNow(item.getCreateTime())
                         );
                         complexListModelList.add(complexListModel);
@@ -261,6 +268,12 @@ public class PortalFragment extends Fragment {
                     });
                     recyclerView.setHasFixedSize(true);
                     ComplexListAdapter complexListAdapter = new ComplexListAdapter(complexListModelList, getContext());
+                    complexListAdapter.setOnItemClickListener(new ComplexListAdapter.OnRecyclerViewItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int postion) {
+                            openIndexDetail();
+                        }
+                    });
                     recyclerView.setAdapter(complexListAdapter);
 
                 } catch (Exception e) {
