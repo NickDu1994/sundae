@@ -1,5 +1,6 @@
 package com.xwing.sundae.android.view.index;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -50,6 +51,7 @@ public class PortalFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private Context mContext;
 
     private IndexDetailFragment mIndexDetailFragment;
 
@@ -91,6 +93,7 @@ public class PortalFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         fragmentManager = getFragmentManager();
+        this.mContext = getActivity();
     }
 
     @Override
@@ -135,13 +138,13 @@ public class PortalFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
                 Log.d("dkdebug", "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
                 Log.d("dkdebug", "response" + response);
             }
         });
@@ -155,20 +158,20 @@ public class PortalFragment extends Fragment {
         OkhttpUtil.okHttpPostJson(url, jsonStr, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
                 Log.d("dkdebug", "response" + response);
             }
         });
     }
 
     public void openIndexDetail() {
-        Intent intent= new Intent(getContext(), IndexDetailActivity.class);
-        getActivity().startActivity(intent);
+        Intent intent= new Intent(mContext, IndexDetailActivity.class);
+        mContext.startActivity(intent);
     }
 
     public void getNews(){
@@ -179,14 +182,14 @@ public class PortalFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
-                Log.d("dkdebug onFailure", "e=" + e);
+                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug", " /news/getLastestNews onFailure e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
-                Log.d("dkdebug", "response" + response);
+                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug", "/news/getLastestNews response=" + response);
                 Gson gson = new Gson();
                 try{
                     CommonResponse<List<IndexBannerModel>> responseIndexBannerImage =
@@ -204,7 +207,7 @@ public class PortalFragment extends Fragment {
                     banner.setOnBannerListener(new OnBannerListener() {
                         @Override
                         public void OnBannerClick(int position) {
-                            Toast.makeText(getContext(), "open url=" + indexBannerModel.get(position).getHtmlUrl(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, "open url=" + indexBannerModel.get(position).getHtmlUrl(), Toast.LENGTH_SHORT).show();
                         }
                     });
                     banner.start();
@@ -223,13 +226,13 @@ public class PortalFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(getContext(),"Failed",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
                 Log.d("dkdebug onFailure", "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
-//                Toast.makeText(getContext(),"Success",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(//                Toast.makeTextmContext,"Success",Toast.LENGTH_SHORT).show();,"Success",Toast.LENGTH_SHORT).show();
                 Log.d("dkdebug", "response" + response);
                 Gson gson = new Gson();
                 try{
@@ -260,14 +263,14 @@ public class PortalFragment extends Fragment {
                     }
 
                     RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.index_recylerview);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
+                    recyclerView.setLayoutManager(new LinearLayoutManager(mContext){
                         @Override
                         public boolean canScrollVertically() {
                             return false;
                         }
                     });
                     recyclerView.setHasFixedSize(true);
-                    ComplexListAdapter complexListAdapter = new ComplexListAdapter(complexListModelList, getContext());
+                    ComplexListAdapter complexListAdapter = new ComplexListAdapter(complexListModelList, mContext);
                     complexListAdapter.setOnItemClickListener(new ComplexListAdapter.OnRecyclerViewItemClickListener() {
                         @Override
                         public void onItemClick(View view, int postion) {
