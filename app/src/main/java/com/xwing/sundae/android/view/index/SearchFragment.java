@@ -262,6 +262,7 @@ public class SearchFragment extends Fragment {
         String url = Constant.globalServerUrl + "/abbreviation/searchAbbreviation";
         HashMap<String, String> paramsMap = new HashMap<>();
         paramsMap.put("keyWords",keyword);
+        Log.d("dkdebug", "request " + "paramsMap=" + paramsMap.toString());
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
@@ -320,6 +321,8 @@ public class SearchFragment extends Fragment {
             paramsMap.put("userId","");
         }
         paramsMap.put("entryId",entryId);
+
+        Log.d("dkdebug", "request " + "paramsMap=" + paramsMap.toString());
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {

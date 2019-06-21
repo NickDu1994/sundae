@@ -249,6 +249,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
      */
     protected void setImageToView(Intent data) {
         Uri uri = data.getData();
+        info_user_pic.setBackgroundResource(0);
         info_user_pic.setImageURI(uri);
 
         Bitmap bitmap = ((BitmapDrawable) (info_user_pic).getDrawable()).getBitmap();
@@ -256,7 +257,6 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
 
         updateUserInfoPost("avatar",base64Image);
 
-//        uploadImage(base64Image);
     }
 
     private void uploadImage(String base64) {
@@ -286,7 +286,8 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
      */
     private void chooseImage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String[] items = {"选择本地照片", "拍照"};
+//        String[] items = {"选择本地照片", "拍照"};
+        String[] items = {"选择本地照片"};
         builder.setNegativeButton("取消", null);
         builder.setItems(items, new DialogInterface.OnClickListener() {
 
@@ -296,9 +297,9 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                     case CHOOSE_PICTURE: // 选择本地照片
                         choosePic();
                         break;
-                    case TAKE_PICTURE: // 拍照
-                        takePic();
-                        break;
+//                    case TAKE_PICTURE: // 拍照
+//                        takePic();
+//                        break;
                 }
             }
         });
@@ -309,16 +310,19 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
      * 选择图片方法
      */
     private void choosePic() {
-        Log.e("Maggie Image", "choose pic");
-        Intent openAlbumIntent = new Intent(Intent.ACTION_PICK);
-        openAlbumIntent.setType("image/*");
-        openAlbumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-        if (openAlbumIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(openAlbumIntent, CHOOSE_PICTURE);
-        } else {
-            Toast.makeText(UserInfoActivity.this, "未找到图片查看器", Toast.LENGTH_SHORT).show();
-        }
-        startActivityForResult(openAlbumIntent, CHOOSE_PICTURE);
+//        Log.e("Maggie Image", "choose pic");
+//        Intent openAlbumIntent = new Intent(Intent.ACTION_PICK);
+//        openAlbumIntent.setType("image/*");
+//        openAlbumIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+//        if (openAlbumIntent.resolveActivity(getPackageManager()) != null) {
+//            startActivityForResult(openAlbumIntent, CHOOSE_PICTURE);
+//        } else {
+//            Toast.makeText(UserInfoActivity.this, "未找到图片查看器", Toast.LENGTH_SHORT).show();
+//        }
+
+        Intent intent = new Intent(Intent.ACTION_PICK, null);
+        intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+        startActivityForResult(intent, CHOOSE_PICTURE);
     }
 
     /**

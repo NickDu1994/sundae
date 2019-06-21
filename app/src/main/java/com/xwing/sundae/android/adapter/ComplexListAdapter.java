@@ -19,6 +19,7 @@ public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.
 
     private List<ComplexListModel> mDataList;
     private Context mContext;
+    public OnRecyclerViewItemClickListener myClickItemListener;
 
     public ComplexListAdapter(List<ComplexListModel> complexListModelList, Context context){
         mDataList = complexListModelList;
@@ -29,7 +30,7 @@ public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.customeview_complex_list, viewGroup, false);
-        ViewHolder viewHolder = new ViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view, myClickItemListener);
         return viewHolder;
     }
 
@@ -57,7 +58,7 @@ public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.
         return mDataList.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView mainTextview;
         TextView mainContentTextview;
         ImageView mainImageview1;
@@ -66,9 +67,11 @@ public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.
         TextView recommendTextview;
         TextView viewnumberTextview;
         TextView createtimeTextview;
+        private OnRecyclerViewItemClickListener mListener;
 
-        public ViewHolder(View view) {
+        public ViewHolder(View view, OnRecyclerViewItemClickListener mListener) {
             super(view);
+            view.setOnClickListener(this);
             mainTextview = view.findViewById(R.id.main_title);
             mainContentTextview = view.findViewById(R.id.main_content);
             mainImageview1 = view.findViewById(R.id.main_image_1);
@@ -77,7 +80,22 @@ public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.
 //            recommendTextview = view.findViewById(R.id.recommend);
             viewnumberTextview = view.findViewById(R.id.view_number);
             createtimeTextview = view.findViewById(R.id.create_time);
+            this.mListener = mListener;
+        }
+
+        @Override
+        public void onClick(View v) {
+            mListener.onItemClick(v, getAdapterPosition());
         }
     }
 
+    public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
+        this.myClickItemListener = listener;
+    }
+
+    public interface OnRecyclerViewItemClickListener {
+        public void onItemClick(View view, int postion);
+    }
 }
+
+

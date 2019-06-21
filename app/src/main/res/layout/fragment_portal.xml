@@ -12,29 +12,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:padding="5sp"
-                    android:textSize="30sp"
-                    android:textStyle="bold"
-                    android:textColor="#4879FF"
-                    android:text="Sundae"/>
-            </LinearLayout>
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+            <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:padding="5sp"-->
+            <!--android:textSize="30sp"-->
+            <!--android:textStyle="bold"-->
+            <!--android:textColor="#4879FF"-->
+            <!--android:text="Sundae"/>-->
+            <!--</LinearLayout>-->
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="70dp">
+
                 <com.xwing.sundae.android.customview.SearchRoundCTACardView
                     android:id="@+id/search_button"
                     android:layout_width="match_parent"
@@ -43,16 +45,16 @@
             </LinearLayout>
 
 
-            <com.youth.banner.Banner
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <com.youth.banner.Banner xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/banner"
-                android:layout_margin="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="200dp" />
+                android:layout_height="200dp"
+                android:layout_margin="10dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/index_recylerview"
                     android:layout_width="match_parent"

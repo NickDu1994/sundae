@@ -62,7 +62,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
     public void onBindViewHolder(final ViewHolder v, int i) {
         MyPublishModel publish = mDatas.get(i);
         RequestOptions options = new RequestOptions().placeholder(R.drawable.explore)
-                .error(R.drawable.explore).circleCropTransform();
+                .error(R.drawable.explore);
         if("".equals(publish.getItem_image()) || null == publish.getItem_image()) {
             Glide.with(mContext).load(R.drawable.pic).apply(options).into(v.item_image);
         } else {

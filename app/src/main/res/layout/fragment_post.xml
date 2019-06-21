@@ -31,7 +31,6 @@
                 android:layout_centerVertical="true"
                 android:text="发布"
                 android:textSize="20dp"
-                android:textStyle="bold"
                 android:textColor="@android:color/white"/>
 
             <TextView
@@ -119,28 +118,30 @@
 
                             <ImageView
                                 android:id="@+id/post_back_show1"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginBottom="10dp"
-                                android:background="@drawable/addpic1"
+                                android:background="@drawable/pluspic"
                                 />
 
                             <ImageView
                                 android:id="@+id/post_back_show2"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
                                 android:layout_marginTop="10dp"
+                                android:layout_marginLeft="10sp"
                                 android:layout_marginBottom="10dp"
-                                android:background="@drawable/addpic1" />
+                                android:background="@drawable/pluspic" />
 
                             <ImageView
                                 android:id="@+id/post_back_show3"
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
                                 android:layout_marginTop="10dp"
+                                android:layout_marginLeft="10sp"
                                 android:layout_marginBottom="10dp"
-                                android:background="@drawable/addpic1" />
+                                android:background="@drawable/pluspic" />
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -164,128 +165,128 @@
 
                             <ImageButton
                                 android:id="@+id/action_undo"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/back1" />
 
                             <ImageButton
                                 android:id="@+id/action_redo"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/go1" />
 
                             <ImageButton
                                 android:id="@+id/action_bold"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/bold1" />
 
                             <ImageButton
                                 android:id="@+id/action_italic"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/italic1" />
 
                             <ImageButton
                                 android:id="@+id/action_subscript"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/subscript1" />
 
                             <ImageButton
                                 android:id="@+id/action_superscript"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/superscript1" />
 
                             <ImageButton
                                 android:id="@+id/action_strikethrough"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/strikethrough1" />
 
                             <ImageButton
                                 android:id="@+id/action_underline"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/underline1" />
 
                             <ImageButton
                                 android:id="@+id/action_heading1"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/h11" />
 
                             <ImageButton
                                 android:id="@+id/action_heading2"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/h12" />
 
                             <ImageButton
                                 android:id="@+id/action_heading3"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/h13" />
 
                             <ImageButton
                                 android:id="@+id/action_heading4"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/h14" />
 
                             <ImageButton
                                 android:id="@+id/action_heading5"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/h15" />
 
                             <ImageButton
                                 android:id="@+id/action_heading6"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/h16" />
 
                             <ImageButton
                                 android:id="@+id/action_txt_color"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/fontcolor" />
 
                             <ImageButton
                                 android:id="@+id/action_bg_color"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/bgcolor" />
@@ -293,24 +294,24 @@
 
                             <ImageButton
                                 android:id="@+id/action_indent"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/indent" />
 
                             <ImageButton
                                 android:id="@+id/action_outdent"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/outdent" />
 
                             <ImageButton
                                 android:id="@+id/action_align_left"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/justify_left" />
@@ -325,16 +326,16 @@
 
                             <ImageButton
                                 android:id="@+id/action_align_right"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/justify_right" />
 
                             <ImageButton
                                 android:id="@+id/action_insert_bullets"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/bullets" />
@@ -349,8 +350,8 @@
 
                             <ImageButton
                                 android:id="@+id/action_blockquote"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/blockquote" />
@@ -410,5 +411,17 @@
             android:layout_centerInParent="true" />
     </AbsoluteLayout>
 
+    <AbsoluteLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        >
+
+        <com.xwing.sundae.android.util.LoadingView
+            android:id="@+id/loadingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </AbsoluteLayout>
 
 </FrameLayout>
