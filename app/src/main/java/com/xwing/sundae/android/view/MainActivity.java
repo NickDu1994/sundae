@@ -9,13 +9,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -26,13 +21,10 @@ import com.xwing.sundae.android.customview.WeiboPopupWindow.MoreWindow;
 import com.xwing.sundae.android.view.explore.ExploreFragment;
 import com.xwing.sundae.android.view.explore.FollowFragment;
 import com.xwing.sundae.android.view.explore.RankFragment;
-import com.xwing.sundae.android.view.index.IndexDetailFragment;
 import com.xwing.sundae.android.view.index.IndexFragment;
 import com.xwing.sundae.android.view.message.MessageFragment;
 import com.xwing.sundae.android.view.my.MyFragment;
 import com.xwing.sundae.android.view.post.PostFragment;
-
-import java.lang.reflect.Field;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -71,8 +63,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initView() {
-//        setBottomNavigationItem(7,21);
-
         mBottomNavigationBar = findViewById(R.id.navigationBar);
         mBottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
         mBottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
@@ -82,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements
                 .setShape(ShapeBadgeItem.SHAPE_OVAL)
                 .setShapeColor(R.color.colorPrimary)
                 .setShapeColorResource(R.color.colorPrimary)
-                .setSizeInDp(this, 10, 10)
-                .setEdgeMarginInDp(this, 2)
+                .setSizeInDp(this,10,10)
+                .setEdgeMarginInDp(this,2)
 //                .setSizeInPixels(30,30)
 //                .setEdgeMarginInPixels(-1)
                 .setGravity(Gravity.TOP | Gravity.END)
@@ -98,26 +88,26 @@ public class MainActivity extends AppCompatActivity implements
                 .setFirstSelectedPosition(lastSelectedPosition)
                 .initialise();
 
-        mBottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.SimpleOnTabSelectedListener() {
+        mBottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.SimpleOnTabSelectedListener(){
 
             @Override
             public void onTabSelected(int position) {
                 lastSelectedPosition = position;
                 fragmentTransaction = fragmentManager.beginTransaction();
                 hideFragment(fragmentTransaction);
-                switch (position) {
+                switch (position){
                     case 0:  // index
 
-                        if (mIndexFragment == null) {
-                            mIndexFragment = IndexFragment.newInstance("", "");
+                        if(mIndexFragment == null){
+                            mIndexFragment = IndexFragment.newInstance("","");
                             fragmentTransaction.add(R.id.mainContainer, mIndexFragment);
                         } else {
                             fragmentTransaction.show(mIndexFragment);
                         }
                         break;
                     case 1:  // explore
-                        if (mExploreFragment == null) {
-                            mExploreFragment = ExploreFragment.newInstance("", "");
+                        if(mExploreFragment == null){
+                            mExploreFragment = ExploreFragment.newInstance("","");
                             fragmentTransaction.add(R.id.mainContainer, mExploreFragment);
                         } else {
                             fragmentTransaction.show(mExploreFragment);
@@ -137,14 +127,14 @@ public class MainActivity extends AppCompatActivity implements
                         } else {
                             fragmentTransaction.show(mPostFragment);
                         }*/
-                        // showMoreWindow(getWindow().getDecorView().findViewById(R.id.mainContainer));
+                       // showMoreWindow(getWindow().getDecorView().findViewById(R.id.mainContainer));
 
                         showMoreWindow(findViewById(R.id.mainContainer));
                         //For navigation logic, go to below
                         break;
                     case 3:  // message
-                        if (mMessageFragment == null) {
-                            mMessageFragment = MessageFragment.newInstance("", "");
+                        if(mMessageFragment == null){
+                            mMessageFragment = MessageFragment.newInstance("","");
                             fragmentTransaction.add(R.id.mainContainer, mMessageFragment);
                         } else {
                             fragmentTransaction.show(mMessageFragment);
@@ -152,17 +142,23 @@ public class MainActivity extends AppCompatActivity implements
                         break;
                     case 4:  // my
 
-                        if (mMyFragment == null) {
-                            mMyFragment = MyFragment.newInstance("", "");
-                            fragmentTransaction.add(R.id.mainContainer, mMyFragment);
-                        } else {
-                            fragmentTransaction.show(mMyFragment);
-                        }
+                        boolean isLogin = false;//Todo
+//                        if(isLogin) {
+                            if(mMyFragment == null){
+                                mMyFragment = MyFragment.newInstance("","");
+                                fragmentTransaction.add(R.id.mainContainer, mMyFragment);
+                            } else {
+                                fragmentTransaction.show(mMyFragment);
+                            }
+//                        } else {
+//                            Intent intent=new Intent(MainActivity.this, LoginActivity.class);
+//                            startActivity(intent);
+//                        }
 
                         break;
                     default:
-                        Log.e(TAG, "navigation tab index catching error");
-                        break;
+                        Log.e(TAG , "navigation tab index catching error");
+                            break;
                 }//switch
                 fragmentTransaction.commit();
             }//onTabSelected
@@ -177,44 +173,32 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void gotoMyFragment() {
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        // MyFragment myFragment = new MyFragment();
-        //fragmentTransaction.add(R.id.mainContainer, myFragment);
-        if (mMyFragment == null) {
-            fragmentTransaction.remove(mPostFragment);
-            mMyFragment = MyFragment.newInstance("", "");
-            fragmentTransaction.add(R.id.mainContainer, mMyFragment);
-        } else {
-            fragmentTransaction.remove(mPostFragment);
-            fragmentTransaction.show(mMyFragment);
-        }
-        fragmentTransaction.commit();
+        mBottomNavigationBar.selectTab(4);
     }
 
-    public void hidePostFragment() {
-        fragmentTransaction.hide(mPostFragment);
+    public void hidePostFragment(){
+        mBottomNavigationBar.selectTab(0);
+      //  fragmentTransaction.hide(mPostFragment);
 
     }
-
-    private void hideFragment(FragmentTransaction transaction) {
-        if (mIndexFragment != null) {
+    private void hideFragment(FragmentTransaction transaction){
+        if (mIndexFragment != null){
             transaction.hide(mIndexFragment);
         }
 
-        if (mExploreFragment != null) {
+        if(mExploreFragment != null){
             transaction.hide(mExploreFragment);
         }
 
-        if (mPostFragment != null) {
+        if(mPostFragment != null) {
             transaction.hide(mPostFragment);
         }
 
-        if (mMessageFragment != null) {
+        if(mMessageFragment != null) {
             transaction.hide(mMessageFragment);
         }
 
-        if (mMyFragment != null) {
+        if(mMyFragment != null) {
             transaction.hide(mMyFragment);
         }
     }
@@ -225,25 +209,25 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void showMoreWindow(View view) {
-        Log.e(TAG, "enter showMoreWindow");
+        Log.e(TAG , "enter showMoreWindow");
         if (null == mMoreWindow) {
             mMoreWindow = new MoreWindow(this);
             mMoreWindow.init();
         }
-        mMoreWindow.showMoreWindow(view, 100, getSupportFragmentManager());
+        mMoreWindow.showMoreWindow(view,100, getSupportFragmentManager());
     }
 
-    public void clickCiTiao(View view) {
+    public void clickCiTiao(View view){
         fragmentTransaction = fragmentManager.beginTransaction();
         mMoreWindow.hideMoreWindow();
         Toast.makeText(this, "点击了词条", Toast.LENGTH_SHORT).show();
-        if (mPostFragment == null) {
-            mPostFragment = PostFragment.newInstance("1", "");
+        if(mPostFragment == null){
+            mPostFragment = PostFragment.newInstance("1","");
 
             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
         } else {
             fragmentTransaction.remove(mPostFragment);
-            mPostFragment = PostFragment.newInstance("1", "");
+            mPostFragment = PostFragment.newInstance("1","");
             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
 
         }
@@ -254,25 +238,25 @@ public class MainActivity extends AppCompatActivity implements
     public void clickXinDe(View view) {
         fragmentTransaction = fragmentManager.beginTransaction();
         mMoreWindow.hideMoreWindow();
-        if (mPostFragment == null) {
-            mPostFragment = PostFragment.newInstance("2", "");
+        if(mPostFragment == null){
+            mPostFragment = PostFragment.newInstance("2","");
             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
         } else {
             fragmentTransaction.remove(mPostFragment);
-            mPostFragment = PostFragment.newInstance("2", "");
+            mPostFragment = PostFragment.newInstance("2","");
             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
 
         }
         fragmentTransaction.commit();
-        // mMoreWindow.hideMoreWindow();
-        // Toast.makeText(this, "点击了心得", Toast.LENGTH_SHORT).show();
+       // mMoreWindow.hideMoreWindow();
+       // Toast.makeText(this, "点击了心得", Toast.LENGTH_SHORT).show();
     }
 
-    public void triggerBottomNavigationBar(boolean isShow) {
-        if (isShow) {
+    public void triggerBottomNavigationBar(boolean isShow){
+        if(isShow){
             mBottomNavigationBar.setVisibility(View.VISIBLE);
             //mBottomNavigationBar.show();
-        } else {
+        }else{
             mBottomNavigationBar.setVisibility(View.GONE);
             //mBottomNavigationBar.hide();
         }
@@ -281,10 +265,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 6 || requestCode == 4 || requestCode == 5) {
-            if (mPostFragment != null) {
-                mPostFragment.onActivityResult(requestCode, resultCode, data);
-            }
+        if(requestCode==6||requestCode==4||requestCode==5)
+        {
+           if(mPostFragment!=null){
+               mPostFragment.onActivityResult(requestCode, resultCode, data);
+           }
 
 
         }
