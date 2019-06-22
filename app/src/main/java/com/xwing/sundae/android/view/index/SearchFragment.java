@@ -26,6 +26,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
@@ -66,6 +67,8 @@ public class SearchFragment extends Fragment {
     private String currentEntryId = "";
     private boolean isLike = false;
     private boolean isSave = false;
+    private boolean isFollow = false;
+    private String storageAuthorId = "";
 
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -78,6 +81,7 @@ public class SearchFragment extends Fragment {
     private ListView listView;
     private ImageView likeIV;
     private ImageView saveIV;
+    private TextView followTV;
     private Context mContext;
 
     // TODO: Rename and change types of parameters
@@ -214,13 +218,11 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!isSave){
-                    handleSaveAndLike(currentEntryId, false, "save");
-                    saveIV.setImageResource(R.drawable.heart_fill);
-                    isSave = true;
-                }else {
                     handleSaveAndLike(currentEntryId, true, "save");
-                    saveIV.setImageResource(R.drawable.heart);
-                    isSave = false;
+
+                }else {
+                    handleSaveAndLike(currentEntryId, false, "save");
+
                 }
             }
         });
@@ -230,13 +232,27 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!isLike){
-                    handleSaveAndLike(currentEntryId, false, "like");
-                    likeIV.setImageResource(R.drawable.dislike);
-                    isLike = true;
-                }else {
                     handleSaveAndLike(currentEntryId, true, "like");
-                    likeIV.setImageResource(R.drawable.like);
-                    isLike = false;
+
+                }else {
+                    handleSaveAndLike(currentEntryId, false, "like");
+
+                }
+            }
+        });
+
+        followTV = getActivity().findViewById(R.id.user_follow);
+        followTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!isFollow){
+                    handleFollow(true);
+                    followTV.setText("已关注");
+                    isFollow = true;
+                }else {
+                    handleFollow(false);
+                    followTV.setText("关注");
+                    isFollow = false;
                 }
             }
         });
@@ -361,19 +377,35 @@ public class SearchFragment extends Fragment {
                     createTimeTV.setText(CommonMethod.CalculateTimeUntilNow(data.getAbbreviation().getCreateTime()));
                     TextView authorTV = getActivity().findViewById(R.id.author);
                     authorTV.setText(data.getAbbreviation().getCreateBy());
+                    storageAuthorId = data.getAbbreviation().getCreateBy();
                     TextView likeTV = getActivity().findViewById(R.id.like_number);
                     likeTV.setText(data.getAbbreviation().getLikedCount() + "获赞");
 
                     if(data.isLike()){
                         likeIV.setImageResource(R.drawable.like);
+                        isLike = true;
                     }else {
                         likeIV.setImageResource(R.drawable.dislike);
+                        isLike = false;
                     }
 
                     if(data.isCollect()){
                         saveIV.setImageResource(R.drawable.heart_fill);
+                        isSave = true;
                     }else {
                         saveIV.setImageResource(R.drawable.heart);
+                        isSave = false;
+                    }
+
+                    if(data.isFollow()){
+                        followTV.setText("已关注");
+                    }else {
+                        followTV.setText("关注");
+                    }
+
+                    if(data.getAbbreviation().getImageList().size() >= 1){
+                        ImageView detailMainImage = getActivity().findViewById(R.id.detailMainImage);
+                        Glide.with(mContext).load(data.getAbbreviation().getImageList().get(0).getPath()).into(detailMainImage);
                     }
                 } catch (Exception e) {
                     Log.d("dkdebug onResponse", "e=" + e);
@@ -383,8 +415,10 @@ public class SearchFragment extends Fragment {
 
     }
 
-    public void handleSaveAndLike(String entryId, boolean isEnroll, String type) {
+    public void handleSaveAndLike(final String entryId, boolean isEnroll, String type) {
         String url= "";
+        final boolean finalIsEnroll = isEnroll;
+        final String finalType = type;
         if("like".equals(type)){
             if(isEnroll){
                 url = Constant.globalServerUrl + "/abbreviation/like";
@@ -399,8 +433,10 @@ public class SearchFragment extends Fragment {
             }
         }
 
+        final String tempLogUrl = url;
+
         GetUserInfo getUserInfo = new GetUserInfo(mContext);
-        if(null == getUserInfo && "".equals(getUserInfo))   {
+        if(!getUserInfo.isUserLogined())   {
             Toast.makeText(mContext, "请先登录", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(mContext, LoginActivity.class));
             return;
@@ -417,13 +453,79 @@ public class SearchFragment extends Fragment {
             @Override
             public void onFailure(Call call, Exception e) {
                 Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
-                Log.d("dkdebug onFailure", "e=" + e);
+                Log.d("dkdebug onFailure", tempLogUrl + "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
                 Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
-                Log.d("dkdebug", "response" + response);
+                Log.d("dkdebug", tempLogUrl + "response" + response);
+                Gson gson = new Gson();
+                try{
+                    CommonResponse<Object> saveResult =
+                            (CommonResponse<Object>)gson.fromJson(response,
+                                    new TypeToken<CommonResponse<Object>>() {}.getType());
+                    if(saveResult.getStatus() == 200){
+                        Log.d("dkdebug","save success");
+                        if("like".equals(finalType)){
+                            if(finalIsEnroll){
+                                likeIV.setImageResource(R.drawable.like);
+                                isLike = false;
+                            }else {
+                                likeIV.setImageResource(R.drawable.dislike);
+                                isLike = true;
+                            }
+                        }else {
+                            if(finalIsEnroll){
+                                saveIV.setImageResource(R.drawable.heart_fill);
+                                isSave = true;
+                            }else {
+                                saveIV.setImageResource(R.drawable.heart);
+                                isSave = false;
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.d("dkdebug onResponse", "e=" + e);
+                }
+            }
+        });
+    }
+
+    public void handleFollow(boolean isEnroll) {
+        String url= "";
+        if(isEnroll){
+            url = Constant.globalServerUrl + "/follow/follow";
+        }else {
+            url = Constant.globalServerUrl + "/follow/remove";
+        }
+        final String logUrl = url;
+
+        GetUserInfo getUserInfo = new GetUserInfo(mContext);
+        if(!getUserInfo.isUserLogined())   {
+            Toast.makeText(mContext, "请先登录", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(mContext, LoginActivity.class));
+            return;
+        }
+        HashMap<String, String> paramsMap = new HashMap<>();
+        try{
+            paramsMap.put("userId", getUserInfo.getUserInfo().getData().getId().toString());
+        }catch (NullPointerException e) {
+            Log.d("dkdebug NPE", "e=" + e);
+            paramsMap.put("userId","");
+        }
+        paramsMap.put("followedUserId", storageAuthorId);
+        OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug onFailure", logUrl + "e=" + e);
+            }
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug", logUrl + "response" + response);
                 Gson gson = new Gson();
                 try{
                     CommonResponse<Object> saveResult =

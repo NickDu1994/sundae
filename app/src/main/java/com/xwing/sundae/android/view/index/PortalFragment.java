@@ -106,6 +106,8 @@ public class PortalFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+
+
         SearchRoundCTACardView searchRoundCTACardView = getActivity().findViewById(R.id.search_button);
         searchRoundCTACardView.setOnClickListener(new View.OnClickListener(){
 
