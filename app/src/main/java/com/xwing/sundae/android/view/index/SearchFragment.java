@@ -218,13 +218,11 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!isSave){
-                    handleSaveAndLike(currentEntryId, false, "save");
-                    saveIV.setImageResource(R.drawable.heart_fill);
-                    isSave = true;
-                }else {
                     handleSaveAndLike(currentEntryId, true, "save");
-                    saveIV.setImageResource(R.drawable.heart);
-                    isSave = false;
+
+                }else {
+                    handleSaveAndLike(currentEntryId, false, "save");
+
                 }
             }
         });
@@ -234,13 +232,11 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!isLike){
-                    handleSaveAndLike(currentEntryId, false, "like");
-                    likeIV.setImageResource(R.drawable.dislike);
-                    isLike = true;
-                }else {
                     handleSaveAndLike(currentEntryId, true, "like");
-                    likeIV.setImageResource(R.drawable.like);
-                    isLike = false;
+
+                }else {
+                    handleSaveAndLike(currentEntryId, false, "like");
+
                 }
             }
         });
@@ -250,11 +246,11 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if(!isFollow){
-                    //handleFollow();
+                    handleFollow(true);
                     followTV.setText("已关注");
                     isFollow = true;
                 }else {
-                    //handleFollow();
+                    handleFollow(false);
                     followTV.setText("关注");
                     isFollow = false;
                 }
@@ -387,14 +383,24 @@ public class SearchFragment extends Fragment {
 
                     if(data.isLike()){
                         likeIV.setImageResource(R.drawable.like);
+                        isLike = true;
                     }else {
                         likeIV.setImageResource(R.drawable.dislike);
+                        isLike = false;
                     }
 
                     if(data.isCollect()){
                         saveIV.setImageResource(R.drawable.heart_fill);
+                        isSave = true;
                     }else {
                         saveIV.setImageResource(R.drawable.heart);
+                        isSave = false;
+                    }
+
+                    if(data.isFollow()){
+                        followTV.setText("已关注");
+                    }else {
+                        followTV.setText("关注");
                     }
 
                     if(data.getAbbreviation().getImageList().size() >= 1){
@@ -409,8 +415,10 @@ public class SearchFragment extends Fragment {
 
     }
 
-    public void handleSaveAndLike(String entryId, boolean isEnroll, String type) {
+    public void handleSaveAndLike(final String entryId, boolean isEnroll, String type) {
         String url= "";
+        final boolean finalIsEnroll = isEnroll;
+        final String finalType = type;
         if("like".equals(type)){
             if(isEnroll){
                 url = Constant.globalServerUrl + "/abbreviation/like";
@@ -425,8 +433,10 @@ public class SearchFragment extends Fragment {
             }
         }
 
+        final String tempLogUrl = url;
+
         GetUserInfo getUserInfo = new GetUserInfo(mContext);
-        if(null == getUserInfo && "".equals(getUserInfo))   {
+        if(!getUserInfo.isUserLogined())   {
             Toast.makeText(mContext, "请先登录", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(mContext, LoginActivity.class));
             return;
@@ -443,13 +453,13 @@ public class SearchFragment extends Fragment {
             @Override
             public void onFailure(Call call, Exception e) {
                 Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
-                Log.d("dkdebug onFailure", "e=" + e);
+                Log.d("dkdebug onFailure", tempLogUrl + "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
                 Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
-                Log.d("dkdebug", "response" + response);
+                Log.d("dkdebug", tempLogUrl + "response" + response);
                 Gson gson = new Gson();
                 try{
                     CommonResponse<Object> saveResult =
@@ -457,6 +467,23 @@ public class SearchFragment extends Fragment {
                                     new TypeToken<CommonResponse<Object>>() {}.getType());
                     if(saveResult.getStatus() == 200){
                         Log.d("dkdebug","save success");
+                        if("like".equals(finalType)){
+                            if(finalIsEnroll){
+                                likeIV.setImageResource(R.drawable.like);
+                                isLike = false;
+                            }else {
+                                likeIV.setImageResource(R.drawable.dislike);
+                                isLike = true;
+                            }
+                        }else {
+                            if(finalIsEnroll){
+                                saveIV.setImageResource(R.drawable.heart_fill);
+                                isSave = true;
+                            }else {
+                                saveIV.setImageResource(R.drawable.heart);
+                                isSave = false;
+                            }
+                        }
                     }
                 } catch (Exception e) {
                     Log.d("dkdebug onResponse", "e=" + e);
@@ -465,7 +492,7 @@ public class SearchFragment extends Fragment {
         });
     }
 
-    public void handleFollow(String followWho, boolean isEnroll) {
+    public void handleFollow(boolean isEnroll) {
         String url= "";
         if(isEnroll){
             url = Constant.globalServerUrl + "/follow/follow";
@@ -475,7 +502,7 @@ public class SearchFragment extends Fragment {
         final String logUrl = url;
 
         GetUserInfo getUserInfo = new GetUserInfo(mContext);
-        if(null == getUserInfo && "".equals(getUserInfo))   {
+        if(!getUserInfo.isUserLogined())   {
             Toast.makeText(mContext, "请先登录", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(mContext, LoginActivity.class));
             return;
