@@ -43,7 +43,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
         viewHolder.itemName.setText(follow.getItem_name());
         viewHolder.itemContent.setText(follow.getItem_content());
         String avatarUrl = ImageServerConstant.IMAGE_SERVER_URL + follow.getItem_avatar();
-        String itemUrl = follow.getItem_image();
+        String itemUrl = ImageServerConstant.IMAGE_SERVER_URL + follow.getItem_image();
         RequestOptions options = new RequestOptions().circleCropTransform();
         if(null == itemUrl || "".equals(itemUrl)) {
             Glide.with(mContext).load(R.drawable.defaultpic).into(viewHolder.itemImage);
