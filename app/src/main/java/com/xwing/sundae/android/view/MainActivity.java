@@ -5,13 +5,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -26,6 +31,8 @@ import com.xwing.sundae.android.view.index.IndexFragment;
 import com.xwing.sundae.android.view.message.MessageFragment;
 import com.xwing.sundae.android.view.my.MyFragment;
 import com.xwing.sundae.android.view.post.PostFragment;
+
+import java.lang.reflect.Field;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -68,16 +75,18 @@ public class MainActivity extends AppCompatActivity implements
 
     private void initView() {
         mBottomNavigationBar = findViewById(R.id.navigationBar);
-        mBottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
+        mBottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED_NO_TITLE);
         mBottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         mBottomNavigationBar.setBarBackgroundColor(R.color.colorNavigationBarBg);
+
+        setBottomNavigationItem(mBottomNavigationBar, 16, 16, 10);
 
         mShapeBadgeItem = new ShapeBadgeItem()
                 .setShape(ShapeBadgeItem.SHAPE_OVAL)
                 .setShapeColor(R.color.colorPrimary)
                 .setShapeColorResource(R.color.colorPrimary)
-                .setSizeInDp(this,10,10)
-                .setEdgeMarginInDp(this,2)
+                .setSizeInDp(this, 5, 5)
+                .setEdgeMarginInDp(this, 10)
 //                .setSizeInPixels(30,30)
 //                .setEdgeMarginInPixels(-1)
                 .setGravity(Gravity.TOP | Gravity.END)
@@ -86,32 +95,32 @@ public class MainActivity extends AppCompatActivity implements
         mBottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.index_actived, "首页").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.index).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
                 .addItem(new BottomNavigationItem(R.drawable.explore_actived, "发现").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.explore).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
-                .addItem(new BottomNavigationItem(R.drawable.post_actived, "").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.post).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
+                .addItem(new BottomNavigationItem(R.drawable.post_actived, "").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.post_actived).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
                 .addItem(new BottomNavigationItem(R.drawable.message_actived, "消息").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.message).setInActiveColorResource(R.color.colorNavigationBarInactivedText).setBadgeItem(mShapeBadgeItem))
                 .addItem(new BottomNavigationItem(R.drawable.my_actived, "我").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.my).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
                 .setFirstSelectedPosition(lastSelectedPosition)
                 .initialise();
 
-        mBottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.SimpleOnTabSelectedListener(){
+        mBottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.SimpleOnTabSelectedListener() {
 
             @Override
             public void onTabSelected(int position) {
                 lastSelectedPosition = position;
                 fragmentTransaction = fragmentManager.beginTransaction();
                 hideFragment(fragmentTransaction);
-                switch (position){
+                switch (position) {
                     case 0:  // index
 
-                        if(mIndexFragment == null){
-                            mIndexFragment = IndexFragment.newInstance("","");
+                        if (mIndexFragment == null) {
+                            mIndexFragment = IndexFragment.newInstance("", "");
                             fragmentTransaction.add(R.id.mainContainer, mIndexFragment);
                         } else {
                             fragmentTransaction.show(mIndexFragment);
                         }
                         break;
                     case 1:  // explore
-                        if(mExploreFragment == null){
-                            mExploreFragment = ExploreFragment.newInstance("","");
+                        if (mExploreFragment == null) {
+                            mExploreFragment = ExploreFragment.newInstance("", "");
                             fragmentTransaction.add(R.id.mainContainer, mExploreFragment);
                         } else {
                             fragmentTransaction.show(mExploreFragment);
@@ -131,14 +140,14 @@ public class MainActivity extends AppCompatActivity implements
                         } else {
                             fragmentTransaction.show(mPostFragment);
                         }*/
-                       // showMoreWindow(getWindow().getDecorView().findViewById(R.id.mainContainer));
+                        // showMoreWindow(getWindow().getDecorView().findViewById(R.id.mainContainer));
 
                         showMoreWindow(findViewById(R.id.mainContainer));
                         //For navigation logic, go to below
                         break;
                     case 3:  // message
-                        if(mMessageFragment == null){
-                            mMessageFragment = MessageFragment.newInstance("","");
+                        if (mMessageFragment == null) {
+                            mMessageFragment = MessageFragment.newInstance("", "");
                             fragmentTransaction.add(R.id.mainContainer, mMessageFragment);
                         } else {
                             fragmentTransaction.show(mMessageFragment);
@@ -148,12 +157,12 @@ public class MainActivity extends AppCompatActivity implements
 
                         boolean isLogin = false;//Todo
 //                        if(isLogin) {
-                            if(mMyFragment == null){
-                                mMyFragment = MyFragment.newInstance("","");
-                                fragmentTransaction.add(R.id.mainContainer, mMyFragment);
-                            } else {
-                                fragmentTransaction.show(mMyFragment);
-                            }
+                        if (mMyFragment == null) {
+                            mMyFragment = MyFragment.newInstance("", "");
+                            fragmentTransaction.add(R.id.mainContainer, mMyFragment);
+                        } else {
+                            fragmentTransaction.show(mMyFragment);
+                        }
 //                        } else {
 //                            Intent intent=new Intent(MainActivity.this, LoginActivity.class);
 //                            startActivity(intent);
@@ -161,13 +170,51 @@ public class MainActivity extends AppCompatActivity implements
 
                         break;
                     default:
-                        Log.e(TAG , "navigation tab index catching error");
-                            break;
+                        Log.e(TAG, "navigation tab index catching error");
+                        break;
                 }//switch
                 fragmentTransaction.commit();
             }//onTabSelected
         });
     }
+
+    private void setBottomNavigationItem(BottomNavigationBar bottomNavigationBar, int space, int imgLen, int textSize) {
+        Class barClass = bottomNavigationBar.getClass();
+        Field[] fields = barClass.getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            Field field = fields[i];
+            field.setAccessible(true);
+            if (field.getName().equals("mainContainer")) {
+                try {
+                    LinearLayout mTabContainer = (LinearLayout) field.get(bottomNavigationBar);
+                    for (int j = 0; j < mTabContainer.getChildCount(); j++) {
+                        View view = mTabContainer.getChildAt(j);
+                        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip2px(56));
+                        FrameLayout container = (FrameLayout) view.findViewById(R.id.fixed_bottom_navigation_container);
+                        container.setLayoutParams(params);
+                        container.setPadding(dip2px(22), dip2px(0), dip2px(12), dip2px(0));
+                        TextView labelView = (TextView) view.findViewById(com.ashokvarma.bottomnavigation.R.id.fixed_bottom_navigation_title);
+                        labelView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize);
+                        labelView.setIncludeFontPadding(false);
+                        labelView.setPadding(0, 0, 0, dip2px(20 - textSize - space / 2));
+                        ImageView iconView = (ImageView) view.findViewById(com.ashokvarma.bottomnavigation.R.id.fixed_bottom_navigation_icon);
+                        params = new FrameLayout.LayoutParams(dip2px(imgLen), dip2px(imgLen));
+                        params.setMargins(0, 0, 0, space / 2);
+                        params.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+                        iconView.setLayoutParams(params);
+                    }
+                }catch (IllegalAccessException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public int dip2px(float dpValue) {
+        final float scale = getApplication().getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
 
     private void setDefaultFragment() {
         mIndexFragment = new IndexFragment();
@@ -180,29 +227,30 @@ public class MainActivity extends AppCompatActivity implements
         mBottomNavigationBar.selectTab(4);
     }
 
-    public void hidePostFragment(){
+    public void hidePostFragment() {
         mBottomNavigationBar.selectTab(0);
-      //  fragmentTransaction.hide(mPostFragment);
+        //  fragmentTransaction.hide(mPostFragment);
 
     }
-    private void hideFragment(FragmentTransaction transaction){
-        if (mIndexFragment != null){
+
+    private void hideFragment(FragmentTransaction transaction) {
+        if (mIndexFragment != null) {
             transaction.hide(mIndexFragment);
         }
 
-        if(mExploreFragment != null){
+        if (mExploreFragment != null) {
             transaction.hide(mExploreFragment);
         }
 
-        if(mPostFragment != null) {
+        if (mPostFragment != null) {
             transaction.hide(mPostFragment);
         }
 
-        if(mMessageFragment != null) {
+        if (mMessageFragment != null) {
             transaction.hide(mMessageFragment);
         }
 
-        if(mMyFragment != null) {
+        if (mMyFragment != null) {
             transaction.hide(mMyFragment);
         }
     }
@@ -213,25 +261,25 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void showMoreWindow(View view) {
-        Log.e(TAG , "enter showMoreWindow");
+        Log.e(TAG, "enter showMoreWindow");
         if (null == mMoreWindow) {
             mMoreWindow = new MoreWindow(this);
             mMoreWindow.init();
         }
-        mMoreWindow.showMoreWindow(view,100, getSupportFragmentManager());
+        mMoreWindow.showMoreWindow(view, 100, getSupportFragmentManager());
     }
 
-    public void clickCiTiao(View view){
+    public void clickCiTiao(View view) {
         fragmentTransaction = fragmentManager.beginTransaction();
         mMoreWindow.hideMoreWindow();
         Toast.makeText(this, "点击了词条", Toast.LENGTH_SHORT).show();
-        if(mPostFragment == null){
-            mPostFragment = PostFragment.newInstance("1","");
+        if (mPostFragment == null) {
+            mPostFragment = PostFragment.newInstance("1", "");
 
             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
         } else {
             fragmentTransaction.remove(mPostFragment);
-            mPostFragment = PostFragment.newInstance("1","");
+            mPostFragment = PostFragment.newInstance("1", "");
             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
 
         }
@@ -242,25 +290,25 @@ public class MainActivity extends AppCompatActivity implements
     public void clickXinDe(View view) {
         fragmentTransaction = fragmentManager.beginTransaction();
         mMoreWindow.hideMoreWindow();
-        if(mPostFragment == null){
-            mPostFragment = PostFragment.newInstance("2","");
+        if (mPostFragment == null) {
+            mPostFragment = PostFragment.newInstance("2", "");
             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
         } else {
             fragmentTransaction.remove(mPostFragment);
-            mPostFragment = PostFragment.newInstance("2","");
+            mPostFragment = PostFragment.newInstance("2", "");
             fragmentTransaction.add(R.id.mainContainer, mPostFragment);
 
         }
         fragmentTransaction.commit();
-       // mMoreWindow.hideMoreWindow();
-       // Toast.makeText(this, "点击了心得", Toast.LENGTH_SHORT).show();
+        // mMoreWindow.hideMoreWindow();
+        // Toast.makeText(this, "点击了心得", Toast.LENGTH_SHORT).show();
     }
 
-    public void triggerBottomNavigationBar(boolean isShow){
-        if(isShow){
+    public void triggerBottomNavigationBar(boolean isShow) {
+        if (isShow) {
             mBottomNavigationBar.setVisibility(View.VISIBLE);
             //mBottomNavigationBar.show();
-        }else{
+        } else {
             mBottomNavigationBar.setVisibility(View.GONE);
             //mBottomNavigationBar.hide();
         }
@@ -269,11 +317,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==6||requestCode==4||requestCode==5)
-        {
-           if(mPostFragment!=null){
-               mPostFragment.onActivityResult(requestCode, resultCode, data);
-           }
+        if (requestCode == 6 || requestCode == 4 || requestCode == 5) {
+            if (mPostFragment != null) {
+                mPostFragment.onActivityResult(requestCode, resultCode, data);
+            }
 
 
         }

@@ -67,15 +67,27 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/string_click_login"
-                            android:textSize="20sp"
-                            android:textColor="#ffffff"/>
-                        <TextView
-                            android:id="@+id/user_id"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=""
                             android:textSize="16sp"
                             android:textColor="#ffffff"/>
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ID:"
+                                android:textSize="14sp"
+                                android:textColor="#ffffff"/>
+                            <TextView
+                                android:id="@+id/user_id"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text=""
+                                android:textSize="14sp"
+                                android:textColor="#ffffff"/>
+                        </LinearLayout>
+
                     </LinearLayout>
                 </RelativeLayout>
 

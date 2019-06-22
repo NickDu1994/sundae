@@ -76,8 +76,13 @@ public class MyFollowerInfoAdapter extends RecyclerView.Adapter<MyFollowerInfoAd
         MyFollowerModel follow = mDatas.get(i);
         viewHolder.follow_username.setText(follow.getFollow_username());
         viewHolder.followTime.setText(follow.getFollowTime());
-        viewHolder.sentCounts.setText(follow.getSentCounts());
-        viewHolder.getPraisedCounts.setText(follow.getGetPraisedCounts());
+        String sent_count = follow.getSentCounts();
+        int point = sent_count.indexOf(".");
+        viewHolder.sentCounts.setText(sent_count.substring(0,point));
+
+        String liked_count = follow.getSentCounts();
+        int point1 = liked_count.indexOf(".");
+        viewHolder.getPraisedCounts.setText(liked_count.substring(0,point));
         RequestOptions options = new RequestOptions()
                 .error(R.drawable.defaultpic).circleCropTransform();
         String avatarUrl = follow.getFollow_avatarUrl();

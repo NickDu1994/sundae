@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
     <com.mcxtzhang.swipemenulib.SwipeMenuLayout
         android:layout_width="match_parent"
         android:layout_height="80sp"
@@ -12,49 +13,84 @@
         app:ios="false"
         app:leftSwipe="true"
         app:swipeEnable="true">
+
         <LinearLayout
             android:id="@+id/collect_field"
             android:layout_width="match_parent"
             android:layout_height="120sp"
+            android:orientation="vertical"
             android:paddingLeft="20sp"
-            android:paddingRight="20sp"
-            android:orientation="vertical">
+            android:paddingRight="20sp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10sp"
-                android:layout_marginLeft="10sp">
-                <include layout="@layout/entry_list_item"/>
+                android:layout_marginLeft="10sp"
+                android:layout_marginTop="10sp">
+
+                <include layout="@layout/entry_list_item" />
             </LinearLayout>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:paddingTop="10sp">
-                <TextView
-                    android:id="@+id/collect_author"
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="作者： 东哥"/>
-                <TextView
-                    android:id="@+id/collect_time"
+                    android:layout_alignParentLeft="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="作者" />
+
+                    <TextView
+                        android:id="@+id/collect_author"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="东哥" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="收藏于 2019年1月1日"/>
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="收藏于 " />
+
+                    <TextView
+                        android:id="@+id/collect_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="2019年1月1日" />
+                </LinearLayout>
+
             </RelativeLayout>
         </LinearLayout>
+
         <View
             android:id="@+id/divider_bottom"
             android:layout_width="match_parent"
             android:layout_height="3sp"
             android:background="#efefef" />
+
         <Button
             android:id="@+id/btnCancelCollect"
             android:layout_width="100sp"
             android:layout_height="100sp"
             android:background="@color/red_ff4a57"
             android:text="取消收藏"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white" />
     </com.mcxtzhang.swipemenulib.SwipeMenuLayout>
 
 </LinearLayout>
