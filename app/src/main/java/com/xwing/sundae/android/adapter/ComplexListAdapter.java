@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.ComplexListModel;
+import com.xwing.sundae.android.util.ImageServerConstant;
 
 import org.w3c.dom.Text;
 
@@ -42,13 +43,13 @@ public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.
         viewHolder.mainTextview.setText(complexListModel.getMainTitle());
         viewHolder.mainContentTextview.setText(complexListModel.getMainContent());
         if(complexListModel.getImagesList().length >= 1){
-            Glide.with(mContext).load(complexListModel.getImagesList()[0]).into(viewHolder.mainImageview1);
+            Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + complexListModel.getImagesList()[0]).into(viewHolder.mainImageview1);
         }
         if(complexListModel.getImagesList().length >= 2){
-            Glide.with(mContext).load(complexListModel.getImagesList()[1]).into(viewHolder.mainImageview2);
+            Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + complexListModel.getImagesList()[1]).into(viewHolder.mainImageview2);
         }
         if(complexListModel.getImagesList().length >= 3) {
-            Glide.with(mContext).load(complexListModel.getImagesList()[2]).into(viewHolder.mainImageview3);
+            Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + complexListModel.getImagesList()[2]).into(viewHolder.mainImageview3);
         }
 //        viewHolder.recommendTextview.setVisibility(complexListModel.isAdditionalInformation1() ? View.VISIBLE : View.INVISIBLE);
         viewHolder.viewnumberTextview.setText(complexListModel.getAdditionalInformation2());

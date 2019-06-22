@@ -39,6 +39,7 @@ import com.xwing.sundae.android.model.SearchSuggestionModel;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
+import com.xwing.sundae.android.util.ImageServerConstant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.SharedPreferencesUtil;
 import com.xwing.sundae.android.view.GetUserInfo;
@@ -203,14 +204,11 @@ public class SearchFragment extends Fragment {
             Log.d("dkdebug keywordNote=", spUtil.getSP("keyword_note"));
         }
 
-        String[] testName = spUtil.getSP("keyword_note").split(",");
-        String[] testName2 = {"apple2","title2","layout2","LinearLayout2","new2","child2"};
+        String[] histroyAbbr = spUtil.getSP("keyword_note").split(",");
         CustomeButtonGroupView customeButtonGroupView = getActivity().findViewById(R.id.historyPanel);
         customeButtonGroupView.setTitle("搜索历史");
-        customeButtonGroupView.setTagList(testName);
-        CustomeButtonGroupView customeButtonGroupView2 = getActivity().findViewById(R.id.hotPanel);
-        customeButtonGroupView2.setTitle("热门搜索");
-        customeButtonGroupView2.setTagList(testName2);
+        customeButtonGroupView.setTagList(histroyAbbr);
+        setHotSearch();
 
 
         saveIV = getActivity().findViewById(R.id.detailSave);
@@ -375,8 +373,10 @@ public class SearchFragment extends Fragment {
 
                     TextView createTimeTV = getActivity().findViewById(R.id.create_time);
                     createTimeTV.setText(CommonMethod.CalculateTimeUntilNow(data.getAbbreviation().getCreateTime()));
+                    ImageView userPicIV = getActivity().findViewById(R.id.user_pic);
+                    Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + data.getAvatar()).into(userPicIV);
                     TextView authorTV = getActivity().findViewById(R.id.author);
-                    authorTV.setText(data.getAbbreviation().getCreateBy());
+                    authorTV.setText(data.getAuthor());
                     storageAuthorId = data.getAbbreviation().getCreateBy();
                     TextView likeTV = getActivity().findViewById(R.id.like_number);
                     likeTV.setText(data.getAbbreviation().getLikedCount() + "获赞");
@@ -405,7 +405,7 @@ public class SearchFragment extends Fragment {
 
                     if(data.getAbbreviation().getImageList().size() >= 1){
                         ImageView detailMainImage = getActivity().findViewById(R.id.detailMainImage);
-                        Glide.with(mContext).load(data.getAbbreviation().getImageList().get(0).getPath()).into(detailMainImage);
+                        Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + data.getAbbreviation().getImageList().get(0).getPath()).into(detailMainImage);
                     }
                 } catch (Exception e) {
                     Log.d("dkdebug onResponse", "e=" + e);
@@ -534,6 +534,42 @@ public class SearchFragment extends Fragment {
                     if(saveResult.getStatus() == 200){
                         Log.d("dkdebug","save success");
                     }
+                } catch (Exception e) {
+                    Log.d("dkdebug onResponse", "e=" + e);
+                }
+            }
+        });
+    }
+
+    public void setHotSearch() {
+        String url= Constant.globalServerUrl + "/abbreviation/getHotSearchResults";
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("temp", "");
+        final String finalUrl = url;
+        OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug onFailure", finalUrl + "e=" + e);
+            }
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
+                Log.d("dkdebug", finalUrl + "response" + response);
+                Gson gson = new Gson();
+                try{
+                    CommonResponse<List<AbbreviationPlusModel>> hotResult =
+                            (CommonResponse<List<AbbreviationPlusModel>>)gson.fromJson(response,
+                                    new TypeToken<CommonResponse<List<AbbreviationPlusModel>>>() {}.getType());
+                    List<String> tempList = new ArrayList<>();
+                    for(AbbreviationPlusModel hotAbbr: hotResult.getData()){
+                        tempList.add(hotAbbr.getAbbrName());
+                    }
+                    String[] hotAbbrArray = tempList.toArray(new String[tempList.size()]);
+                    CustomeButtonGroupView customeButtonGroupView2 = getActivity().findViewById(R.id.hotPanel);
+                    customeButtonGroupView2.setTitle("热门搜索");
+                    customeButtonGroupView2.setTagList(hotAbbrArray);
                 } catch (Exception e) {
                     Log.d("dkdebug onResponse", "e=" + e);
                 }
