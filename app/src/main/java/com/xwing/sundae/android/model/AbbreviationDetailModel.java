@@ -11,6 +11,8 @@ public class AbbreviationDetailModel {
     private AbbreviationPlusModel abbreviation;
     private boolean collect;
     private boolean follow;
+    private String author;
+    private String avatar;
 
     public boolean isLike() {
         return like;
@@ -42,5 +44,21 @@ public class AbbreviationDetailModel {
 
     public void setFollow(boolean follow) {
         this.follow = follow;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

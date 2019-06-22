@@ -31,6 +31,7 @@ import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.GlideImageLoader;
+import com.xwing.sundae.android.util.ImageServerConstant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.view.IndexDetailActivity;
 import com.xwing.sundae.android.view.LoginActivity;
@@ -171,8 +172,9 @@ public class PortalFragment extends Fragment {
         });
     }
 
-    public void openIndexDetail() {
+    public void openIndexDetail(String entryId) {
         Intent intent= new Intent(mContext, IndexDetailActivity.class);
+        intent.putExtra("entryId", entryId);
         mContext.startActivity(intent);
     }
 
@@ -200,7 +202,7 @@ public class PortalFragment extends Fragment {
                     final List<IndexBannerModel> indexBannerModel = responseIndexBannerImage.getData();
                     List<BaseImage> displayImages = new ArrayList<BaseImage>();
                     for(IndexBannerModel item : indexBannerModel){
-                        displayImages.add(new BaseImage(item.getImage().getPath()));
+                        displayImages.add(new BaseImage(ImageServerConstant.IMAGE_SERVER_URL + item.getImage().getPath()));
                     }
 
                     Banner banner = (Banner) getActivity().findViewById(R.id.banner);
@@ -276,7 +278,7 @@ public class PortalFragment extends Fragment {
                     complexListAdapter.setOnItemClickListener(new ComplexListAdapter.OnRecyclerViewItemClickListener() {
                         @Override
                         public void onItemClick(View view, int postion) {
-                            openIndexDetail();
+                            openIndexDetail(dataList.get(postion).getId());
                         }
                     });
                     recyclerView.setAdapter(complexListAdapter);
