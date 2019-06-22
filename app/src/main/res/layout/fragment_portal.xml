@@ -36,8 +36,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="15dp">
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/shape_gradient">
 
                 <com.xwing.sundae.android.customview.SearchRoundCTACardView
                     android:id="@+id/search_button"
@@ -51,7 +53,6 @@
                 android:id="@+id/banner"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_marginTop="5dp"
                 android:layout_marginBottom="10dp"/>
 
             <RelativeLayout
