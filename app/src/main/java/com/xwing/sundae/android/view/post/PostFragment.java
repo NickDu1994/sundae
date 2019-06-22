@@ -80,6 +80,7 @@ public class PostFragment extends Fragment {
     private final int REQUEST_CODE_PICKER = 100;
     private EditText editText1;
     private EditText editText2;
+    private EditText editText3;
     private IndexFragment mIndexFragment;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -88,6 +89,7 @@ public class PostFragment extends Fragment {
 
     private MaterialTextField materialTextField1;
     private  MaterialTextField materialTextField2;
+    private  MaterialTextField materialTextField3;
     public PostFragment() {
         // Required empty public constructor
     }
@@ -155,12 +157,18 @@ public class PostFragment extends Fragment {
 
             materialTextField1 = view.findViewById(R.id.post_edit_t1);
             materialTextField2 = view.findViewById(R.id.post_edit_t2);
+            materialTextField3 = view.findViewById(R.id.post_edit_t3);
             editText1 = view.findViewById(R.id.post_edit1);
             editText2 = view.findViewById(R.id.post_edit2);
+            editText3= view.findViewById(R.id.post_edit3);
             if(mParam1!=null&&mParam1.equals("2")){
-                materialTextField2.setVisibility(View.INVISIBLE);
+                materialTextField1.setVisibility(View.GONE);
+                materialTextField2.setVisibility(View.GONE);
+
+
             }else{
-                materialTextField2.setVisibility(View.VISIBLE);
+                materialTextField3.setVisibility(View.GONE);
+
             }
 
             mEditor.setOnTextChangeListener(new RichEditor.OnTextChangeListener() {
@@ -451,25 +459,34 @@ public class PostFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
+                    loadingView.setVisibility(View.VISIBLE);
+                    loadingView.showLoading();
 
                 String base64Image="";
                 String base64Image2="";
                 String base64Image3="";
                 String title1 = editText1.getText().toString();
                 String title2 = editText2.getText().toString();
-                if(editText1==null||editText1.length()<=0){
+                String title3 = editText3.getText().toString();
+                if(mParam1.equals("1")&&(editText1==null||editText1.length()<=0)){
                     materialTextField1.expand();
-                    materialTextField1.setBackgroundColor(Color.RED);
-                    materialTextField1.setHasFocus(true);
 
+                    materialTextField1.setHasFocus(true);
+                    loadingView.setVisibility(View.GONE);
                     return;
                 }else if(mParam1.equals("1")&&(editText2==null||editText2.length()<=0)){
                     materialTextField2.expand();
-
+                    materialTextField2.setHasFocus(true);
+                    loadingView.setVisibility(View.GONE);
+                    return;
+                }else if(mParam1.equals("2")&&(editText3==null||editText3.length()<=0)){
+                    materialTextField3.expand();
+                    materialTextField3.setHasFocus(true);
+                    loadingView.setVisibility(View.GONE);
                     return;
                 }
                 if((postBackShow).getDrawable()==null||(postBackShow2).getDrawable()==null||(postBackShow3).getDrawable()==null){
-
+                        loadingView.setVisibility(View.GONE);
                         Toast.makeText(getActivity().getApplicationContext(), "请上传3张图片", Toast.LENGTH_SHORT).show();
                         return;
                     } else {
@@ -487,8 +504,13 @@ public class PostFragment extends Fragment {
                     Map<String, String> paramMap = new HashMap<>();
                     Long userId = getUserInfo.getUserInfo().getData().getId();
                     paramMap.put("userId", userId.toString());
-                    paramMap.put("title1", title1);
-                    paramMap.put("title2", title2);
+                    if(mParam1.equals("1")){
+                        paramMap.put("title1", title1);
+                        paramMap.put("title2", title2);
+                    }else if((mParam1.equals("2"))){
+                        paramMap.put("title1", title3);
+                    }
+
                     paramMap.put("backgroundImage", base64Image);
                     paramMap.put("backgroundImage2", base64Image2);
                     paramMap.put("backgroundImage3", base64Image3);
@@ -496,8 +518,7 @@ public class PostFragment extends Fragment {
                     if (content != null) {
                         paramMap.put("content", content);
                     }
-                    loadingView.setVisibility(View.VISIBLE);
-                    loadingView.showLoading();
+
 
                     String url = Constant.REQUEST_URL_MY + "/abbreviation/upload";
 

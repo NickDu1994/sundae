@@ -52,7 +52,12 @@ public class CustomeButtonGroupView extends LinearLayout {
             list.add(mTagList[i]);
        }
 
-       mTagContainerLayout.setTags(list);
+       if(mTagList.length == 1 && mTagList[0] == ""){
+           //do nothing
+       }else {
+           mTagContainerLayout.setTags(list);
+       }
+
 
         mTagContainerLayout.setOnTagClickListener(new TagView.OnTagClickListener() {
             public void onTagClick(int position, String text) {

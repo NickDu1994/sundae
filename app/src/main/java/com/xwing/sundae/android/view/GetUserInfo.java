@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
+import com.xwing.sundae.android.util.SharedPreferencesUtil;
 
 /**
  * Author: Maggie
@@ -86,6 +87,25 @@ public class GetUserInfo {
             return true;
         } else {
             return false;
+        }
+
+    }
+
+
+    public boolean isUserLogined() {
+        String response = sharedPreferencesHelper.get("user_info","").toString();
+        Gson gson = new Gson();
+        CommonResponse<UserInfo> result =
+                (CommonResponse<UserInfo>)gson.fromJson(response,
+                        new TypeToken<CommonResponse<UserInfo>>() {}.getType());
+        try {
+            if (!result.getData().getId().toString().isEmpty()){
+                return true;
+            }else {
+                return false;
+            }
+        }catch (Exception e ){
+            return  false;
         }
 
     }

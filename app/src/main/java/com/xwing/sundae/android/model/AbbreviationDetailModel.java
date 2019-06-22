@@ -10,6 +10,7 @@ public class AbbreviationDetailModel {
     private boolean like;
     private AbbreviationPlusModel abbreviation;
     private boolean collect;
+    private boolean follow;
 
     public boolean isLike() {
         return like;
@@ -33,5 +34,13 @@ public class AbbreviationDetailModel {
 
     public void setCollect(boolean collect) {
         this.collect = collect;
+    }
+
+    public boolean isFollow() {
+        return follow;
+    }
+
+    public void setFollow(boolean follow) {
+        this.follow = follow;
     }
 }

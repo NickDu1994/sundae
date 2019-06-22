@@ -99,6 +99,26 @@
                             android:id="@+id/post_edit2"/>
 
                     </com.github.florent37.materialtextfield.MaterialTextField>
+                    <com.github.florent37.materialtextfield.MaterialTextField
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        app:mtf_backgroundColor="#F5F6FA"
+                        app:mtf_labelColor="#666"
+                        app:mtf_image="@drawable/input"
+                        android:id="@+id/post_edit_t3"
+                        >
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="标题"
+                            android:textColor="#333"
+                            android:textSize="15sp"
+                            android:id="@+id/post_edit3"/>
+
+                    </com.github.florent37.materialtextfield.MaterialTextField>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
