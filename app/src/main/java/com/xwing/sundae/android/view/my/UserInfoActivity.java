@@ -37,6 +37,7 @@ import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.GlideImageLoader;
+import com.xwing.sundae.android.util.ImageServerConstant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.PostImageUtil;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
@@ -136,10 +137,11 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         initEvent();
 //        showUserPic();
         userInfo = getUserInfo.getUserInfo().getData();
+        String url = ImageServerConstant.IMAGE_SERVER_URL + userInfo.getAvatarUrl();
         RequestOptions options = new RequestOptions().
                     circleCropTransform();
         Glide.with(this)
-                .load(userInfo.getAvatarUrl())
+                .load(url)
                 .apply(options)
                 .into(info_user_pic);
 

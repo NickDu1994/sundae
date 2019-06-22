@@ -24,6 +24,7 @@ import com.xwing.sundae.android.customview.UserInfoOneLineView;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.CommonMethod;
+import com.xwing.sundae.android.util.ImageServerConstant;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.view.GetUserInfo;
 import com.xwing.sundae.android.view.LoginActivity;
@@ -218,7 +219,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
             if (null == avatarUrl || "".equals(avatarUrl)) {
                 Glide.with(this).load(R.drawable.boy).apply(options).into(image);
             } else {
-                Glide.with(this).load(avatarUrl).apply(options).into(image);
+                Glide.with(this).load(ImageServerConstant.IMAGE_SERVER_URL + avatarUrl).apply(options).into(image);
             }
 //            Glide.with(this).load("http://localhost:808/images/user/156031376172435/141b54f3-b618-4171-8558-f0d346b5a8af.jpg").apply(options).into(image);
 

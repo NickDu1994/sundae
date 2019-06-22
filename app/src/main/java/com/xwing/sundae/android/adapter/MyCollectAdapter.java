@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.MyCollectModel;
 import com.xwing.sundae.android.model.MyFollowerModel;
+import com.xwing.sundae.android.util.ImageServerConstant;
 
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
         if("".equals(collect.getItem_image()) || null == collect.getItem_image()) {
             Glide.with(mContext).load(R.drawable.explore_actived).apply(options).into(viewHolder.item_image);
         } else {
-            Glide.with(mContext).load(collect.getItem_image()).apply(options).into(viewHolder.item_image);
+            Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + collect.getItem_image()).apply(options).into(viewHolder.item_image);
         }
         viewHolder.collect_author.setText(collect.getCollect_author());
         viewHolder.collect_time.setText(collect.getCollect_time());

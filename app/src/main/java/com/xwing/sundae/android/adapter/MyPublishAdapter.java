@@ -16,6 +16,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.MyFollowerModel;
 import com.xwing.sundae.android.model.MyPublishModel;
+import com.xwing.sundae.android.util.ImageServerConstant;
 
 import java.util.List;
 
@@ -66,7 +67,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
         if("".equals(publish.getItem_image()) || null == publish.getItem_image()) {
             Glide.with(mContext).load(R.drawable.pic).apply(options).into(v.item_image);
         } else {
-            Glide.with(mContext).load(publish.getItem_image()).apply(options).into(v.item_image);
+            Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + publish.getItem_image()).apply(options).into(v.item_image);
         }
         if(null != publish.getItem_name()) {
             v.item_name.setText(publish.getItem_name());

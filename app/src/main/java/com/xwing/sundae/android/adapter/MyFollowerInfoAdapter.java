@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.FollowModel;
 import com.xwing.sundae.android.model.MyFollowerModel;
+import com.xwing.sundae.android.util.ImageServerConstant;
 
 import java.util.List;
 
@@ -89,7 +90,7 @@ public class MyFollowerInfoAdapter extends RecyclerView.Adapter<MyFollowerInfoAd
         if(null == avatarUrl || "".equals(avatarUrl)) {
             Glide.with(mContext).load(R.drawable.defaultpic).apply(options).into(viewHolder.follow_avatarUrl);
         } else {
-            Glide.with(mContext).load(avatarUrl).apply(options).into(viewHolder.follow_avatarUrl);
+            Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + avatarUrl).apply(options).into(viewHolder.follow_avatarUrl);
         }
 
 
