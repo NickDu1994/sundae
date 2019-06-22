@@ -13,6 +13,8 @@ import com.bumptech.glide.Glide;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.ComplexListModel;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.ViewHolder> {
@@ -51,6 +53,7 @@ public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.
 //        viewHolder.recommendTextview.setVisibility(complexListModel.isAdditionalInformation1() ? View.VISIBLE : View.INVISIBLE);
         viewHolder.viewnumberTextview.setText(complexListModel.getAdditionalInformation2());
         viewHolder.createtimeTextview.setText(complexListModel.getAdditionalInformation3());
+//        viewHolder.author.setText(complexListModel.get);
     }
 
     @Override
@@ -67,6 +70,7 @@ public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.
         TextView recommendTextview;
         TextView viewnumberTextview;
         TextView createtimeTextview;
+        TextView author;
         private OnRecyclerViewItemClickListener mListener;
 
         public ViewHolder(View view, OnRecyclerViewItemClickListener mListener) {
@@ -80,6 +84,7 @@ public class ComplexListAdapter extends RecyclerView.Adapter<ComplexListAdapter.
 //            recommendTextview = view.findViewById(R.id.recommend);
             viewnumberTextview = view.findViewById(R.id.view_number);
             createtimeTextview = view.findViewById(R.id.create_time);
+            author = view.findViewById(R.id.author);
             this.mListener = mListener;
         }
 

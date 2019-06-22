@@ -253,7 +253,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         info_user_pic.setImageURI(uri);
 
         Bitmap bitmap = ((BitmapDrawable) (info_user_pic).getDrawable()).getBitmap();
-        String base64Image = PostImageUtil.imgToBase64(50, bitmap);
+        String base64Image = PostImageUtil.imgToBase64(10, bitmap);
 
         updateUserInfoPost("avatar",base64Image);
 

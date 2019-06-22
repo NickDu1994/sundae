@@ -10,40 +10,76 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="100sp"
+        android:layout_marginBottom="130sp"
         android:layout_centerInParent="true">
-        <TextView
+        <LinearLayout
             android:id="@+id/more_window_local"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:orientation="vertical"
             android:clickable="true"
-            android:drawableTop="@drawable/edit"
-            android:textAlignment="center"
             android:onClick="clickCiTiao"
-            android:text="词条" />
-
-        <TextView
-            android:id="@+id/more_window_auto"
+            android:layout_marginRight="20dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/edit"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:text="词条"/>
+        </LinearLayout>
+        <!--<TextView-->
+            <!--android:id="@+id/more_window_local"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginRight="20dp"-->
+            <!--android:clickable="true"-->
+            <!--android:drawableTop="@drawable/edit"-->
+            <!--android:textAlignment="center"-->
+            <!--android:onClick="clickCiTiao"-->
+            <!--android:text="词条" />-->
+    <LinearLayout
+        android:id="@+id/more_window_auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:layout_marginLeft="20dp"
+        android:onClick="clickXinDe">
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:drawableTop="@drawable/xinde"
-            android:layout_centerInParent="true"
-            android:layout_toRightOf="@id/more_window_local"
-            android:textAlignment="center"
-            android:onClick="clickXinDe"
+            android:src="@drawable/xinde"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
             android:text="心得"/>
+    </LinearLayout>
+        <!--<TextView-->
+            <!--android:id="@+id/more_window_auto"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:clickable="true"-->
+            <!--android:drawableTop="@drawable/xinde"-->
+            <!--android:layout_marginLeft="20dp"-->
+            <!--android:layout_toRightOf="@id/more_window_local"-->
+            <!--android:textAlignment="center"-->
+            <!--android:onClick="clickXinDe"-->
+            <!--android:text="心得"/>-->
     </LinearLayout>
 
 
     <ImageView
         android:id="@+id/center_music_window_close"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_marginBottom="78dp"
         android:visibility="invisible"
         android:src="@drawable/tabbar_compose_background_icon_close" />
 

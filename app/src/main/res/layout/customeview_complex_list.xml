@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="10dp">
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
         <TextView
             android:id="@+id/main_title"
             android:layout_width="match_parent"
@@ -15,6 +17,15 @@
             android:textColor="#000000"
             android:textSize="16sp"
             android:textStyle="bold" />
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/acti"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"/>
+    </RelativeLayout>
+
+
 
     <!--<TextView-->
         <!--android:id="@+id/main_title"-->
@@ -67,7 +78,7 @@
             android:src="@drawable/temp" />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/additional_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -85,34 +96,41 @@
         <!--android:layout_width="30dp"-->
         <!--android:layout_height="30dp"-->
         <!--android:src="@drawable/hot"/>-->
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/hot3"
-            android:layout_alignParentRight="true"
-            android:layout_marginLeft="10dp"/>
-        <TextView
-            android:id="@+id/view_number"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="1900次浏览" />
+            android:layout_marginLeft="6dp"
+            android:layout_alignParentLeft="true">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/read"/>
+            <TextView
+                android:id="@+id/view_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:text="1900次浏览" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="次" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/create_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:text="3个月前" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/dividing_line"
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="2px"
         android:layout_marginTop="10dp"
-        android:background="#505050" />
+        android:background="#dbdbdb" />
 
 </LinearLayout>

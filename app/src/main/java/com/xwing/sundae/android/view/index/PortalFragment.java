@@ -176,7 +176,7 @@ public class PortalFragment extends Fragment {
 
     public void getNews(){
 
-        String url = Constant.globalServerUrl + "/news/getLastestNews";
+        String url = Constant.REQUEST_URL_MY + "/news/getLastestNews";
         HashMap<String, String> paramsMap = new HashMap<>();
         paramsMap.put("reserve","123456");
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
@@ -220,7 +220,7 @@ public class PortalFragment extends Fragment {
 
     public void getRecommend(){
 
-        String url = Constant.globalServerUrl + "/abbreviation/getRecommendedEntryList";
+        String url = Constant.REQUEST_URL_MY + "/abbreviation/getRecommendedEntryList";
         HashMap<String, String> paramsMap = new HashMap<>();
         paramsMap.put("reserve","123456");
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {

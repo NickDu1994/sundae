@@ -71,7 +71,7 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
     public void onBindViewHolder(final ViewHolder viewHolder, final int i) {
         MyCollectModel collect = mDatas.get(i);
 
-        RequestOptions options = new RequestOptions().error(R.drawable.explore_actived).circleCropTransform();
+        RequestOptions options = new RequestOptions().error(R.drawable.explore_actived);
         viewHolder.item_name.setText(collect.getItem_name());
         viewHolder.item_content.setText(collect.getItem_content());
 
