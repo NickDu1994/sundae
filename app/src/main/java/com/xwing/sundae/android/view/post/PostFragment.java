@@ -1,5 +1,6 @@
 package com.xwing.sundae.android.view.post;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -120,7 +121,7 @@ public class PostFragment extends Fragment {
         fragmentManager = getFragmentManager();
 
     }
-
+    @SuppressLint("NewApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

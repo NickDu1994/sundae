@@ -3,6 +3,7 @@ package com.xwing.sundae.android.view;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -54,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
 //        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this,"user");
