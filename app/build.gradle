@@ -55,4 +55,5 @@ dependencies {
     implementation "com.android.support:design:28"
     implementation 'com.github.florent37:materialtextfield:1.0.7'
     implementation 'com.lcw.library:imagepicker:2.2.0'
+    implementation 'com.wang.avi:library:2.1.3'
 }

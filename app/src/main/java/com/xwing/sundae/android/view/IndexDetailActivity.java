@@ -22,5 +22,8 @@ public class IndexDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        com.wang.avi.AVLoadingIndicatorView avi = findViewById(R.id.avi);
+        avi.show();
     }
 }

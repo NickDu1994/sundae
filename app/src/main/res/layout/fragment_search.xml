@@ -162,7 +162,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        android:text="@string/string_click_login"
+                        android:text="Loading..."
                         android:textSize="20sp"/>
                     <Button
                         android:id="@+id/user_follow"
