@@ -18,62 +18,75 @@ import com.xwing.sundae.android.util.SharedPreferencesUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.lujun.androidtagview.TagContainerLayout;
-import co.lujun.androidtagview.TagView;
+import me.next.tagview.TagCloudView;
+
 
 public class CustomeButtonGroupView extends LinearLayout {
     private Context mContext;
     private String[] mTagList;
-    TagContainerLayout mTagContainerLayout;
+    TagCloudView tagCloudView1;
     ImageView cleanIV;
+    OnTagClickListener myClickItemListener;
+
 
     public CustomeButtonGroupView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         LayoutInflater.from(context).inflate(R.layout.customeview_buttongroup_view, this);
-        mTagContainerLayout = (TagContainerLayout) findViewById(R.id.tagcontainerLayout);
+        tagCloudView1 = (TagCloudView) findViewById(R.id.tag_cloud_view_1);
         cleanIV = findViewById(R.id.buttonGroupCleanButton);
     }
 
-    public void setTitle(String title){
+    public void setTitle(String title) {
         TextView textView = (TextView) findViewById(R.id.buttonGroupTitle);
         textView.setText(title);
     }
 
-    public void setTagList(String[] tagList){
+    public void setTagList(String[] tagList) {
         mTagList = tagList;
         initView2();
     }
 
     public void initView2() {
-       LinearLayout parentLL = (LinearLayout) findViewById(R.id.tagcontainerLayout);
-       List<String> list = new ArrayList<>();
-       for (int i = 0; i < mTagList.length; i++) {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < mTagList.length; i++) {
             list.add(mTagList[i]);
-       }
+        }
 
-       if(mTagList.length == 1 && mTagList[0] == ""){
-           //do nothing
-       }else {
-           mTagContainerLayout.setTags(list);
-       }
+        if (mTagList.length == 1 && mTagList[0] == "") {
+            //do nothing
+        } else {
+            tagCloudView1.setTags(list);
+        }
 
 
-        mTagContainerLayout.setOnTagClickListener(new TagView.OnTagClickListener() {
-            public void onTagClick(int position, String text) {
-                Toast.makeText(mContext, "text=" + text, Toast.LENGTH_SHORT).show();
-            }
-            public void onTagLongClick(final int position, String text) {
-                Toast.makeText(mContext, "text=" + text, Toast.LENGTH_SHORT).show();
+        final List<String> finaList = list;
+        tagCloudView1.setOnTagClickListener(new TagCloudView.OnTagClickListener() {
+            @Override
+            public void onTagClick(int position) {
+                if (position == -1) {
+                    Toast.makeText(mContext, "点击末尾文字",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    myClickItemListener.onTagClick(finaList.get(position));
+                }
             }
         });
+        tagCloudView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(mContext, "TagView onClick",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
 
         cleanIV.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance(getContext());
-                if(spUtil.getSP("keyword_note")!= null){
+                if (spUtil.getSP("keyword_note") != null) {
                     spUtil.removeSP("keyword_note");
                 }
                 removeAllTag();
@@ -81,8 +94,19 @@ public class CustomeButtonGroupView extends LinearLayout {
         });
     }
 
-    public void removeAllTag(){
-        mTagContainerLayout.removeAllTags();
+    public void removeAllTag() {
+        tagCloudView1.removeAllViews();
     }
 
+    public void hideCleanButton() {
+        cleanIV.setVisibility(View.GONE);
+    }
+
+    public void setOnItemClickListener(CustomeButtonGroupView.OnTagClickListener listener) {
+        this.myClickItemListener = listener;
+    }
+
+    public interface OnTagClickListener {
+        public void onTagClick(String keyword);
+    }
 }

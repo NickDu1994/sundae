@@ -208,6 +208,12 @@ public class SearchFragment extends Fragment {
         CustomeButtonGroupView customeButtonGroupView = getActivity().findViewById(R.id.historyPanel);
         customeButtonGroupView.setTitle("搜索历史");
         customeButtonGroupView.setTagList(histroyAbbr);
+        customeButtonGroupView.setOnItemClickListener(new CustomeButtonGroupView.OnTagClickListener() {
+            @Override
+            public void onTagClick(String keyword) {
+                mainEditText.setText(keyword);
+            }
+        });
         setHotSearch();
 
 
@@ -331,6 +337,8 @@ public class SearchFragment extends Fragment {
         imm.toggleSoftInput (InputMethodManager.SHOW_FORCED, InputMethodManager.RESULT_HIDDEN);
 
         displayController(PANEL_DETAIL);
+
+
         currentEntryId = entryId;
 
         String url = Constant.globalServerUrl + "/abbreviation/getOneEntryDetail";
@@ -407,6 +415,11 @@ public class SearchFragment extends Fragment {
                         ImageView detailMainImage = getActivity().findViewById(R.id.detailMainImage);
                         Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + data.getAbbreviation().getImageList().get(0).getPath()).into(detailMainImage);
                     }
+
+                    SharedPreferencesUtil spUtil = SharedPreferencesUtil.getInstance(mContext);
+                    String currentKeywordNote = spUtil.getSP("keyword_note");
+                    currentKeywordNote = data.getAbbreviation().getAbbrName() + "," + currentKeywordNote;
+                    spUtil.putSP("keyword_note",currentKeywordNote);
                 } catch (Exception e) {
                     Log.d("dkdebug onResponse", "e=" + e);
                 }
@@ -567,9 +580,16 @@ public class SearchFragment extends Fragment {
                         tempList.add(hotAbbr.getAbbrName());
                     }
                     String[] hotAbbrArray = tempList.toArray(new String[tempList.size()]);
-                    CustomeButtonGroupView customeButtonGroupView2 = getActivity().findViewById(R.id.hotPanel);
-                    customeButtonGroupView2.setTitle("热门搜索");
-                    customeButtonGroupView2.setTagList(hotAbbrArray);
+                    CustomeButtonGroupView customeButtonGroupView = getActivity().findViewById(R.id.hotPanel);
+                    customeButtonGroupView.setTitle("热门搜索");
+                    customeButtonGroupView.setTagList(hotAbbrArray);
+                    customeButtonGroupView.hideCleanButton();
+                    customeButtonGroupView.setOnItemClickListener(new CustomeButtonGroupView.OnTagClickListener() {
+                        @Override
+                        public void onTagClick(String keyword) {
+                            mainEditText.setText(keyword);
+                        }
+                    });
                 } catch (Exception e) {
                     Log.d("dkdebug onResponse", "e=" + e);
                 }
