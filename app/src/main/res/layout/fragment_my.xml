@@ -46,6 +46,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_width="80sp"
                         android:layout_height="80sp"
+                        android:src="@drawable/defaultpic"
                         />
                 </LinearLayout>
                 <RelativeLayout
