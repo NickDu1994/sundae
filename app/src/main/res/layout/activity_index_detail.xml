@@ -30,6 +30,12 @@
             android:textSize="20sp" />
 
     </RelativeLayout>
+    <ImageView
+        android:id="@+id/detailMainImage"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/temp"/>
 
     <LinearLayout
         android:id="@+id/detailPanel"
@@ -40,12 +46,7 @@
         android:visibility="visible"
         xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <ImageView
-            android:id="@+id/detailMainImage"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/temp"/>
+
         <LinearLayout
             android:id="@+id/user_field"
             android:layout_width="match_parent"
@@ -85,11 +86,14 @@
                         android:layout_alignParentLeft="true"
                         android:text="Loading..."
                         android:textSize="20sp"/>
+
                     <Button
                         android:id="@+id/user_follow"
-                        android:layout_width="70dp"
+                        android:layout_width="78dp"
                         android:layout_height="30dp"
+                        android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
+                        android:layout_marginTop="0dp"
                         android:layout_marginRight="10dp"
                         android:background="@drawable/custom_round_button"
                         android:text="关注"
@@ -110,26 +114,26 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="7"
                 android:textSize="18sp"
-                android:textStyle="bold"
                 android:text="Loading..." />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
+                android:layout_weight="2"
+                android:layout_marginRight="20dp"
                 android:layout_gravity="center_vertical"
                 android:orientation="horizontal">
                 <ImageView
                     android:id="@+id/detailSave"
-                    android:layout_width="20dp"
+                    android:layout_width="15dp"
                     android:layout_height="20dp"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:src="@drawable/heart"/>
                 <ImageView
                     android:id="@+id/detailLike"
-                    android:layout_width="20dp"
+                    android:layout_width="2dp"
                     android:layout_height="20dp"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:src="@drawable/dislike"/>
             </LinearLayout>
 
@@ -139,40 +143,41 @@
             android:id="@+id/detailFullname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:text="Loading..."/>
 
         <org.sufficientlysecure.htmltextview.HtmlTextView
             android:id="@+id/html_text"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:textAppearance="@android:style/TextAppearance.Small" />
+            android:layout_height="wrap_content"
+            android:textAppearance="@android:style/TextAppearance.Small"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="16dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/additional_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
                 <TextView
                     android:id="@+id/create_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_alignParentLeft="true"
                     android:text="Loading..."/>
                 <TextView
                     android:id="@+id/like_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="20dp"
                     android:text="Loading..."/>
 
-            </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 

@@ -12,11 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.AbbreviationDetailModel;
 import com.xwing.sundae.android.model.CommonResponse;
+import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
@@ -107,6 +109,8 @@ public class IndexDetailActivity extends AppCompatActivity {
         String url = Constant.globalServerUrl + "/abbreviation/getOneEntryDetail";
         HashMap<String, String> paramsMap = new HashMap<>();
         GetUserInfo getUserInfo = new GetUserInfo(this);
+        UserInfo userInfo = getUserInfo.getUserInfo().getData();
+
         try{
             paramsMap.put("userId", getUserInfo.getUserInfo().getData().getId().toString());
         }catch (NullPointerException e) {
@@ -145,7 +149,10 @@ public class IndexDetailActivity extends AppCompatActivity {
                     TextView createTimeTV =  findViewById(R.id.create_time);
                     createTimeTV.setText(CommonMethod.CalculateTimeUntilNow(data.getAbbreviation().getCreateTime()));
                     ImageView userPicIV =  findViewById(R.id.user_pic);
-                    Glide.with( IndexDetailActivity.this).load(ImageServerConstant.IMAGE_SERVER_URL + data.getAvatar()).into(userPicIV);
+                    RequestOptions options = new RequestOptions().
+                            circleCropTransform();
+                    Glide.with( IndexDetailActivity.this).load(ImageServerConstant.IMAGE_SERVER_URL + data.getAvatar())
+                            .apply(options).into(userPicIV);
                     TextView authorTV =  findViewById(R.id.author);
                     authorTV.setText(data.getAuthor());
                     storageAuthorId = data.getAbbreviation().getCreateBy();
