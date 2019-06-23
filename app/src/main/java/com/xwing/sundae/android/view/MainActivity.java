@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void initView() {
         mBottomNavigationBar = findViewById(R.id.navigationBar);
-        mBottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED_NO_TITLE);
+        mBottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
         mBottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         mBottomNavigationBar.setBarBackgroundColor(R.color.colorNavigationBarBg);
 
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements
         mBottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.index_actived, "首页").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.index).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
                 .addItem(new BottomNavigationItem(R.drawable.explore_actived, "发现").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.explore).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
-                .addItem(new BottomNavigationItem(R.drawable.post_actived, "").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.post_actived).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
+                .addItem(new BottomNavigationItem(R.drawable.post_actived, "发布").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.post).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
                 .addItem(new BottomNavigationItem(R.drawable.message_actived, "消息").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.message).setInActiveColorResource(R.color.colorNavigationBarInactivedText).setBadgeItem(mShapeBadgeItem))
                 .addItem(new BottomNavigationItem(R.drawable.my_actived, "我").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.my).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
                 .setFirstSelectedPosition(lastSelectedPosition)
