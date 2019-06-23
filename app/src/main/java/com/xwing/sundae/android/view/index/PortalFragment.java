@@ -141,13 +141,17 @@ public class PortalFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                if (Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug", "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
+                if (Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug", "response" + response);
             }
         });
@@ -161,12 +165,16 @@ public class PortalFragment extends Fragment {
         OkhttpUtil.okHttpPostJson(url, jsonStr, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                if (Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
+                if (Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug", "response" + response);
             }
         });
@@ -186,13 +194,17 @@ public class PortalFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug", " /news/getLastestNews onFailure e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
+                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug", "/news/getLastestNews response=" + response);
                 Gson gson = new Gson();
                 try{
@@ -211,7 +223,9 @@ public class PortalFragment extends Fragment {
                     banner.setOnBannerListener(new OnBannerListener() {
                         @Override
                         public void OnBannerClick(int position) {
-                            Toast.makeText(mContext, "open url=" + indexBannerModel.get(position).getHtmlUrl(), Toast.LENGTH_SHORT).show();
+                            if (Constant.LOG_LEVEL == "DEV") {
+                                Toast.makeText(mContext, "open url=" + indexBannerModel.get(position).getHtmlUrl(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                     banner.start();
@@ -230,7 +244,9 @@ public class PortalFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                if (Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug onFailure", "e=" + e);
             }
 

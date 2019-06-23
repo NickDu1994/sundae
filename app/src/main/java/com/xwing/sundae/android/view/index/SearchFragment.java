@@ -287,14 +287,18 @@ public class SearchFragment extends Fragment {
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug onFailure", "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
                 keywordList.clear();
-                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
+                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug", "response" + response);
                 Gson gson = new Gson();
                 try{
@@ -314,7 +318,9 @@ public class SearchFragment extends Fragment {
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Toast.makeText(mContext, "position=" + position + keywordList.get(position).get("id"), Toast.LENGTH_SHORT).show();
+                            if(Constant.LOG_LEVEL == "DEV") {
+                                Toast.makeText(mContext, "position=" + position + keywordList.get(position).get("id"), Toast.LENGTH_SHORT).show();
+                            }
                             showDetail(dataList.get(position).getId());
 
                         }
@@ -356,13 +362,17 @@ public class SearchFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug onFailure", "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
+                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug", "response" + response);
                 Gson gson = new Gson();
                 try{
@@ -465,13 +475,17 @@ public class SearchFragment extends Fragment {
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug onFailure", tempLogUrl + "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
+                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug", tempLogUrl + "response" + response);
                 Gson gson = new Gson();
                 try{
@@ -531,13 +545,17 @@ public class SearchFragment extends Fragment {
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug onFailure", logUrl + "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
+                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug", logUrl + "response" + response);
                 Gson gson = new Gson();
                 try{
@@ -569,13 +587,17 @@ public class SearchFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(mContext,"Failed",Toast.LENGTH_SHORT).show();
+                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug onFailure", finalUrl + "e=" + e);
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(mContext,"Success",Toast.LENGTH_SHORT).show();
+                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                }
                 Log.d("dkdebug", finalUrl + "response" + response);
                 Gson gson = new Gson();
                 try{

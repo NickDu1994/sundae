@@ -24,6 +24,7 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.ashokvarma.bottomnavigation.ShapeBadgeItem;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.WeiboPopupWindow.MoreWindow;
+import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.view.explore.ExploreFragment;
 import com.xwing.sundae.android.view.explore.FollowFragment;
 import com.xwing.sundae.android.view.explore.RankFragment;
@@ -257,7 +258,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        Toast.makeText(this, "MainActivity recieve message from fragment" + uri.toString(), Toast.LENGTH_SHORT).show();
+        if(Constant.LOG_LEVEL == "DEV"){
+            Toast.makeText(this, "MainActivity recieve message from fragment" + uri.toString(), Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     public void showMoreWindow(View view) {
@@ -272,7 +276,9 @@ public class MainActivity extends AppCompatActivity implements
     public void clickCiTiao(View view) {
         fragmentTransaction = fragmentManager.beginTransaction();
         mMoreWindow.hideMoreWindow();
-        Toast.makeText(this, "点击了词条", Toast.LENGTH_SHORT).show();
+        if(Constant.LOG_LEVEL == "DEV") {
+            Toast.makeText(this, "点击了词条", Toast.LENGTH_SHORT).show();
+        }
         if (mPostFragment == null) {
             mPostFragment = PostFragment.newInstance("1", "");
 
