@@ -76,13 +76,12 @@
                 </LinearLayout>
 
             </RelativeLayout>
+            <View
+                android:id="@+id/divider_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="3sp"
+                android:background="#efefef" />
         </LinearLayout>
-
-        <View
-            android:id="@+id/divider_bottom"
-            android:layout_width="match_parent"
-            android:layout_height="3sp"
-            android:background="#efefef" />
 
         <Button
             android:id="@+id/btnCancelCollect"

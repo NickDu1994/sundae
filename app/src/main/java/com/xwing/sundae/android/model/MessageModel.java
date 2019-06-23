@@ -4,7 +4,7 @@ public class MessageModel {
     private String content;
     private String createTime;
     private String dataStatus;
-    private String id;
+    private Long id;
     private String readFlag;
     private String userId;
     private int type;
@@ -33,11 +33,11 @@ public class MessageModel {
         this.dataStatus = dataStatus;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -65,7 +65,7 @@ public class MessageModel {
         this.type = type;
     }
 
-    public MessageModel(String content, String createTime, String dataStatus, String id, String readFlag, String userId, int type) {
+    public MessageModel(String content, String createTime, String dataStatus, Long id, String readFlag, String userId, int type) {
         this.content = content;
         this.createTime = createTime;
         this.dataStatus = dataStatus;

@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,6 +21,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private List<MessageModel> mDatas;
     private Context mContext;
 
+    private MessageAdapter.onSwipeListener mOnSwipeListener;
+
+    /**
+     * 和Activity通信的接口
+     */
+    public interface onSwipeListener {
+        void onDel(int pos);
+    }
+
     public MessageAdapter(List<MessageModel> data, Context context) {
         this.mDatas = data;
         this.mContext = context;
@@ -34,7 +44,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(final ViewHolder viewHolder, int position) {
 
         MessageModel message = mDatas.get(position);
         String messageTxt = "";
@@ -74,6 +84,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 //item 点击事件
             }
         });
+
+        viewHolder.btnDeleteMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != mOnSwipeListener) {
+                    mOnSwipeListener.onDel(viewHolder.getAdapterPosition());
+                }
+            }
+        });
     }
 
     //② 创建ViewHolder
@@ -82,6 +101,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         TextView messageContent;
         ImageView messageImage;
         TextView messageTime;
+        Button btnDeleteMessage;
 
         public ViewHolder(View v) {
             super(v);
@@ -89,11 +109,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             messageContent = (TextView) v.findViewById(R.id.message_content);
             messageImage = (ImageView) v.findViewById(R.id.message_image);
             messageTime = (TextView) v.findViewById(R.id.message_time);
+            btnDeleteMessage = v.findViewById(R.id.btnDeleteMessage);
         }
     }
 
     @Override
     public int getItemCount() {
         return mDatas.size();
+    }
+
+    public void setOnDelListener(onSwipeListener mOnDelListener) {
+        this.mOnSwipeListener = mOnDelListener;
     }
 }
