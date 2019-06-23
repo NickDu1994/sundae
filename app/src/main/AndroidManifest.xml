@@ -46,17 +46,7 @@
         <activity android:name=".android.view.my.UserInfoActivity" />
         <activity android:name=".android.view.LoginActivity" />
         <activity android:name=".android.view.IndexDetailActivity" />
-        <activity
-            android:name=".android.view.MainActivity"
-            android:windowSoftInputMode="stateHidden | adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.VIEW" /> <!-- Enable Google to crawl your app -->
-            </intent-filter>
-        </activity>
+        <activity android:name=".android.view.MainActivity"/>
     </application>
 
 </manifest>
