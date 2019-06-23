@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.andview.refreshview.XRefreshView;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.adapter.MessageAdapter;
 import com.xwing.sundae.android.model.MessageModel;
@@ -109,7 +111,7 @@ public class MessageFragment extends Fragment {
 
         xRefreshView = getActivity().findViewById(R.id.message_list_wrapper);
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.message_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
             public boolean canScrollVertically() {
                 return true;
@@ -119,8 +121,36 @@ public class MessageFragment extends Fragment {
         messageAdapter = new MessageAdapter(messageList, getContext());
         recyclerView.setAdapter(messageAdapter);
 
+        // 添加删除(取消关注)监听器
+        messageAdapter.setOnDelListener(new MessageAdapter.onSwipeListener() {
+            @Override
+            public void onDel(int pos) {
+                if (pos >= 0 && pos < messageList.size()) {
+                    Long messageId = messageList.get(pos).getId();
+                    Long user_id = userInfo.getId();
+                    // call remove api
+                    removeMessage(user_id, messageId, pos);
+                    Toast.makeText(getActivity(), "删除消息:" + pos, Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    SwipeMenuLayout viewCache = SwipeMenuLayout.getViewCache();
+                    if (null != viewCache) {
+                        viewCache.smoothClose();
+                    }
+                }
+                return false;
+            }
+        });
+
         getUserInfo = new GetUserInfo(getActivity());
-        if(null != getUserInfo) {
+        if (null != getUserInfo) {
             userInfo = getUserInfo.getUserInfo().getData();
             getMessageList();
         }
@@ -171,7 +201,7 @@ public class MessageFragment extends Fragment {
         String url = Constant.REQUEST_URL_MY + "/message/getMessageList";
         Long user_id = userInfo.getId();
 
-        HashMap<String,String> paramsMap = new HashMap<>();
+        HashMap<String, String> paramsMap = new HashMap<>();
         paramsMap.put("userId", user_id.toString());
         paramsMap.put("page", Integer.toString(currentPage));
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
@@ -188,7 +218,7 @@ public class MessageFragment extends Fragment {
 
                 try {
                     Map<String, Object> map_res = gson.fromJson(response, Map.class);
-                    LinkedTreeMap data = (LinkedTreeMap)map_res.get("data");
+                    LinkedTreeMap data = (LinkedTreeMap) map_res.get("data");
                     Object content = data.get("content");
                     isLast = (Boolean) data.get("last");
                     String tmp = gson.toJson(content);
@@ -255,6 +285,36 @@ public class MessageFragment extends Fragment {
 
                     }
                 }, 2000);
+            }
+        });
+    }
+
+    private void removeMessage(Long user_id, Long messageId, final int pos) {
+        String url = Constant.REQUEST_URL_MY + "/message/remove";
+        int listSize = messageList.size();
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("userId", user_id.toString());
+        paramsMap.put("messageId", messageId.toString());
+        paramsMap.put("listSize", String.valueOf(listSize));
+        OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(String response) {
+                Gson gson = new Gson();
+                Map<String, Object> map_res = gson.fromJson(response, Map.class);
+                Object data = map_res.get("data");
+                String json_data = gson.toJson(data);
+                MessageModel message = gson.fromJson(json_data, MessageModel.class);
+                messageList.remove(pos);
+                if (message != null)
+                    messageList.add(message);
+                messageAdapter.notifyItemRemoved(pos);//推荐用这个
+                Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+
             }
         });
     }

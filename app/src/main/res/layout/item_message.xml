@@ -79,7 +79,7 @@
             </LinearLayout>
         </LinearLayout>
         <Button
-            android:id="@+id/btnCancelFollow"
+            android:id="@+id/btnDeleteMessage"
             android:layout_width="100sp"
             android:layout_height="match_parent"
             android:background="@color/red_ff4a57"
