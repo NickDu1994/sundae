@@ -483,10 +483,10 @@ public class SearchFragment extends Fragment {
                         if("like".equals(finalType)){
                             if(finalIsEnroll){
                                 likeIV.setImageResource(R.drawable.like);
-                                isLike = false;
+                                isLike = true;
                             }else {
                                 likeIV.setImageResource(R.drawable.dislike);
-                                isLike = true;
+                                isLike = false;
                             }
                         }else {
                             if(finalIsEnroll){
