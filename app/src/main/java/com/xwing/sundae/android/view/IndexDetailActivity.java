@@ -160,7 +160,7 @@ public class IndexDetailActivity extends AppCompatActivity {
                     authorTV.setText(data.getAuthor());
                     storageAuthorId = data.getAbbreviation().getCreateBy();
                     TextView likeTV =  findViewById(R.id.like_number);
-                    likeTV.setText(data.getAbbreviation().getLikedCount() + "获赞");
+                    likeTV.setText("获赞" + data.getAbbreviation().getLikedCount());
 
 
                     if(data.isLike()){

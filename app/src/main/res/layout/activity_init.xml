@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:textColor="#ffffff"
-            android:text="跳过"
+            android:text="等待"
             android:paddingLeft="15dip"
             android:paddingTop="5dip"
             android:paddingRight="15dip"

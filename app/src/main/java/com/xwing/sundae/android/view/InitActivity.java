@@ -14,20 +14,13 @@ public class InitActivity extends AppCompatActivity {
 
     TextView skip;
 
-    private int countSeconds = 4;//倒计时秒数
+    private int countSeconds = 3;//倒计时秒数
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init);
         skip = findViewById(R.id.skip);
-
-        skip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toLoginPage();
-            }
-        });
 
         mCountHandler.sendEmptyMessageDelayed(0, 1000);
     }
