@@ -1,6 +1,7 @@
 package com.xwing.sundae.android.view.my;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.andview.refreshview.XRefreshView;
 import com.google.gson.Gson;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.adapter.MyFollowerInfoAdapter;
@@ -40,6 +42,10 @@ public class MyPubishActivity extends AppCompatActivity {
      */
     private RecyclerView recyclerView;
     /**
+     * refresh包裹的layout
+     */
+    XRefreshView xRefreshView;
+    /**
      * 关注界面用到的adapter
      */
     private MyPublishAdapter myPublishAdapter;
@@ -51,6 +57,10 @@ public class MyPubishActivity extends AppCompatActivity {
      * header标题
      */
     TextView header_title;
+    /**
+     * handler
+     */
+    private Handler handler = new Handler();
 
     UserInfo userInfo;
 
@@ -64,31 +74,66 @@ public class MyPubishActivity extends AppCompatActivity {
         getUserInfo = new GetUserInfo(this);
         if(null != getUserInfo) {
             userInfo = getUserInfo.getUserInfo().getData();
-            getMyPublishList();
+            getCollectList();
         }
 
         header_title = findViewById(R.id.header_title);
         header_title.setText("我的发布");
 
+        xRefreshView = findViewById(R.id.collect_list_wrapper);
         recyclerView = (RecyclerView) findViewById(R.id.publish_rv);
+        setPullandRefresh();
 
     }
 
-    private void getMyPublishListMock() {
-//        for (int i = 0; i < 20; i++) {
-//            MyPublishModel myPublishModel = new MyPublishModel(
-//                    "2016-06-16",
-//                    "111",
-//                    "词条",
-//                    "2019-1-1",
-//                    "bbbb",
-//                    "ccc",
-//                    "10"
-//            );
-//            publishList.add(myPublishModel);
-//        }
+    private void getCollectList() {
+        getMyPublishList();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+//                myPublishAdapter.notifyDataSetChanged();
+                xRefreshView.stopRefresh();
+                xRefreshView.stopLoadMore();
+
+            }
+        });
     }
 
+
+    private void setPullandRefresh() {
+        xRefreshView.setPinnedTime(1000);
+        //如果刷新时不想让里面的列表滑动，可以这么设置
+        xRefreshView.setPinnedContent(false);
+        xRefreshView.setMoveForHorizontal(true);
+        //允许下拉刷新
+        xRefreshView.setPullRefreshEnable(true);
+        xRefreshView.setPullLoadEnable(true);
+        xRefreshView.setAutoLoadMore(false);
+        xRefreshView.enableReleaseToLoadMore(false);
+        xRefreshView.enableRecyclerViewPullUp(true);
+        xRefreshView.enablePullUpWhenLoadCompleted(false);
+        xRefreshView.setXRefreshViewListener(new XRefreshView.SimpleXRefreshListener() {
+
+            @Override
+            public void onRefresh(boolean isPullDown) {
+                //super.onRefresh(isPullDown);
+                xRefreshView.setLoadComplete(false);
+                publishList.clear();
+                getMyPublishList();
+            }
+
+            @Override
+            public void onLoadMore(boolean isSilence) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        getMyPublishList();
+                    }
+                }, 2000);
+            }
+        });
+    }
     private void getMyPublishList() {
         String url = Constant.REQUEST_URL_MY + "/userPublish/getAllPublish";
         Long user_id = userInfo.getId();
@@ -107,6 +152,8 @@ public class MyPubishActivity extends AppCompatActivity {
                 Toast.makeText(MyPubishActivity.this, "Success", Toast.LENGTH_SHORT).show();
                 Gson gson = new Gson();
                 Log.e("loginPostRequest", "getMyPublishList" + response);
+
+                xRefreshView.stopRefresh();
 
                 try {
                     Map<String, Object> map_res = gson.fromJson(response, Map.class);

@@ -57,7 +57,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
 
     LinearLayout user_field, list_item;
     ImageView user_pic, user_setting;
-    TextView user_name, user_id;
+    TextView user_name, user_id,id_label;
 
     GetUserInfo getUserInfo;
     UserInfo userInfo;
@@ -143,6 +143,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
         user_id = (TextView) view.findViewById(R.id.user_id);
         user_setting = (ImageView) view.findViewById(R.id.user_setting);
         user_info_show = (RelativeLayout) view.findViewById(R.id.user_info_show);
+        id_label = (TextView) view.findViewById(R.id.id_label);
 
     }
 
@@ -237,6 +238,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
         user_setting.setVisibility(View.INVISIBLE);
         Glide.with(this).load(R.drawable.defaultpic).apply(options).into(image);
         user_name.setText(this.getString(R.string.string_click_login));
+        id_label.setVisibility(View.GONE);
         user_id.setText("");
     }
 

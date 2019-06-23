@@ -47,7 +47,7 @@
                     android:gravity="center_vertical"
                     android:layout_alignParentRight="true"
                     android:textSize="14sp"
-                    android:text="修改头像 >"
+                    android:text="修改头像 "
                     />
             </RelativeLayout>
         </LinearLayout>

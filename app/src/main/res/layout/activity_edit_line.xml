@@ -22,7 +22,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20sp"
                 android:text="@string/string_cancel_btn"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/edit_line_save"
@@ -33,7 +33,7 @@
                 android:background="@drawable/background_green_btn"
                 android:text="@string/string_save_btn"
                 android:textColor="#ffffff"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:layout_marginRight="20sp" />
 
         </RelativeLayout>

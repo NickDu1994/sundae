@@ -8,13 +8,16 @@
     <RelativeLayout
         android:id="@+id/user_info_edit_thin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40sp"
         android:background="#ffffff">
         <EditText
             android:id="@+id/edit_text_value"
-            android:layout_width="match_parent"
-            android:layout_height="60sp"
-            android:paddingLeft="20sp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="40sp"
+            android:layout_marginLeft="10dip"
+            android:background="@null"
+            android:padding="5dip"
+            android:textSize="14sp" />
         <ImageView
             android:id="@+id/clear_edit_text_icon"
             android:layout_width="22sp"
@@ -89,6 +92,10 @@
             android:id="@+id/user_info_edit_profile_value"
             android:layout_width="match_parent"
             android:layout_height="200sp"
+            android:background="@null"
+            android:textColorHint="#888888"
+            android:gravity="top"
+            android:padding="15dp"
             android:hint="请输入您的个人简介">
         </EditText>
     </LinearLayout>

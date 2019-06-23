@@ -86,7 +86,8 @@ public class MyFollowActivity extends AppCompatActivity {
     }
 
     private void getFollowList() {
-        initMockData();
+//        initMockData();
+        getMyFollowList();
 
         handler.post(new Runnable() {
             @Override
@@ -135,6 +136,7 @@ public class MyFollowActivity extends AppCompatActivity {
             public void onRefresh(boolean isPullDown) {
                 //super.onRefresh(isPullDown);
                 xRefreshView.setLoadComplete(false);
+                followList.clear();
                 getFollowList();
             }
 
@@ -206,6 +208,8 @@ public class MyFollowActivity extends AppCompatActivity {
                     Long user_id = userInfo.getId();
                     // call remove api
                     removeFollower(user_id,remove_userid,pos);
+                    followList.remove(pos);
+
                     Toast.makeText(MyFollowActivity.this, "取消关注:" + pos, Toast.LENGTH_SHORT).show();
 
                 }
