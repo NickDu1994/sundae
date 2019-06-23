@@ -92,6 +92,7 @@ public class MessageFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("dandan","oncreate");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -102,13 +103,14 @@ public class MessageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.d("dandan","createview");
         return inflater.inflate(R.layout.fragment_message, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        Log.d("dandan","created");
         xRefreshView = getActivity().findViewById(R.id.message_list_wrapper);
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.message_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
@@ -152,6 +154,7 @@ public class MessageFragment extends Fragment {
         getUserInfo = new GetUserInfo(getActivity());
         if (null != getUserInfo) {
             userInfo = getUserInfo.getUserInfo().getData();
+            readAllMessage();
             getMessageList();
         }
 
@@ -167,6 +170,7 @@ public class MessageFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        Log.d("dandan","onattach");
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
@@ -178,6 +182,7 @@ public class MessageFragment extends Fragment {
 
     @Override
     public void onDetach() {
+        Log.d("dandan","detach");
         super.onDetach();
         mListener = null;
     }
@@ -195,6 +200,26 @@ public class MessageFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private void readAllMessage() {
+        Long user_id = userInfo.getId();
+        String url = Constant.REQUEST_URL_MY + "/message/readAll";
+
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("userId", user_id.toString());
+
+        OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(getActivity(), "server error", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getActivity(), "全部已读", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void getMessageList() {

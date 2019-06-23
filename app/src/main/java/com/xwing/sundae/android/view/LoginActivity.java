@@ -5,14 +5,10 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +32,6 @@ import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.util.interpolator.JellyInterpolator;
 import com.xwing.sundae.android.view.my.MyFragment;
-
-import org.json.JSONArray;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -285,6 +279,8 @@ public class LoginActivity extends AppCompatActivity {
                     sharedPreferencesHelper.put("auth", true);
                     CommonResponse<UserInfo> userInfoBean = getUserInfo.getUserInfo();
                     if (null != userInfoBean.getData()) {
+                        Long userId = userInfoBean.getData().getId();
+                        checkUnreadMessage(userId);
                         finish();
                     } else {
                         recovery();
@@ -297,6 +293,39 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public boolean checkUnreadMessage(Long user_id) {
+        String url = Constant.REQUEST_URL_MY + "/message/checkHasUnread";
+
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("userId", user_id.toString());
+        OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(LoginActivity.this, "checkunread Failed", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                Gson gson = new Gson();
+                Log.e("loginPostRequest", "checkunread" + response);
+
+                try {
+                    Map<String, Object> map_res = gson.fromJson(response, Map.class);
+                    Boolean data = (Boolean) map_res.get("data");
+                    if (data) {
+                        MainActivity.addMessageBadge();
+                    } else {
+                        MainActivity.removeMessageBadge();
+                    }
+                } catch (Exception e) {
+                    Log.e("checkunreadmessage", "error" + e);
+                }
+            }
+        });
+        return true;
     }
 
     /**

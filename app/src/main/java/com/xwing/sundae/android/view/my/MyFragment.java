@@ -21,13 +21,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.UserInfoOneLineView;
-import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
-import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.ImageServerConstant;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
 import com.xwing.sundae.android.view.GetUserInfo;
 import com.xwing.sundae.android.view.LoginActivity;
+import com.xwing.sundae.android.view.MainActivity;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -256,6 +255,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
                                 sharedPreferencesHelper.remove("user_info");
                                 sharedPreferencesHelper.put("auth",false);
                                 setUserInfoAsNoLogin();
+                                MainActivity.removeMessageBadge();
                             }
                         }).setNegativeButton(this.getString(R.string.string_cancel_btn),
                         new DialogInterface.OnClickListener() {

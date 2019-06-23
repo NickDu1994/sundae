@@ -22,9 +22,13 @@ import android.widget.Toast;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.ashokvarma.bottomnavigation.ShapeBadgeItem;
+import com.google.gson.Gson;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.WeiboPopupWindow.MoreWindow;
+import com.xwing.sundae.android.model.UserInfo;
+import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.Constant;
+import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.view.explore.ExploreFragment;
 import com.xwing.sundae.android.view.explore.FollowFragment;
 import com.xwing.sundae.android.view.explore.RankFragment;
@@ -34,6 +38,10 @@ import com.xwing.sundae.android.view.my.MyFragment;
 import com.xwing.sundae.android.view.post.PostFragment;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
+import okhttp3.Call;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -48,8 +56,8 @@ public class MainActivity extends AppCompatActivity implements
     private String TAG = "MainActivity";
     private int lastSelectedPosition;
 
-    private BottomNavigationBar mBottomNavigationBar;
-    private ShapeBadgeItem mShapeBadgeItem;
+    private static BottomNavigationBar mBottomNavigationBar;
+    private static ShapeBadgeItem mShapeBadgeItem;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private IndexFragment mIndexFragment;
@@ -59,18 +67,23 @@ public class MainActivity extends AppCompatActivity implements
     private MyFragment mMyFragment;
     private MoreWindow mMoreWindow;
     GetUserInfo getUserInfo;
-
+    UserInfo userInfo;
+    private int currentIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        StrictMode.ThreadPolicy policy=new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
 //        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this,"user");
 //        sharedPreferencesHelper.clear();
+        getUserInfo = new GetUserInfo(this);
+        if (getUserInfo.isUserLogined()) {
+            userInfo = getUserInfo.getUserInfo().getData();
+        }
         setDefaultFragment();
         initView();
     }
@@ -91,8 +104,7 @@ public class MainActivity extends AppCompatActivity implements
                 .setEdgeMarginInDp(this, 10)
 //                .setSizeInPixels(30,30)
 //                .setEdgeMarginInPixels(-1)
-                .setGravity(Gravity.TOP | Gravity.END)
-                .setHideOnSelect(true);
+                .setGravity(Gravity.TOP | Gravity.END);
 
         mBottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.index_actived, "首页").setActiveColorResource(R.color.colorPrimary).setInactiveIconResource(R.drawable.index).setInActiveColorResource(R.color.colorNavigationBarInactivedText))
@@ -103,6 +115,12 @@ public class MainActivity extends AppCompatActivity implements
                 .setFirstSelectedPosition(lastSelectedPosition)
                 .initialise();
 
+        if (getUserInfo.isUserLogined()) {
+            checkUnreadMessage();
+        } else {
+            mShapeBadgeItem.hide();
+        }
+
         mBottomNavigationBar.setTabSelectedListener(new BottomNavigationBar.SimpleOnTabSelectedListener() {
 
             @Override
@@ -112,7 +130,10 @@ public class MainActivity extends AppCompatActivity implements
                 hideFragment(fragmentTransaction);
                 switch (position) {
                     case 0:  // index
-
+                        currentIndex = 0;
+                        if (getUserInfo.isUserLogined()) {
+                            checkUnreadMessage();
+                        }
                         if (mIndexFragment == null) {
                             mIndexFragment = IndexFragment.newInstance("", "");
                             fragmentTransaction.add(R.id.mainContainer, mIndexFragment);
@@ -123,9 +144,14 @@ public class MainActivity extends AppCompatActivity implements
                     case 1:  // explore
                         if (!getUserInfo.isUserLogined()) {
                             Toast.makeText(MainActivity.this, "请先进行登录", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+//                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            switchSelectTab(4);
                             return;
                         }
+                        if (getUserInfo.isUserLogined()) {
+                            checkUnreadMessage();
+                        }
+                        currentIndex = 1;
                         if (mExploreFragment == null) {
                             mExploreFragment = ExploreFragment.newInstance("", "");
                             fragmentTransaction.add(R.id.mainContainer, mExploreFragment);
@@ -155,19 +181,27 @@ public class MainActivity extends AppCompatActivity implements
                     case 3:  // message
                         if (!getUserInfo.isUserLogined()) {
                             Toast.makeText(MainActivity.this, "请先进行登录", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+//                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            switchSelectTab(4);
                             return;
                         }
+                        currentIndex = 3;
                         if (mMessageFragment == null) {
                             mMessageFragment = MessageFragment.newInstance("", "");
                             fragmentTransaction.add(R.id.mainContainer, mMessageFragment);
                         } else {
                             fragmentTransaction.show(mMessageFragment);
                         }
+                        mShapeBadgeItem.hide();
                         break;
                     case 4:  // my
 
                         boolean isLogin = false;//Todo
+                        currentIndex = 4;
+                        if (getUserInfo.isUserLogined()) {
+                            checkUnreadMessage();
+                        }
+
 //                        if(isLogin) {
                         if (mMyFragment == null) {
                             mMyFragment = MyFragment.newInstance("", "");
@@ -188,6 +222,60 @@ public class MainActivity extends AppCompatActivity implements
                 fragmentTransaction.commit();
             }//onTabSelected
         });
+    }
+
+    public static void switchSelectTab(int index) {
+        if (index <= 4) {
+            mBottomNavigationBar.selectTab(index);
+        }
+    }
+
+    public static void removeMessageBadge() {
+        mShapeBadgeItem.hide();
+    }
+
+    public static void addMessageBadge() {
+        if (mShapeBadgeItem.isHidden())
+            mShapeBadgeItem.show();
+    }
+
+    public boolean checkUnreadMessage() {
+        String url = Constant.REQUEST_URL_MY + "/message/checkHasUnread";
+        if (userInfo == null) {
+            userInfo = getUserInfo.getUserInfo().getData();
+        }
+
+        Long user_id = userInfo.getId();
+
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("userId", user_id.toString());
+        OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(MainActivity.this, "checkunread Failed", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                Gson gson = new Gson();
+                Log.e("loginPostRequest", "checkunread" + response);
+
+                try {
+                    Map<String, Object> map_res = gson.fromJson(response, Map.class);
+                    Boolean data = (Boolean) map_res.get("data");
+                    if (data) {
+                        if (mShapeBadgeItem.isHidden())
+                            mShapeBadgeItem.show();
+                    } else {
+                        mShapeBadgeItem.hide();
+                    }
+                } catch (Exception e) {
+                    Log.e("checkunreadmessage", "error" + e);
+                }
+            }
+        });
+        return true;
     }
 
     private void setBottomNavigationItem(BottomNavigationBar bottomNavigationBar, int space, int imgLen, int textSize) {
@@ -215,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements
                         params.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
                         iconView.setLayoutParams(params);
                     }
-                }catch (IllegalAccessException e){
+                } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
@@ -269,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        if(Constant.LOG_LEVEL == "DEV"){
+        if (Constant.LOG_LEVEL == "DEV") {
             Toast.makeText(this, "MainActivity recieve message from fragment" + uri.toString(), Toast.LENGTH_SHORT).show();
         }
 
@@ -287,7 +375,7 @@ public class MainActivity extends AppCompatActivity implements
     public void clickCiTiao(View view) {
         fragmentTransaction = fragmentManager.beginTransaction();
         mMoreWindow.hideMoreWindow();
-        if(Constant.LOG_LEVEL == "DEV") {
+        if (Constant.LOG_LEVEL == "DEV") {
             Toast.makeText(this, "点击了词条", Toast.LENGTH_SHORT).show();
         }
         if (mPostFragment == null) {
