@@ -106,10 +106,6 @@ public class IndexDetailActivity extends AppCompatActivity {
 
     public void showDetail(String entryId) {
 
-
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput (InputMethodManager.SHOW_FORCED, InputMethodManager.RESULT_HIDDEN);
-
         currentEntryId = entryId;
 
         String url = Constant.globalServerUrl + "/abbreviation/getOneEntryDetail";
