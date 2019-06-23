@@ -251,12 +251,8 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 if(!isFollow){
                     handleFollow(true);
-                    followTV.setText("已关注");
-                    isFollow = true;
                 }else {
                     handleFollow(false);
-                    followTV.setText("关注");
-                    isFollow = false;
                 }
             }
         });
@@ -513,7 +509,7 @@ public class SearchFragment extends Fragment {
             url = Constant.globalServerUrl + "/follow/remove";
         }
         final String logUrl = url;
-
+        final boolean finalIsEnroll = isEnroll;
         GetUserInfo getUserInfo = new GetUserInfo(mContext);
         if(!getUserInfo.isUserLogined())   {
             Toast.makeText(mContext, "请先登录", Toast.LENGTH_SHORT).show();
@@ -546,6 +542,13 @@ public class SearchFragment extends Fragment {
                                     new TypeToken<CommonResponse<Object>>() {}.getType());
                     if(saveResult.getStatus() == 200){
                         Log.d("dkdebug","save success");
+                        if(finalIsEnroll){
+                            followTV.setText("已关注");
+                            isFollow = true;
+                        }else {
+                            followTV.setText("关注");
+                            isFollow = false;
+                        }
                     }
                 } catch (Exception e) {
                     Log.d("dkdebug onResponse", "e=" + e);
