@@ -341,8 +341,12 @@ public class SearchFragment extends Fragment {
         HashMap<String, String> paramsMap = new HashMap<>();
         GetUserInfo getUserInfo = new GetUserInfo(mContext);
         try{
-            paramsMap.put("userId", getUserInfo.getUserInfo().getData().getId().toString());
-        }catch (NullPointerException e) {
+            if(getUserInfo.isUserLogined()){
+                paramsMap.put("userId", getUserInfo.getUserInfo().getData().getId().toString());
+            }else {
+                paramsMap.put("userId","");
+            }
+        }catch (Exception e) {
             Log.d("dkdebug NPE", "e=" + e);
             paramsMap.put("userId","");
         }
