@@ -3,6 +3,7 @@ package com.xwing.sundae.android.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,8 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
      */
     private LayoutInflater mInfalter;
 
+    private OnRecyclerItemClickListener onRecyclerItemClickListener;
+
     /**
      * 构造器
      * @param data
@@ -56,7 +59,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_publish, viewGroup, false);
-        return new MyPublishAdapter.ViewHolder(view);
+        return new MyPublishAdapter.ViewHolder(view, onRecyclerItemClickListener);
     }
 
     @Override
@@ -99,19 +102,38 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
         return mDatas.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements RecyclerView.OnClickListener{
         ImageView item_image;
         TextView create_time,abb_likedCount,abb_type,item_name,item_content;
+        View mView;
+        OnRecyclerItemClickListener mListener;
 
-        public ViewHolder(@NonNull View v) {
+        public ViewHolder(@NonNull View v, OnRecyclerItemClickListener listener) {
             super(v);
+            v.setOnClickListener(this);
             item_image = v.findViewById(R.id.item_image);
             create_time = v.findViewById(R.id.abbr_create_time);
             abb_likedCount = v.findViewById(R.id.abb_likedCount);
             abb_type = v.findViewById(R.id.abb_type);
             item_name = v.findViewById(R.id.item_name);
             item_content = v.findViewById(R.id.item_content);
+            this.mListener = listener;
         }
+
+
+        @Override
+        public void onClick(View v) {
+            Log.d("dkdebug", "click inside mypublishAdapter");
+            mListener.OnItemClick(v, getAdapterPosition());
+        }
+    }
+
+    public void setOnItemClickEvent(OnRecyclerItemClickListener listener) {
+        this.onRecyclerItemClickListener = listener;
+    }
+
+    public interface OnRecyclerItemClickListener {
+        void OnItemClick(View view, int postion);
     }
 
 }

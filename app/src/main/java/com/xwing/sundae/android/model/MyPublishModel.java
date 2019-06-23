@@ -10,6 +10,10 @@ import java.util.Date;
 public class MyPublishModel {
 
     /**
+     * 词条ID
+     */
+    private Long item_id;
+    /**
      * 词条创建时间
      */
     private String abb_create_time;
@@ -40,6 +44,7 @@ public class MyPublishModel {
 
     /**
      * 构造器
+     * @param item_id
      * @param abb_create_time
      * @param abb_type
      * @param item_name
@@ -48,20 +53,23 @@ public class MyPublishModel {
      * @param abb_fullName
      * @param item_image
      */
-    public MyPublishModel(String abb_create_time,
-                          String abb_type,
-                          String item_name,
-                          String item_content,
-                          String abb_likedCount,
-                          String abb_fullName,
-                          String item_image) {
+    public MyPublishModel(Long item_id, String abb_create_time, String abb_type, String item_name, String item_content, String abb_likedCount, String abb_fullName, String item_image) {
+        this.item_id = item_id;
         this.abb_create_time = abb_create_time;
-        this.item_name = item_name;
         this.abb_type = abb_type;
+        this.item_name = item_name;
         this.item_content = item_content;
         this.abb_likedCount = abb_likedCount;
         this.abb_fullName = abb_fullName;
         this.item_image = item_image;
+    }
+
+    public Long getItem_id() {
+        return item_id;
+    }
+
+    public void setItem_id(Long item_id) {
+        this.item_id = item_id;
     }
 
     public String getCreate_time() {

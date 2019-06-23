@@ -1,6 +1,7 @@
 package com.xwing.sundae.android.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,6 +20,8 @@ import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.MyCollectModel;
 import com.xwing.sundae.android.model.MyFollowerModel;
 import com.xwing.sundae.android.util.ImageServerConstant;
+import com.xwing.sundae.android.view.IndexDetailActivity;
+import com.xwing.sundae.android.view.my.MyCollectActivity;
 
 import java.util.List;
 
@@ -117,6 +120,10 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
                 Toast.makeText(mContext, "onClick:"
                         + mDatas.get(viewHolder.getAdapterPosition()).getItem_id(), Toast.LENGTH_SHORT).show();
                 Log.d("TAG", "onClick() called with: v = [" + v + "]");
+                Intent intent= new Intent(mContext, IndexDetailActivity.class);
+                String entryId = String.valueOf(mDatas.get(viewHolder.getAdapterPosition()).getItem_id());
+                intent.putExtra("entryId", entryId);
+                mContext.startActivity(intent);
             }
         });
     }

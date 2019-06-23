@@ -1,10 +1,12 @@
 package com.xwing.sundae.android.view.my;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +22,8 @@ import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.view.GetUserInfo;
+import com.xwing.sundae.android.view.IndexDetailActivity;
+import com.xwing.sundae.android.view.MainActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -120,8 +124,18 @@ public class MyPubishActivity extends AppCompatActivity {
         });
     }
 
-    private void afterResponse(List<MyPublishModel> publishList) {
+    private void afterResponse(final List<MyPublishModel> publishList) {
         myPublishAdapter = new MyPublishAdapter(publishList, MyPubishActivity.this);
+        myPublishAdapter.setOnItemClickEvent(new MyPublishAdapter.OnRecyclerItemClickListener() {
+            @Override
+            public void OnItemClick(View view, int postion) {
+                Toast.makeText(MyPubishActivity.this, "we got click from afterresponse" + postion, Toast.LENGTH_SHORT).show();
+                Intent intent= new Intent(MyPubishActivity.this, IndexDetailActivity.class);
+                String entryId = String.valueOf(publishList.get(postion).getItem_id());
+                intent.putExtra("entryId", entryId);
+                startActivity(intent);
+            }
+        });
         recyclerView.setLayoutManager(new LinearLayoutManager(MyPubishActivity.this) {
             @Override
             public boolean canScrollVertically() {

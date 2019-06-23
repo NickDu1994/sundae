@@ -1,5 +1,6 @@
 package com.xwing.sundae.android.view.my;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.view.GetUserInfo;
+import com.xwing.sundae.android.view.IndexDetailActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
