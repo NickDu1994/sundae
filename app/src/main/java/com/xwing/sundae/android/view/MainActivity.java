@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements
     private MessageFragment mMessageFragment;
     private MyFragment mMyFragment;
     private MoreWindow mMoreWindow;
+    GetUserInfo getUserInfo;
 
 
     @Override
@@ -120,6 +121,11 @@ public class MainActivity extends AppCompatActivity implements
                         }
                         break;
                     case 1:  // explore
+                        if (!getUserInfo.isUserLogined()) {
+                            Toast.makeText(MainActivity.this, "请先进行登录", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            return;
+                        }
                         if (mExploreFragment == null) {
                             mExploreFragment = ExploreFragment.newInstance("", "");
                             fragmentTransaction.add(R.id.mainContainer, mExploreFragment);
@@ -147,6 +153,11 @@ public class MainActivity extends AppCompatActivity implements
                         //For navigation logic, go to below
                         break;
                     case 3:  // message
+                        if (!getUserInfo.isUserLogined()) {
+                            Toast.makeText(MainActivity.this, "请先进行登录", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            return;
+                        }
                         if (mMessageFragment == null) {
                             mMessageFragment = MessageFragment.newInstance("", "");
                             fragmentTransaction.add(R.id.mainContainer, mMessageFragment);
