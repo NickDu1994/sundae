@@ -66,6 +66,7 @@ public class MessageFragment extends Fragment {
     GetUserInfo getUserInfo;
     int currentPage = 0;
     Boolean isLast = false;
+    Long currentUserId;
 
     public MessageFragment() {
         // Required empty public constructor
@@ -92,7 +93,7 @@ public class MessageFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("dandan","oncreate");
+        Log.d("dandan", "oncreate");
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -103,14 +104,14 @@ public class MessageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.d("dandan","createview");
+        Log.d("dandan", "createview");
         return inflater.inflate(R.layout.fragment_message, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Log.d("dandan","created");
+        Log.d("dandan", "created");
         xRefreshView = getActivity().findViewById(R.id.message_list_wrapper);
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.message_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
@@ -154,11 +155,40 @@ public class MessageFragment extends Fragment {
         getUserInfo = new GetUserInfo(getActivity());
         if (null != getUserInfo) {
             userInfo = getUserInfo.getUserInfo().getData();
-            readAllMessage();
+            currentUserId = userInfo.getId();
             getMessageList();
         }
 
         setPullandRefresh();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        Log.w("change", "www");
+        super.onHiddenChanged(hidden);
+        Log.w("dandan", "message");
+        if (hidden) {
+
+        } else {
+            if (null != getUserInfo) {
+                userInfo = getUserInfo.getUserInfo().getData();
+                Long newId = userInfo.getId();
+                if (!currentUserId.equals(newId)) {
+                    messageList.clear();
+                    currentPage = 0;
+                    currentUserId = newId;
+                    isLast = false;
+                    readAllMessage();
+                    getMessageList();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("dandan", "message resume");
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -170,7 +200,7 @@ public class MessageFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        Log.d("dandan","onattach");
+        Log.d("dandan", "onattach");
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
@@ -182,7 +212,7 @@ public class MessageFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        Log.d("dandan","detach");
+        Log.d("dandan", "detach");
         super.onDetach();
         mListener = null;
     }

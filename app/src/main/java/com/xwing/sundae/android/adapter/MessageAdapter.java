@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.MessageModel;
+import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.MessageConstant;
 
 import java.util.List;
@@ -74,9 +75,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 break;
         }
 
+        String timeString = message.getCreateTime();
+
         viewHolder.messageTitle.setText(messageTxt);
         viewHolder.messageContent.setText(message.getContent());
-        viewHolder.messageTime.setText("2天前");
+        viewHolder.messageTime.setText(CommonMethod.CalculateTimeUntilNow(timeString));
         Glide.with(mContext).load(drawableId).into(viewHolder.messageImage);
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

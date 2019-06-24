@@ -6,19 +6,32 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.andview.refreshview.XRefreshView;
+import com.google.gson.Gson;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.adapter.FollowAdapter;
 import com.xwing.sundae.android.model.FollowModel;
+import com.xwing.sundae.android.model.UserInfo;
+import com.xwing.sundae.android.util.CallBackUtil;
+import com.xwing.sundae.android.util.Constant;
+import com.xwing.sundae.android.util.OkhttpUtil;
+import com.xwing.sundae.android.view.GetUserInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,15 +52,16 @@ public class ExploreFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
     private List<FollowModel> followList = new ArrayList<>();
+
     XRefreshView xRefreshView;
+    RecyclerView recyclerView;
     FollowAdapter followAdapter;
     private Handler handler = new Handler();
-    private FollowFragment followFragment;
-    private RankTabFragment rankTabFragment;
-
-    FragmentManager fm;
-    FragmentTransaction transaction;
+    UserInfo userInfo;
+    GetUserInfo getUserInfo;
+    Long currentUserId;
 
 //    private TextView followBtn, rankBtn;
 
@@ -73,13 +87,6 @@ public class ExploreFragment extends Fragment {
         return fragment;
     }
 
-    private void setDefaultFragment() {
-        fm = getFragmentManager();
-        transaction = fm.beginTransaction();
-        followFragment = FollowFragment.newInstance("","");
-        transaction.add(R.id.list_container, followFragment).commit();
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,38 +106,44 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        xRefreshView = getActivity().findViewById(R.id.follow_list_wrapper);
+        recyclerView = (RecyclerView) getActivity().findViewById(R.id.follow_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
+            @Override
+            public boolean canScrollVertically() {
+                return true;
+            }
+        });
+        recyclerView.setHasFixedSize(true);
+        followAdapter = new FollowAdapter(followList, getContext());
+        recyclerView.setAdapter(followAdapter);
 
-//        xRefreshView = getActivity().findViewById(R.id.follow_list_wrapper);
-//        RecyclerView recyclerView = (RecyclerView) getActivity().findViewById(R.id.follow_list);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
-//            @Override
-//            public boolean canScrollVertically() {
-//                return true;
-//            }
-//        });
-//        recyclerView.setHasFixedSize(true);
-//        followAdapter = new FollowAdapter(followList, getContext());
-//        recyclerView.setAdapter(followAdapter);
-//
-//        getFollowList();
-//        setPullandRefresh();
-//        followBtn = (TextView) getActivity().findViewById(R.id.follow_btn);
-//        rankBtn = (TextView) getActivity().findViewById(R.id.rank_btn);
-//        //控件颜色
-//        followBtn.setTextColor(getResources().getColor(R.color.colorMainTheme));
-//        rankBtn.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
-//        followBtn.setOnClickListener(this);
-//        rankBtn.setOnClickListener(this);
-        setDefaultFragment();
-    }
-
-    private void hideFragment(FragmentTransaction transaction){
-        if (followFragment != null){
-            transaction.hide(followFragment);
+        getUserInfo = new GetUserInfo(getActivity());
+        if(null != getUserInfo) {
+            userInfo = getUserInfo.getUserInfo().getData();
+            currentUserId = userInfo.getId();
+            getFollowList();
         }
 
-        if(rankTabFragment != null){
-            transaction.hide(rankTabFragment);
+        setPullandRefresh();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Log.w("dandan", "message");
+        if (hidden) {
+
+        } else {
+            if (null != getUserInfo) {
+                userInfo = getUserInfo.getUserInfo().getData();
+                Long newId = userInfo.getId();
+                if (!currentUserId.equals(newId)) {
+                    followList.clear();
+                    currentUserId = newId;
+                    getFollowList();
+                }
+            }
         }
     }
 
@@ -212,30 +225,47 @@ public class ExploreFragment extends Fragment {
     }
 
     private void getFollowList() {
-        initMockData();
+        String url = Constant.REQUEST_URL_MY + "/user/getExploreList";
+        Long user_id = userInfo.getId();
 
-        handler.post(new Runnable() {
+        HashMap<String,String> paramsMap = new HashMap<>();
+        paramsMap.put("userId", user_id.toString());
+
+        OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
-            public void run() {
-                followAdapter.notifyDataSetChanged();
-                xRefreshView.stopRefresh();
-                xRefreshView.stopLoadMore();
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(getContext(), "getMyFollowList Failed", Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+                Gson gson = new Gson();
+                Log.e("loginPostRequest", "getFollowList" + response);
+
+                try {
+                    Map<String, Object> map_res = gson.fromJson(response, Map.class);
+                    Object data = map_res.get("data");
+                    String tmp = gson.toJson(data);
+                    FollowModel[] myFollowModels = gson.fromJson(tmp, FollowModel[].class);
+                    followList.addAll(Arrays.asList(myFollowModels));
+
+//                    afterResponse(followList);
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            followAdapter.notifyDataSetChanged();
+                            xRefreshView.stopRefresh();
+                            xRefreshView.stopLoadMore();
+
+                        }
+                    });
+                } catch (Exception e) {
+                    Log.e("loginPostRequestError", "error" + e);
+                }
             }
         });
-    }
-
-    public void initMockData() {
-//        for(int i = 0; i < 10; i++){
-//            FollowModel follow = new FollowModel(
-//                    "蛋蛋评价了一个词条",
-//                    "2天前",
-//                    "WTF",
-//                    "This is a content for sundae app usingThis is a content for sundae app usingThis is a content for sundae app using",
-//                    "https://img3.doubanio.com/view/movie_gallery_frame_hot_rec/normal/public/0e4bef5f02adf70.jpg"
-//            );
-//            followList.add(follow);
-//        }
     }
 
     private void setPullandRefresh() {
@@ -245,7 +275,7 @@ public class ExploreFragment extends Fragment {
         xRefreshView.setMoveForHorizontal(true);
         //允许下拉刷新
         xRefreshView.setPullRefreshEnable(true);
-        xRefreshView.setPullLoadEnable(true);
+        xRefreshView.setPullLoadEnable(false);
         xRefreshView.setAutoLoadMore(false);
 //        adapter.setCustomLoadMoreView(new XRefreshViewFooter(this));
         xRefreshView.enableReleaseToLoadMore(false);
@@ -259,6 +289,7 @@ public class ExploreFragment extends Fragment {
             public void onRefresh(boolean isPullDown) {
                 //super.onRefresh(isPullDown);
                 xRefreshView.setLoadComplete(false);
+                followList.clear();
                 getFollowList();
 //                xRefreshView.stopRefresh();
             }

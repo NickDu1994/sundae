@@ -122,6 +122,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("dandan","explore resume");
         setUserInfo();
     }
 

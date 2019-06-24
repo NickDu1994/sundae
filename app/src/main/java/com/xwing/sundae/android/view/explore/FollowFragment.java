@@ -61,6 +61,7 @@ public class FollowFragment extends Fragment {
     private Handler handler = new Handler();
     UserInfo userInfo;
     GetUserInfo getUserInfo;
+    Long currentUserId;
 
     public FollowFragment() {
         // Required empty public constructor
@@ -119,6 +120,7 @@ public class FollowFragment extends Fragment {
         getUserInfo = new GetUserInfo(getActivity());
         if(null != getUserInfo) {
             userInfo = getUserInfo.getUserInfo().getData();
+            currentUserId = userInfo.getId();
             getFollowList();
         }
 
@@ -162,6 +164,30 @@ public class FollowFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("dandan","explore resume");
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Log.w("dandan", "message");
+        if (hidden) {
+
+        } else {
+            if (null != getUserInfo) {
+                userInfo = getUserInfo.getUserInfo().getData();
+                Long newId = userInfo.getId();
+                if (!currentUserId.equals(newId)) {
+                    followList.clear();
+                    currentUserId = newId;
+                    getFollowList();
+                }
+            }
+        }
     }
 
     private void getFollowList() {
