@@ -181,11 +181,9 @@ public class FollowFragment extends Fragment {
             if (null != getUserInfo) {
                 userInfo = getUserInfo.getUserInfo().getData();
                 Long newId = userInfo.getId();
-                if (!currentUserId.equals(newId)) {
                     followList.clear();
                     currentUserId = newId;
                     getFollowList();
-                }
             }
         }
     }
