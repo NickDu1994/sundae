@@ -218,7 +218,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
             user_id.setText(userInfo.getUsername());
             String avatarUrl = userInfo.getAvatarUrl();
             if (null == avatarUrl || "".equals(avatarUrl)) {
-                Glide.with(this).load(R.drawable.boy).apply(options).into(image);
+                Glide.with(this).load(R.drawable.defaultpic).apply(options).into(image);
             } else {
                 Glide.with(this).load(ImageServerConstant.IMAGE_SERVER_URL + avatarUrl).apply(options).into(image);
             }

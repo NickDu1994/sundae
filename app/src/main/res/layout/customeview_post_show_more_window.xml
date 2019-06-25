@@ -21,8 +21,8 @@
             android:onClick="clickCiTiao"
             android:layout_marginRight="20dp">
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
                 android:src="@drawable/edit"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -50,8 +50,8 @@
         android:layout_marginLeft="20dp"
         android:onClick="clickXinDe">
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:src="@drawable/xinde"/>
         <TextView
             android:layout_width="wrap_content"

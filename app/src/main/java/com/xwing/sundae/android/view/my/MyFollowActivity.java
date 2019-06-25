@@ -59,11 +59,16 @@ public class MyFollowActivity extends AppCompatActivity {
      */
     XRefreshView xRefreshView;
 
-    TextView header_title;
+    /**
+     * header标题
+     */
+    TextView header_title, no_text;
 
     UserInfo userInfo;
 
     GetUserInfo getUserInfo;
+
+    private String no_text_value;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +76,16 @@ public class MyFollowActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_follow);
 
         getUserInfo = new GetUserInfo(this);
-        if(null != getUserInfo) {
+        if (null != getUserInfo) {
             userInfo = getUserInfo.getUserInfo().getData();
             getMyFollowList();
         }
 
         header_title = findViewById(R.id.header_title);
         header_title.setText("我的关注");
+        no_text = findViewById(R.id.no_text);
+        no_text.setVisibility(View.GONE);
+        no_text_value = "oh ho! 你还没有任何关注哦~";
 
         xRefreshView = findViewById(R.id.follower_list_wrapper);
         recyclerView = (RecyclerView) findViewById(R.id.rv);
@@ -156,7 +164,7 @@ public class MyFollowActivity extends AppCompatActivity {
         String url = Constant.REQUEST_URL_MY + "/follow/follow";
         Long user_id = userInfo.getId();
 
-        HashMap<String,String> paramsMap = new HashMap<>();
+        HashMap<String, String> paramsMap = new HashMap<>();
         paramsMap.put("userId", user_id.toString());
 
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
@@ -175,10 +183,19 @@ public class MyFollowActivity extends AppCompatActivity {
                     Map<String, Object> map_res = gson.fromJson(response, Map.class);
                     Object data = map_res.get("data");
                     String json_data = gson.toJson(data);
+
                     MyFollowerModel[] myFollowerModels = gson.fromJson(json_data, MyFollowerModel[].class);
                     followList.addAll(Arrays.asList(myFollowerModels));
+                    if (null == followList || followList.size() == 0) {
+                        no_text.setText(no_text_value);
+                        recyclerView.setVisibility(View.GONE);
+                        xRefreshView.setLoadComplete(true);
+                    } else {
+                        no_text.setVisibility(View.GONE);
+                    }
 
                     afterResponse(followList);
+
 
                 } catch (Exception e) {
                     Log.e("loginPostRequestError", "error" + e);
@@ -207,7 +224,7 @@ public class MyFollowActivity extends AppCompatActivity {
                     Long remove_userid = followList.get(pos).getFollow_user_id();
                     Long user_id = userInfo.getId();
                     // call remove api
-                    removeFollower(user_id,remove_userid,pos);
+                    removeFollower(user_id, remove_userid, pos);
                     followList.remove(pos);
 
                     Toast.makeText(MyFollowActivity.this, "取消关注:" + pos, Toast.LENGTH_SHORT).show();
@@ -231,11 +248,10 @@ public class MyFollowActivity extends AppCompatActivity {
     }
 
 
-
-    private void removeFollower(Long user_id,Long remove_userid,final int pos) {
+    private void removeFollower(Long user_id, Long remove_userid, final int pos) {
         String url = Constant.REQUEST_URL_MY + "/follow/remove";
 
-        HashMap<String,String> paramsMap = new HashMap<>();
+        HashMap<String, String> paramsMap = new HashMap<>();
         paramsMap.put("userId", user_id.toString());
         paramsMap.put("followedUserId", remove_userid.toString());
 

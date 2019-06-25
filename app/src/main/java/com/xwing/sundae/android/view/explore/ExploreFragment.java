@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andview.refreshview.XRefreshView;
@@ -63,6 +64,10 @@ public class ExploreFragment extends Fragment {
     GetUserInfo getUserInfo;
     Long currentUserId;
 
+    TextView no_text;
+
+    private String no_text_value = "oh ho! 你没有任何发现哦~ 快去关注吧";
+
 //    private TextView followBtn, rankBtn;
 
     public ExploreFragment() {
@@ -106,9 +111,11 @@ public class ExploreFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        no_text = getActivity().findViewById(R.id.no_text);
+        no_text.setVisibility(View.GONE);
         xRefreshView = getActivity().findViewById(R.id.follow_list_wrapper);
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.follow_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()){
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
             @Override
             public boolean canScrollVertically() {
                 return true;
@@ -119,7 +126,7 @@ public class ExploreFragment extends Fragment {
         recyclerView.setAdapter(followAdapter);
 
         getUserInfo = new GetUserInfo(getActivity());
-        if(null != getUserInfo) {
+        if (null != getUserInfo) {
             userInfo = getUserInfo.getUserInfo().getData();
             currentUserId = userInfo.getId();
             getFollowList();
@@ -228,7 +235,7 @@ public class ExploreFragment extends Fragment {
         String url = Constant.REQUEST_URL_MY + "/user/getExploreList";
         Long user_id = userInfo.getId();
 
-        HashMap<String,String> paramsMap = new HashMap<>();
+        HashMap<String, String> paramsMap = new HashMap<>();
         paramsMap.put("userId", user_id.toString());
 
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
@@ -249,8 +256,14 @@ public class ExploreFragment extends Fragment {
                     String tmp = gson.toJson(data);
                     FollowModel[] myFollowModels = gson.fromJson(tmp, FollowModel[].class);
                     followList.addAll(Arrays.asList(myFollowModels));
-
-//                    afterResponse(followList);
+                    if(null==followList || followList.size() == 0) {
+                        no_text.setText(no_text_value);
+                        xRefreshView.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.GONE);
+                        xRefreshView.setLoadComplete(true);
+                    } else {
+                        no_text.setVisibility(View.GONE);
+                    }
 
                     handler.post(new Runnable() {
                         @Override
@@ -261,6 +274,7 @@ public class ExploreFragment extends Fragment {
 
                         }
                     });
+
                 } catch (Exception e) {
                     Log.e("loginPostRequestError", "error" + e);
                 }

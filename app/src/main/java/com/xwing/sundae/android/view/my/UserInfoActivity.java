@@ -130,38 +130,28 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
-        sharedPreferencesHelper = new SharedPreferencesHelper(this,"user");
+        sharedPreferencesHelper = new SharedPreferencesHelper(this, "user");
         getUserInfo = new GetUserInfo(this);
 
         initView();
         initEvent();
-//        showUserPic();
         userInfo = getUserInfo.getUserInfo().getData();
         String url = ImageServerConstant.IMAGE_SERVER_URL + userInfo.getAvatarUrl();
         RequestOptions options = new RequestOptions().
-                    circleCropTransform();
-        Glide.with(this)
-                .load(url)
-                .apply(options)
-                .into(info_user_pic);
+                circleCropTransform();
 
-//        if (null !=userInfo && !"".equals(userInfo)) {
-//
-//            RequestOptions options = new RequestOptions().
-//                    circleCropTransform();
-//            if(null != userInfo.getAvatarUrl() && "".equals(userInfo.getAvatarUrl())) {
-//                Glide.with(this)
-//                        .load(userInfo.getAvatarUrl())
-//                        .apply(options)
-//                        .into(info_user_pic);
-//            } else {
-//                Glide.with(this)
-//                        .load(R.drawable.defaultpic)
-//                        .apply(options)
-//                        .into(info_user_pic);
-//            }
-//            add_info_list(userInfo);
-//        }
+        if (null != userInfo.getAvatarUrl() && !"".equals(userInfo.getAvatarUrl())) {
+            Glide.with(this)
+                    .load(url)
+                    .apply(options)
+                    .into(info_user_pic);
+        } else {
+            Glide.with(this)
+                    .load(R.drawable.defaultpic)
+                    .apply(options)
+                    .into(info_user_pic);
+        }
+        add_info_list(userInfo);
 
         requestPermission();
     }
@@ -257,7 +247,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         Bitmap bitmap = ((BitmapDrawable) (info_user_pic).getDrawable()).getBitmap();
         String base64Image = PostImageUtil.imgToBase64(10, bitmap);
 
-        updateUserInfoPost("avatar",base64Image);
+        updateUserInfoPost("avatar", base64Image);
 
     }
 

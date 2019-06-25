@@ -82,6 +82,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
         if(null == abbr_type || "".equals(abbr_type)) {
             abbr_type_name = "";
         }
+        abbr_type = abbr_type.substring(0,1);
         switch (abbr_type){
             case "0":
                 abbr_type_name = "词条";

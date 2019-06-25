@@ -52,11 +52,12 @@ public class MyPubishActivity extends AppCompatActivity {
     /**
      * 数据源
      */
-    private List<MyPublishModel> publishList = new ArrayList<>();;
+    private List<MyPublishModel> publishList = new ArrayList<>();
+    ;
     /**
      * header标题
      */
-    TextView header_title;
+    TextView header_title, no_text;
     /**
      * handler
      */
@@ -66,13 +67,15 @@ public class MyPubishActivity extends AppCompatActivity {
 
     GetUserInfo getUserInfo;
 
+    private String no_text_value = "oh ho! 你还没有任何发布哦~";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_pubish);
 
         getUserInfo = new GetUserInfo(this);
-        if(null != getUserInfo) {
+        if (null != getUserInfo) {
             userInfo = getUserInfo.getUserInfo().getData();
             getCollectList();
         }
@@ -80,6 +83,8 @@ public class MyPubishActivity extends AppCompatActivity {
         header_title = findViewById(R.id.header_title);
         header_title.setText("我的发布");
 
+        no_text = findViewById(R.id.no_text);
+        no_text.setVisibility(View.GONE);
         xRefreshView = findViewById(R.id.collect_list_wrapper);
         recyclerView = (RecyclerView) findViewById(R.id.publish_rv);
         setPullandRefresh();
@@ -134,11 +139,12 @@ public class MyPubishActivity extends AppCompatActivity {
             }
         });
     }
+
     private void getMyPublishList() {
         String url = Constant.REQUEST_URL_MY + "/userPublish/getAllPublish";
         Long user_id = userInfo.getId();
 
-        HashMap<String,String> paramsMap = new HashMap<>();
+        HashMap<String, String> paramsMap = new HashMap<>();
         paramsMap.put("userId", user_id.toString());
 
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
@@ -159,10 +165,19 @@ public class MyPubishActivity extends AppCompatActivity {
                     Map<String, Object> map_res = gson.fromJson(response, Map.class);
                     Object data = map_res.get("data");
                     String json_data = gson.toJson(data);
+
                     MyPublishModel[] myPublishModels = gson.fromJson(json_data, MyPublishModel[].class);
                     publishList.addAll(Arrays.asList(myPublishModels));
+                    if(null == publishList || publishList.size() ==0) {
+                        no_text.setText(no_text_value);
+                        recyclerView.setVisibility(View.GONE);
+                        xRefreshView.setLoadComplete(true);
+                    } else {
+                        no_text.setVisibility(View.GONE);
+                    }
 
                     afterResponse(publishList);
+
 
                 } catch (Exception e) {
                     Log.e("loginPostRequestError", "error" + e);
@@ -177,7 +192,7 @@ public class MyPubishActivity extends AppCompatActivity {
             @Override
             public void OnItemClick(View view, int postion) {
                 Toast.makeText(MyPubishActivity.this, "we got click from afterresponse" + postion, Toast.LENGTH_SHORT).show();
-                Intent intent= new Intent(MyPubishActivity.this, IndexDetailActivity.class);
+                Intent intent = new Intent(MyPubishActivity.this, IndexDetailActivity.class);
                 String entryId = String.valueOf(publishList.get(postion).getItem_id());
                 intent.putExtra("entryId", entryId);
                 startActivity(intent);

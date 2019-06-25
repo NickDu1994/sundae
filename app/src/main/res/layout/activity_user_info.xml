@@ -25,14 +25,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="#F5F6FA">
+            android:background="#FFFFFF">
             <RelativeLayout
                 android:id="@+id/user_logo_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="10sp"
-                android:background="#F5F6FA">
+                android:background="#FFFFFF">
                 <ImageView
                     android:id="@+id/info_user_pic"
                     android:layout_marginLeft="20sp"
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#F5F6FA">
+            android:background="#FFFFFF">
         </LinearLayout>
     </LinearLayout>
 

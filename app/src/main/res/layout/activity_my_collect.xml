@@ -26,13 +26,24 @@
             android:orientation="vertical"
             xrefreshview:isHeightMatchParent="true"
             xrefreshview:isWidthMatchParent="true">
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/collect_rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#F5F6FA"/>
+                android:background="#FFFFFF"/>
 
     </com.andview.refreshview.XRefreshView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/no_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
+                android:text="@string/string_no_text"
+                />
+        </RelativeLayout>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

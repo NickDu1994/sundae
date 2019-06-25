@@ -208,12 +208,12 @@ public class SearchFragment extends Fragment {
         CustomeButtonGroupView customeButtonGroupView = getActivity().findViewById(R.id.historyPanel);
         customeButtonGroupView.setTitle("搜索历史");
         customeButtonGroupView.setTagList(histroyAbbr);
-        customeButtonGroupView.setOnItemClickListener(new CustomeButtonGroupView.OnTagClickListener() {
-            @Override
-            public void onTagClick(String keyword) {
-                mainEditText.setText(keyword);
-            }
-        });
+//        customeButtonGroupView.setOnItemClickListener(new CustomeButtonGroupView.OnTagClickListener() {
+//            @Override
+//            public void onTagClick(String keyword) {
+//                mainEditText.setText(keyword);
+//            }
+//        });
         setHotSearch();
 
 

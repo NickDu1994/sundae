@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F5F6FA"
+        android:background="#FFFFFF"
         android:orientation="vertical">
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
@@ -57,23 +57,21 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="30dp">
+                    android:orientation="vertical">
                     <com.github.florent37.materialtextfield.MaterialTextField
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="70dp"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        app:mtf_backgroundColor="#F5F6FA"
+                        app:mtf_backgroundColor="#FFFFFF"
                         app:mtf_labelColor="#666"
-                        app:mtf_image="@drawable/input"
                         android:id="@+id/post_edit_t1"
                         >
 
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="缩写"
+                            android:hint="缩写(点我输入)"
                             android:textColor="#333"
                             android:textSize="15sp"
                             android:id="@+id/post_edit1"/>
@@ -84,16 +82,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        app:mtf_backgroundColor="#F5F6FA"
+                        app:mtf_backgroundColor="#FFFFFF"
                         app:mtf_labelColor="#666"
-                        app:mtf_image="@drawable/input"
                         android:id="@+id/post_edit_t2"
                         >
 
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="全称"
+                            android:hint="全称(点我输入)"
                             android:textColor="#333"
                             android:textSize="15sp"
                             android:id="@+id/post_edit2"/>
@@ -104,16 +101,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
-                        app:mtf_backgroundColor="#F5F6FA"
+                        app:mtf_backgroundColor="#FFFFFF"
                         app:mtf_labelColor="#666"
-                        app:mtf_image="@drawable/input"
                         android:id="@+id/post_edit_t3"
                         >
 
                         <EditText
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="标题"
+                            android:hint="标题(点我输入)"
                             android:textColor="#333"
                             android:textSize="15sp"
                             android:id="@+id/post_edit3"/>

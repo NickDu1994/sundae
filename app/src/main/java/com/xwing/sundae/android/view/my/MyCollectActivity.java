@@ -58,12 +58,14 @@ public class MyCollectActivity extends AppCompatActivity {
     /**
      * header标题
      */
-    TextView header_title;
+    TextView header_title, no_text;
+
 
     UserInfo userInfo;
 
     GetUserInfo getUserInfo;
 
+    private String no_text_value;
 
 
     @Override
@@ -72,13 +74,17 @@ public class MyCollectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_collect);
 
         getUserInfo = new GetUserInfo(this);
-        if(null != getUserInfo) {
+        if (null != getUserInfo) {
             userInfo = getUserInfo.getUserInfo().getData();
             getMyCollectList();
         }
 
         header_title = findViewById(R.id.header_title);
         header_title.setText("我的收藏");
+
+        no_text = findViewById(R.id.no_text);
+        no_text.setVisibility(View.GONE);
+        no_text_value = "oh ho! 你还没有任何收藏哦~";
 
         xRefreshView = findViewById(R.id.collect_list_wrapper);
         recyclerView = findViewById(R.id.collect_rv);
@@ -104,7 +110,7 @@ public class MyCollectActivity extends AppCompatActivity {
         String url = Constant.REQUEST_URL_MY + "/collection/abbreviation";
         Long user_id = userInfo.getId();
 
-        HashMap<String,String> paramsMap = new HashMap<>();
+        HashMap<String, String> paramsMap = new HashMap<>();
         paramsMap.put("userId", user_id.toString());
 
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
@@ -123,8 +129,18 @@ public class MyCollectActivity extends AppCompatActivity {
                     Map<String, Object> map_res = gson.fromJson(response, Map.class);
                     Object data = map_res.get("data");
                     String json_data = gson.toJson(data);
+
                     MyCollectModel[] myCollectModels = gson.fromJson(json_data, MyCollectModel[].class);
                     collectList.addAll(Arrays.asList(myCollectModels));
+                    if (null == collectList || collectList.size() == 0) {
+                        no_text.setText(no_text_value);
+                        recyclerView.setVisibility(View.GONE);
+                        xRefreshView.setLoadComplete(true);
+
+                    } else {
+                        no_text.setVisibility(View.GONE);
+
+                    }
 
                     afterResponse(collectList);
 
@@ -136,7 +152,7 @@ public class MyCollectActivity extends AppCompatActivity {
     }
 
     private void afterResponse(final List<MyCollectModel> collectList) {
-        myCollectAdapter = new MyCollectAdapter(collectList,this);
+        myCollectAdapter = new MyCollectAdapter(collectList, this);
         // 添加删除(取消关注)监听器
         myCollectAdapter.setOnDelListener(new MyCollectAdapter.onSwipeListener() {
             @Override
@@ -145,7 +161,7 @@ public class MyCollectActivity extends AppCompatActivity {
                     Long remove_entryid = collectList.get(pos).getItem_id();
                     Long user_id = userInfo.getId();
                     // call remove api
-                    removeCollect(user_id,remove_entryid,pos);
+                    removeCollect(user_id, remove_entryid, pos);
                     Toast.makeText(MyCollectActivity.this, "取消收藏:" + pos, Toast.LENGTH_SHORT).show();
                     collectList.remove(pos);
 
@@ -153,7 +169,7 @@ public class MyCollectActivity extends AppCompatActivity {
             }
         });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this){
+        recyclerView.setLayoutManager(new LinearLayoutManager(this) {
             @Override
             public boolean canScrollVertically() {
                 return true;
@@ -180,7 +196,7 @@ public class MyCollectActivity extends AppCompatActivity {
     private void removeCollect(Long user_id, Long remove_userid, final int pos) {
         String url = Constant.REQUEST_URL_MY + "/collection/removeCollect";
 
-        HashMap<String,String> paramsMap = new HashMap<>();
+        HashMap<String, String> paramsMap = new HashMap<>();
         paramsMap.put("userId", user_id.toString());
         paramsMap.put("entryId", remove_userid.toString());
 

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andview.refreshview.XRefreshView;
@@ -67,6 +68,9 @@ public class MessageFragment extends Fragment {
     int currentPage = 0;
     Boolean isLast = false;
     Long currentUserId;
+    TextView no_text;
+
+    private String no_text_value = "oh ho! 你没有任何消息哦~";
 
     public MessageFragment() {
         // Required empty public constructor
@@ -112,6 +116,8 @@ public class MessageFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Log.d("dandan", "created");
+        no_text = getActivity().findViewById(R.id.no_text);
+        no_text.setVisibility(View.GONE);
         xRefreshView = getActivity().findViewById(R.id.message_list_wrapper);
         recyclerView = (RecyclerView) getActivity().findViewById(R.id.message_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
@@ -279,8 +285,14 @@ public class MessageFragment extends Fragment {
                     String tmp = gson.toJson(content);
                     MessageModel[] messageModels = gson.fromJson(tmp, MessageModel[].class);
                     messageList.addAll(Arrays.asList(messageModels));
-
-//                    afterResponse(followList);
+                    if(null==messageList || messageList.size() == 0) {
+                        no_text.setVisibility(View.VISIBLE);
+                        no_text.setText(no_text_value);
+                        recyclerView.setVisibility(View.GONE);
+                        xRefreshView.setLoadComplete(true);
+                    } else {
+                        no_text.setVisibility(View.GONE);
+                    }
 
                     handler.post(new Runnable() {
                         @Override
@@ -291,6 +303,7 @@ public class MessageFragment extends Fragment {
 
                         }
                     });
+
                 } catch (Exception e) {
                     Log.e("loginPostRequestError", "error" + e);
                 }
