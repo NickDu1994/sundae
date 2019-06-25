@@ -1,6 +1,7 @@
 package com.xwing.sundae.android.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.FollowModel;
 import com.xwing.sundae.android.util.ImageServerConstant;
+import com.xwing.sundae.android.view.IndexDetailActivity;
 
 import java.util.List;
 
@@ -37,7 +39,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
 
-        FollowModel follow = mDatas.get(position);
+        final FollowModel follow = mDatas.get(position);
         viewHolder.eventDesc.setText(follow.getEvent_desc());
         viewHolder.eventTime.setText(follow.getEvent_time());
         viewHolder.itemName.setText(follow.getItem_name());
@@ -58,6 +60,9 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
             @Override
             public void onClick(View v) {
                 //item 点击事件
+                Intent intent = new Intent(mContext, IndexDetailActivity.class);
+                intent.putExtra("entryId", follow.getId().toString());
+                mContext.startActivity(intent);
             }
         });
     }

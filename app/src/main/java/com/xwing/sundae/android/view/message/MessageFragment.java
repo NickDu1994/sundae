@@ -179,14 +179,14 @@ public class MessageFragment extends Fragment {
             if (null != getUserInfo) {
                 userInfo = getUserInfo.getUserInfo().getData();
                 Long newId = userInfo.getId();
-                if (!currentUserId.equals(newId)) {
+//                if (!currentUserId.equals(newId)) {
                     messageList.clear();
                     currentPage = 0;
                     currentUserId = newId;
                     isLast = false;
                     readAllMessage();
                     getMessageList();
-                }
+//                }
             }
         }
     }

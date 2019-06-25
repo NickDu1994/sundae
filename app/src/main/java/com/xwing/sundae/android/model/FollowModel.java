@@ -11,6 +11,29 @@ public class FollowModel {
     private String item_avatar;
     private String item_date;
 
+    public FollowModel(String event_desc, String event_time, String item_name, String item_content, String item_image, String item_username, String item_avatar, String item_date, Long id) {
+        this.event_desc = event_desc;
+        this.event_time = event_time;
+        this.item_name = item_name;
+        this.item_content = item_content;
+        this.item_image = item_image;
+        this.item_username = item_username;
+        this.item_avatar = item_avatar;
+        this.item_date = item_date;
+        this.id = id;
+    }
+
+    public Long getId() {
+
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    private Long id;
+
     public String getEvent_desc() {
         return event_desc;
     }
