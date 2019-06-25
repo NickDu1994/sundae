@@ -169,8 +169,10 @@ public class MyPubishActivity extends AppCompatActivity {
                     MyPublishModel[] myPublishModels = gson.fromJson(json_data, MyPublishModel[].class);
                     publishList.addAll(Arrays.asList(myPublishModels));
                     if(null == publishList || publishList.size() ==0) {
+                        no_text.setVisibility(View.VISIBLE);
                         no_text.setText(no_text_value);
                         recyclerView.setVisibility(View.GONE);
+                        xRefreshView.setVisibility(View.GONE);
                         xRefreshView.setLoadComplete(true);
                     } else {
                         no_text.setVisibility(View.GONE);

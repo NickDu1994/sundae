@@ -44,9 +44,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -375,6 +379,17 @@ public class CommonMethod {
         ByteArrayInputStream isBm = new ByteArrayInputStream(baos.toByteArray());//把压缩后的数据baos存放到ByteArrayInputStream中
         Bitmap bitmap = BitmapFactory.decodeStream(isBm, null, null);//把ByteArrayInputStream数据生成图片
         return bitmap;
+    }
+
+    public static List<String> removeDuplicate(List<String> list) {
+        Set<String> set = new HashSet<String>();
+        List<String> newList = new ArrayList<String>();
+        for (Iterator<String> iter = list.iterator(); iter.hasNext();) {
+            String element = (String) iter.next();
+            if (set.add(element))
+                newList.add(element);
+            }
+        return newList;
     }
 
 }

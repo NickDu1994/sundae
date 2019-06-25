@@ -174,7 +174,12 @@ public class MainActivity extends AppCompatActivity implements
                             fragmentTransaction.show(mPostFragment);
                         }*/
                         // showMoreWindow(getWindow().getDecorView().findViewById(R.id.mainContainer));
-
+                        if (!getUserInfo.isUserLogined()) {
+                            Toast.makeText(MainActivity.this, "请先进行登录", Toast.LENGTH_SHORT).show();
+//                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                            switchSelectTab(4);
+                            return;
+                        }
                         showMoreWindow(findViewById(R.id.mainContainer));
                         //For navigation logic, go to below
                         break;

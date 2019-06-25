@@ -13,9 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xwing.sundae.R;
+import com.xwing.sundae.android.util.CommonMethod;
+import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.SharedPreferencesUtil;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import me.next.tagview.TagCloudView;
@@ -56,29 +59,32 @@ public class CustomeButtonGroupView extends LinearLayout {
         if (mTagList.length == 1 && mTagList[0] == "") {
             //do nothing
         } else {
-            tagCloudView1.setTags(list);
+            tagCloudView1.setTags(CommonMethod.removeDuplicate(list));
         }
 
 
-        final List<String> finaList = list;
+        final List<String> finalList = list;
         tagCloudView1.setOnTagClickListener(new TagCloudView.OnTagClickListener() {
             @Override
             public void onTagClick(int position) {
                 if (position == -1) {
-                    Toast.makeText(mContext, "点击末尾文字",
-                            Toast.LENGTH_SHORT).show();
+                    if(Constant.LOG_LEVEL == "DEV"){
+                        Toast.makeText(mContext, "点击末尾文字",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
-                    myClickItemListener.onTagClick(finaList.get(position));
+                    myClickItemListener.onTagClick(finalList.get(position));
                 }
             }
         });
-        tagCloudView1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(mContext, "TagView onClick",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+//        tagCloudView1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Toast.makeText(mContext, "TagView onClick",
+//                        Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
 
 

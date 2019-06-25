@@ -257,10 +257,11 @@ public class ExploreFragment extends Fragment {
                     FollowModel[] myFollowModels = gson.fromJson(tmp, FollowModel[].class);
                     followList.addAll(Arrays.asList(myFollowModels));
                     if(null==followList || followList.size() == 0) {
+                        no_text.setVisibility(View.VISIBLE);
                         no_text.setText(no_text_value);
-                        xRefreshView.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.GONE);
                         xRefreshView.setLoadComplete(true);
+                        xRefreshView.setVisibility(View.GONE);
                     } else {
                         no_text.setVisibility(View.GONE);
                     }

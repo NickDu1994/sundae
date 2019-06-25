@@ -187,9 +187,12 @@ public class MyFollowActivity extends AppCompatActivity {
                     MyFollowerModel[] myFollowerModels = gson.fromJson(json_data, MyFollowerModel[].class);
                     followList.addAll(Arrays.asList(myFollowerModels));
                     if (null == followList || followList.size() == 0) {
+                        no_text.setVisibility(View.VISIBLE);
                         no_text.setText(no_text_value);
                         recyclerView.setVisibility(View.GONE);
                         xRefreshView.setLoadComplete(true);
+                        xRefreshView.setVisibility(View.GONE);
+
                     } else {
                         no_text.setVisibility(View.GONE);
                     }

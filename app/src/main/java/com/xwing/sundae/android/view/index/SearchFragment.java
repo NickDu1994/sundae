@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
@@ -70,6 +71,7 @@ public class SearchFragment extends Fragment {
     private boolean isSave = false;
     private boolean isFollow = false;
     private String storageAuthorId = "";
+    private String storageUserId = "";
 
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -208,12 +210,12 @@ public class SearchFragment extends Fragment {
         CustomeButtonGroupView customeButtonGroupView = getActivity().findViewById(R.id.historyPanel);
         customeButtonGroupView.setTitle("搜索历史");
         customeButtonGroupView.setTagList(histroyAbbr);
-//        customeButtonGroupView.setOnItemClickListener(new CustomeButtonGroupView.OnTagClickListener() {
-//            @Override
-//            public void onTagClick(String keyword) {
-//                mainEditText.setText(keyword);
-//            }
-//        });
+        customeButtonGroupView.setOnItemClickListener(new CustomeButtonGroupView.OnTagClickListener() {
+            @Override
+            public void onTagClick(String keyword) {
+                mainEditText.setText(keyword);
+            }
+        });
         setHotSearch();
 
 
@@ -308,7 +310,7 @@ public class SearchFragment extends Fragment {
                     final List<AbbreviationPlusModel> dataList = responseSearchSuggestionList.getData();
                     for(AbbreviationPlusModel item : dataList){
                         Map<String,String> map = new HashMap<String,String>();
-                        map.put("label", item.getAbbrName() + " - " + item.getFullName());
+                        map.put("label", item.getAbbrName() + (item.getFullName() == null ? "" : (" - " + item.getFullName())));
                         map.put("id", item.getId());
                         keywordList.add(map);
                     }
@@ -349,12 +351,15 @@ public class SearchFragment extends Fragment {
         try{
             if(getUserInfo.isUserLogined()){
                 paramsMap.put("userId", getUserInfo.getUserInfo().getData().getId().toString());
+                storageUserId = getUserInfo.getUserInfo().getData().getId().toString();
             }else {
                 paramsMap.put("userId","");
+                followTV.setVisibility(View.INVISIBLE);
             }
         }catch (Exception e) {
             Log.d("dkdebug NPE", "e=" + e);
             paramsMap.put("userId","");
+            followTV.setVisibility(View.INVISIBLE);
         }
         paramsMap.put("entryId",entryId);
 
@@ -392,12 +397,14 @@ public class SearchFragment extends Fragment {
                     TextView createTimeTV = getActivity().findViewById(R.id.create_time);
                     createTimeTV.setText(CommonMethod.CalculateTimeUntilNow(data.getAbbreviation().getCreateTime()));
                     ImageView userPicIV = getActivity().findViewById(R.id.user_pic);
-                    Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + data.getAvatar()).into(userPicIV);
+                    RequestOptions options = new RequestOptions().
+                            circleCropTransform();
+                    Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + data.getAvatar()).apply(options).into(userPicIV);
                     TextView authorTV = getActivity().findViewById(R.id.author);
                     authorTV.setText(data.getAuthor());
                     storageAuthorId = data.getAbbreviation().getCreateBy();
                     TextView likeTV = getActivity().findViewById(R.id.like_number);
-                    likeTV.setText(data.getAbbreviation().getLikedCount() + "获赞");
+                    likeTV.setText("获赞" + data.getAbbreviation().getLikedCount());
 
                     if(data.isLike()){
                         likeIV.setImageResource(R.drawable.like);
@@ -415,11 +422,16 @@ public class SearchFragment extends Fragment {
                         isSave = false;
                     }
 
-                    if(data.isFollow()){
-                        followTV.setText("已关注");
+                    if(data.getAbbreviation().getCreateBy().equals(storageUserId)){
+                        followTV.setVisibility(View.INVISIBLE);
                     }else {
-                        followTV.setText("关注");
+                        if(data.isFollow()){
+                            followTV.setText("已关注");
+                        }else {
+                            followTV.setText("关注");
+                        }
                     }
+
 
                     if(data.getAbbreviation().getImageList().size() >= 1){
                         ImageView detailMainImage = getActivity().findViewById(R.id.detailMainImage);

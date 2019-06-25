@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/buttonGroupCleanButton"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentRight="true"
             android:layout_margin="10dp"
             android:src="@drawable/trash" />
@@ -36,9 +36,11 @@
         app:tcvItemBorderHorizontal="8dp"
         app:tcvItemBorderVertical="6dp"
         app:tcvBorder="8dp"
-        app:tcvTextColor="#123455"
+        app:tcvTextColor="@color/colorMainTheme"
         app:tcvSingleLine="true"
         app:tcvCanTagClick="true"
+        app:tcvShowRightImg="false"
+        app:tcvBackground="@drawable/tagview_button"
         />
 
 </LinearLayout>

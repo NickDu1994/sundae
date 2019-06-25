@@ -133,13 +133,14 @@ public class MyCollectActivity extends AppCompatActivity {
                     MyCollectModel[] myCollectModels = gson.fromJson(json_data, MyCollectModel[].class);
                     collectList.addAll(Arrays.asList(myCollectModels));
                     if (null == collectList || collectList.size() == 0) {
+                        no_text.setVisibility(View.VISIBLE);
                         no_text.setText(no_text_value);
                         recyclerView.setVisibility(View.GONE);
                         xRefreshView.setLoadComplete(true);
+                        xRefreshView.setVisibility(View.GONE);
 
                     } else {
                         no_text.setVisibility(View.GONE);
-
                     }
 
                     afterResponse(collectList);

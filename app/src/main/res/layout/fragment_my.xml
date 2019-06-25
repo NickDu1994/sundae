@@ -44,8 +44,8 @@
                     <ImageView
                         android:id="@+id/user_pic"
                         android:layout_gravity="center_horizontal"
-                        android:layout_width="80sp"
-                        android:layout_height="80sp"
+                        android:layout_width="60sp"
+                        android:layout_height="60sp"
                         android:src="@drawable/defaultpic"
                         />
                 </LinearLayout>
@@ -53,7 +53,7 @@
                     android:id="@+id/user_info_show"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="50sp"
+                    android:paddingTop="40sp"
                     android:layout_marginLeft="10sp">
 
                     <LinearLayout
@@ -78,7 +78,7 @@
                                 android:id="@+id/id_label"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Phone:"
+                                android:text="Id:"
                                 android:textSize="14sp"
                                 android:textColor="#ffffff"/>
                             <TextView

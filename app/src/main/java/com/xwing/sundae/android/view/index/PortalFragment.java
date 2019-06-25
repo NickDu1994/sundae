@@ -63,6 +63,7 @@ public class PortalFragment extends Fragment {
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private List<ComplexListModel> complexListModelList = new ArrayList<>();
+    List<AbbreviationPlusModel> dataList = new ArrayList<>();
 
     public PortalFragment() {
         // Required empty public constructor
@@ -102,6 +103,13 @@ public class PortalFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_portal, container, false);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getRecommend();
+
     }
 
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -259,8 +267,10 @@ public class PortalFragment extends Fragment {
                     CommonResponse<List<AbbreviationPlusModel>> responseIndexRecommendList =
                             (CommonResponse<List<AbbreviationPlusModel>>)gson.fromJson(response,
                                     new TypeToken<CommonResponse<List<AbbreviationPlusModel>>>() {}.getType());
-                    final List<AbbreviationPlusModel> dataList = responseIndexRecommendList.getData();
+                    dataList.clear();
+                    dataList = responseIndexRecommendList.getData();
                     List<BaseImage> displayImages = new ArrayList<BaseImage>();
+                    complexListModelList.clear();
                     for(AbbreviationPlusModel item : dataList){
                         List<String> imageList = new ArrayList<>();
                         if(item.getImageList().size() != 0){
@@ -270,6 +280,7 @@ public class PortalFragment extends Fragment {
                         }else {
                             imageList.add("https://img-bss.csdn.net/201903111202548906.png");
                         }
+
 
                         ComplexListModel complexListModel = new ComplexListModel(
                                 item.getAbbrName() + " " + item.getFullName(),
@@ -291,6 +302,7 @@ public class PortalFragment extends Fragment {
                     });
                     recyclerView.setHasFixedSize(true);
                     ComplexListAdapter complexListAdapter = new ComplexListAdapter(complexListModelList, mContext);
+                    complexListAdapter.notifyDataSetChanged();
                     complexListAdapter.setOnItemClickListener(new ComplexListAdapter.OnRecyclerViewItemClickListener() {
                         @Override
                         public void onItemClick(View view, int postion) {
