@@ -8,16 +8,15 @@
     <RelativeLayout
         android:id="@+id/user_info_edit_thin"
         android:layout_width="match_parent"
-        android:layout_height="40sp"
+        android:layout_height="60sp"
         android:background="#ffffff">
         <EditText
             android:id="@+id/edit_text_value"
-            android:layout_width="wrap_content"
-            android:layout_height="40sp"
+            android:layout_width="match_parent"
+            android:layout_height="60sp"
             android:layout_marginLeft="10dip"
-            android:background="@null"
             android:padding="5dip"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
         <ImageView
             android:id="@+id/clear_edit_text_icon"
             android:layout_width="22sp"
@@ -41,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50sp"
                 android:text="男"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:layout_centerVertical="true"
                 android:paddingTop="10sp"
                 android:layout_marginLeft="20sp"
@@ -69,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50sp"
                 android:text="女"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:layout_centerVertical="true"
                 android:paddingTop="10sp"
                 android:layout_marginLeft="20sp"

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/colorNavigationBarBg"
     android:orientation="vertical"
     tools:context=".android.view.index.SearchFragment">
 
@@ -107,7 +107,7 @@
         <ListView
             android:id="@+id/listContainer"
             android:layout_width="match_parent"
-            android:layout_height="300dp">
+            android:layout_height="350dp">
 
         </ListView>
     </LinearLayout>
@@ -151,7 +151,7 @@
                         android:layout_width="40sp"
                         android:layout_height="40sp"
 
-                        android:src="@drawable/boy"/>
+                        android:src="@drawable/defaultpic_theme"/>
                 </LinearLayout>
                 <RelativeLayout
                     android:id="@+id/user_info_show"

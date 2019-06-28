@@ -147,7 +147,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                     .into(info_user_pic);
         } else {
             Glide.with(this)
-                    .load(R.drawable.defaultpic)
+                    .load(R.drawable.defaultpic_theme)
                     .apply(options)
                     .into(info_user_pic);
         }
@@ -216,7 +216,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         RequestOptions options = new RequestOptions().
                 circleCropTransform();
         Glide.with(this)
-                .load(R.drawable.defaultpic)
+                .load(R.drawable.defaultpic_theme)
                 .apply(options)
                 .into(info_user_pic);
     }
@@ -477,7 +477,7 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
                     sharedPreferencesHelper.put("user_info", response);
 //                    CommonResponse<UserInfo> userInfoBean = getUserInfo.getUserInfo();
 //                    getUserInfo.setUserInfo(userInfoBean.getData());
-                    finish();
+//                    finish();
                 } catch (Exception e) {
                     Log.v("update user failed", "error" + e);
                 }

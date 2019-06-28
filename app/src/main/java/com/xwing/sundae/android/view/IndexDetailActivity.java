@@ -43,11 +43,22 @@ public class IndexDetailActivity extends AppCompatActivity {
     ImageView likeIV;
     ImageView saveIV;
     TextView followTV;
+    GetUserInfo getUserInfo;
+
+    String storageUserId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index_detail);
+
+        getUserInfo = new GetUserInfo( IndexDetailActivity.this);
+        if(null != getUserInfo.getUserInfo() && !"".equals(getUserInfo.getUserInfo())) {
+            storageUserId = getUserInfo.getUserInfo().getData().getId().toString();
+        } else {
+            storageUserId = "";
+        }
+
         likeIV = findViewById(R.id.detailLike);
         saveIV = findViewById(R.id.detailSave);
         followTV = findViewById(R.id.user_follow);
@@ -62,6 +73,8 @@ public class IndexDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bd = intent.getExtras();
         showDetail(bd.getString("entryId"));
+
+
 
         saveIV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,22 +116,22 @@ public class IndexDetailActivity extends AppCompatActivity {
     }
 
     public void showDetail(String entryId) {
-
         currentEntryId = entryId;
 
         String url = Constant.globalServerUrl + "/abbreviation/getOneEntryDetail";
         HashMap<String, String> paramsMap = new HashMap<>();
-        GetUserInfo getUserInfo = new GetUserInfo(this);
 
         try{
             if(getUserInfo.isUserLogined()){
                 paramsMap.put("userId", getUserInfo.getUserInfo().getData().getId().toString());
             }else {
                 paramsMap.put("userId","");
+                followTV.setVisibility(View.INVISIBLE);
             }
         }catch (Exception e) {
             Log.d("dkdebug NPE", "e=" + e);
             paramsMap.put("userId","");
+            followTV.setVisibility(View.INVISIBLE);
         }
         paramsMap.put("entryId",entryId);
 
@@ -158,8 +171,13 @@ public class IndexDetailActivity extends AppCompatActivity {
                     ImageView userPicIV =  findViewById(R.id.user_pic);
                     RequestOptions options = new RequestOptions().
                             circleCropTransform();
-                    Glide.with( IndexDetailActivity.this).load(ImageServerConstant.IMAGE_SERVER_URL + data.getAvatar())
-                            .apply(options).into(userPicIV);
+                    if(null==data.getAvatar() || "".equals(data.getAvatar())) {
+                        Glide.with( IndexDetailActivity.this).load(R.drawable.defaultpic_theme)
+                                .apply(options).into(userPicIV);
+                    } else {
+                        Glide.with( IndexDetailActivity.this).load(ImageServerConstant.IMAGE_SERVER_URL + data.getAvatar())
+                                .apply(options).into(userPicIV);
+                    }
                     TextView authorTV =  findViewById(R.id.author);
                     authorTV.setText(data.getAuthor());
                     storageAuthorId = data.getAbbreviation().getCreateBy();
@@ -183,10 +201,14 @@ public class IndexDetailActivity extends AppCompatActivity {
                         isSave = false;
                     }
 
-                    if(data.isFollow()){
-                        followTV.setText("已关注");
+                    if(data.getAbbreviation().getCreateBy().equals(storageUserId)){
+                        followTV.setVisibility(View.INVISIBLE);
                     }else {
-                        followTV.setText("关注");
+                        if(data.isFollow()){
+                            followTV.setText("已关注");
+                        }else {
+                            followTV.setText("关注");
+                        }
                     }
 
                     if(data.getAbbreviation().getImageList().size() >= 1){
@@ -221,7 +243,7 @@ public class IndexDetailActivity extends AppCompatActivity {
 
         final String tempLogUrl = url;
 
-        GetUserInfo getUserInfo = new GetUserInfo( IndexDetailActivity.this);
+
         if(!getUserInfo.isUserLogined())   {
             Toast.makeText( IndexDetailActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
             startActivity(new Intent( IndexDetailActivity.this, LoginActivity.class));

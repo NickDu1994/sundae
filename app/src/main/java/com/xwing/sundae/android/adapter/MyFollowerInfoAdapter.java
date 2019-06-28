@@ -85,10 +85,10 @@ public class MyFollowerInfoAdapter extends RecyclerView.Adapter<MyFollowerInfoAd
         int point1 = liked_count.indexOf(".");
         viewHolder.getPraisedCounts.setText(liked_count.substring(0,point));
         RequestOptions options = new RequestOptions()
-                .error(R.drawable.defaultpic).circleCropTransform();
+                .error(R.drawable.defaultpic_theme).circleCropTransform();
         String avatarUrl = follow.getFollow_avatarUrl();
         if(null == avatarUrl || "".equals(avatarUrl)) {
-            Glide.with(mContext).load(R.drawable.defaultpic).apply(options).into(viewHolder.follow_avatarUrl);
+            Glide.with(mContext).load(R.drawable.defaultpic_theme).apply(options).into(viewHolder.follow_avatarUrl);
         } else {
             Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + avatarUrl).apply(options).into(viewHolder.follow_avatarUrl);
         }

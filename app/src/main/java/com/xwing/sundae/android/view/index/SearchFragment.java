@@ -399,7 +399,12 @@ public class SearchFragment extends Fragment {
                     ImageView userPicIV = getActivity().findViewById(R.id.user_pic);
                     RequestOptions options = new RequestOptions().
                             circleCropTransform();
-                    Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + data.getAvatar()).apply(options).into(userPicIV);
+                    if(null == data.getAvatar() || "".equals(data.getAvatar())) {
+                        Glide.with(mContext).load(R.drawable.defaultpic_theme).apply(options).into(userPicIV);
+
+                    } else {
+                        Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + data.getAvatar()).apply(options).into(userPicIV);
+                    }
                     TextView authorTV = getActivity().findViewById(R.id.author);
                     authorTV.setText(data.getAuthor());
                     storageAuthorId = data.getAbbreviation().getCreateBy();

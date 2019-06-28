@@ -264,6 +264,8 @@ public class ExploreFragment extends Fragment {
                         xRefreshView.setVisibility(View.GONE);
                     } else {
                         no_text.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        xRefreshView.setVisibility(View.VISIBLE);
                     }
 
                     handler.post(new Runnable() {

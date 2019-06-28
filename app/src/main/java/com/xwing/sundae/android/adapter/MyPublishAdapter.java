@@ -88,7 +88,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
                 abbr_type_name = "词条";
                 break;
             case "1":
-                abbr_type_name = "心得";
+                abbr_type_name = "";
                 break;
         }
         v.abb_type.setText(abbr_type_name);

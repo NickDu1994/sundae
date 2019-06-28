@@ -24,6 +24,7 @@ import com.xwing.sundae.android.customview.UserInfoOneLineView;
 import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.ImageServerConstant;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
+import com.xwing.sundae.android.util.SharedPreferencesUtil;
 import com.xwing.sundae.android.view.GetUserInfo;
 import com.xwing.sundae.android.view.LoginActivity;
 import com.xwing.sundae.android.view.MainActivity;
@@ -61,11 +62,13 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
     GetUserInfo getUserInfo;
     UserInfo userInfo;
 
+    SharedPreferencesUtil spUtil;
+
 
     private OnFragmentInteractionListener mListener;
 
     // set the user all pics as circle && placeholder
-    RequestOptions options = new RequestOptions().error(R.drawable.defaultpic).circleCropTransform();
+    RequestOptions options = new RequestOptions().error(R.drawable.defaultpic_white).circleCropTransform();
 
     public MyFragment() {
         // Required empty public constructor
@@ -106,6 +109,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
                              Bundle savedInstanceState) {
         Log.v(TAG, "success dk");
         getUserInfo = new GetUserInfo(getActivity());
+        spUtil = SharedPreferencesUtil.getInstance(getActivity());
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my, container, false);
         sharedPreferencesHelper =
@@ -218,7 +222,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
             user_id.setText(userInfo.getUsername());
             String avatarUrl = userInfo.getAvatarUrl();
             if (null == avatarUrl || "".equals(avatarUrl)) {
-                Glide.with(this).load(R.drawable.defaultpic).apply(options).into(image);
+                Glide.with(this).load(R.drawable.defaultpic_white).apply(options).into(image);
             } else {
                 Glide.with(this).load(ImageServerConstant.IMAGE_SERVER_URL + avatarUrl).apply(options).into(image);
             }
@@ -236,7 +240,7 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
     private void setUserInfoAsNoLogin() {
         //隐藏登出icon
         user_setting.setVisibility(View.INVISIBLE);
-        Glide.with(this).load(R.drawable.defaultpic).apply(options).into(image);
+        Glide.with(this).load(R.drawable.defaultpic_white).apply(options).into(image);
         user_name.setText(this.getString(R.string.string_click_login));
         id_label.setVisibility(View.GONE);
         user_id.setText("");
@@ -254,6 +258,10 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 sharedPreferencesHelper.remove("user_info");
+                                String currentKeywordNote = spUtil.getSP("keyword_note");
+                                if(currentKeywordNote!= null){
+                                    spUtil.removeSP("keyword_note");
+                                }
                                 sharedPreferencesHelper.put("auth",false);
                                 setUserInfoAsNoLogin();
                                 MainActivity.removeMessageBadge();
