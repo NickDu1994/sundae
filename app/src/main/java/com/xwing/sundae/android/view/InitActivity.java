@@ -1,11 +1,10 @@
 package com.xwing.sundae.android.view;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
 import android.widget.TextView;
 
 import com.xwing.sundae.R;
@@ -28,6 +27,7 @@ public class InitActivity extends AppCompatActivity {
     private void toLoginPage() {
         Intent intent = new Intent(InitActivity.this,MainActivity.class);
         startActivity(intent);
+        this.finish();
     }
 
     private Handler mCountHandler = new Handler() {

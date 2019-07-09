@@ -32,11 +32,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.CustomeButtonGroupView;
-import com.xwing.sundae.android.model.AbbreviationBaseModel;
 import com.xwing.sundae.android.model.AbbreviationDetailModel;
 import com.xwing.sundae.android.model.AbbreviationPlusModel;
 import com.xwing.sundae.android.model.CommonResponse;
-import com.xwing.sundae.android.model.SearchSuggestionModel;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
@@ -46,7 +44,6 @@ import com.xwing.sundae.android.util.SharedPreferencesUtil;
 import com.xwing.sundae.android.view.GetUserInfo;
 import com.xwing.sundae.android.view.LoginActivity;
 import com.xwing.sundae.android.view.MainActivity;
-import com.xwing.sundae.android.view.my.EditUserInfoActivity;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
@@ -289,9 +286,9 @@ public class SearchFragment extends Fragment {
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                if(Constant.LOG_LEVEL == "DEV") {
-                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
-                }
+//                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
+//                }
                 Log.d("dkdebug onFailure", "e=" + e);
             }
 
@@ -338,7 +335,7 @@ public class SearchFragment extends Fragment {
     public void showDetail(String entryId) {
 
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput (InputMethodManager.SHOW_FORCED, InputMethodManager.RESULT_HIDDEN);
+        imm.toggleSoftInput (InputMethodManager.HIDE_NOT_ALWAYS, 0);
 
         displayController(PANEL_DETAIL);
 
@@ -367,9 +364,9 @@ public class SearchFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                if(Constant.LOG_LEVEL == "DEV") {
-                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
-                }
+//                if(Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
+//                }
                 Log.d("dkdebug onFailure", "e=" + e);
             }
 

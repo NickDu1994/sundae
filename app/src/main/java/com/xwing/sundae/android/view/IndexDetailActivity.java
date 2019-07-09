@@ -1,12 +1,10 @@
 package com.xwing.sundae.android.view;
 
-import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +16,6 @@ import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.AbbreviationDetailModel;
 import com.xwing.sundae.android.model.CommonResponse;
-import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
@@ -139,9 +136,9 @@ public class IndexDetailActivity extends AppCompatActivity {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                if (Constant.LOG_LEVEL == "DEV") {
-                    Toast.makeText(IndexDetailActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                }
+//                if (Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(IndexDetailActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
+//                }
                 Log.d("dkdebug onFailure", "e=" + e);
             }
 
@@ -260,9 +257,9 @@ public class IndexDetailActivity extends AppCompatActivity {
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                if (Constant.LOG_LEVEL == "DEV") {
-                    Toast.makeText(IndexDetailActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                }
+//                if (Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(IndexDetailActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
+//                }
                 Log.d("dkdebug onFailure", tempLogUrl + "e=" + e);
             }
 
@@ -331,9 +328,9 @@ public class IndexDetailActivity extends AppCompatActivity {
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                if (Constant.LOG_LEVEL == "DEV") {
-                    Toast.makeText(IndexDetailActivity.this, "Failed", Toast.LENGTH_SHORT).show();
-                }
+//                if (Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(IndexDetailActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
+//                }
                 Log.d("dkdebug onFailure", logUrl + "e=" + e);
             }
 

@@ -8,6 +8,8 @@ import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -51,7 +53,9 @@ public class LoginActivity extends AppCompatActivity {
     private LinearLayout mName;
     private RelativeLayout mPsw;
     private EditText user_mobile_no, user_mobile_vercode;
+    private FragmentTransaction fragmentTransaction;
 
+    private FragmentManager fragmentManager;
     private int countSeconds = 60;//倒计时秒数
 
     String verify_code = "";
@@ -67,7 +71,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         getUserInfo = new GetUserInfo(this);
         sharedPreferencesHelper = new SharedPreferencesHelper(LoginActivity.this, "user");
-
         initView();
         initEvent();
     }
@@ -220,12 +223,14 @@ public class LoginActivity extends AppCompatActivity {
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(LoginActivity.this, "Failed"+e, Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                if(!Constant.LOG_LEVEL.equals("PRD")) {
+                    Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                }
 
                 Gson gson = new Gson();
                 try {
@@ -264,7 +269,7 @@ public class LoginActivity extends AppCompatActivity {
             //        OkhttpUtil.okHttpPostJson(mock_url, "", new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(LoginActivity.this, "server error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -273,8 +278,9 @@ public class LoginActivity extends AppCompatActivity {
                 Map<String, Object> map_res = gson.fromJson(response, Map.class);
 
                 if (null != map_res.get("status") && "200.0".equals(map_res.get("status").toString())) {
-
-                    Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                    if(!Constant.LOG_LEVEL.equals("PRD")) {
+                        Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                    }
                     sharedPreferencesHelper.put("user_info", response);
                     sharedPreferencesHelper.put("auth", true);
                     CommonResponse<UserInfo> userInfoBean = getUserInfo.getUserInfo();
@@ -286,9 +292,11 @@ public class LoginActivity extends AppCompatActivity {
                         recovery();
                         Toast.makeText(LoginActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
                     }
+//                    fragmentTransaction = fragmentManager.beginTransaction();
+//                    fragmentTransaction.show(mMyFragment);
                 } else {
                     recovery();
-                    Toast.makeText(LoginActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -303,12 +311,14 @@ public class LoginActivity extends AppCompatActivity {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(LoginActivity.this, "checkunread Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                if(!Constant.LOG_LEVEL.equals("PRD")) {
+                    Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                }
                 Gson gson = new Gson();
                 Log.e("loginPostRequest", "checkunread" + response);
 

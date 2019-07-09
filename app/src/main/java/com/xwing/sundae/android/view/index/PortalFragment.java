@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -26,7 +25,6 @@ import com.xwing.sundae.android.model.BaseImage;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.ComplexListModel;
 import com.xwing.sundae.android.model.IndexBannerModel;
-import com.xwing.sundae.android.model.AbbreviationBaseModel;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
@@ -34,7 +32,6 @@ import com.xwing.sundae.android.util.GlideImageLoader;
 import com.xwing.sundae.android.util.ImageServerConstant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.view.IndexDetailActivity;
-import com.xwing.sundae.android.view.LoginActivity;
 import com.xwing.sundae.android.view.MainActivity;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
@@ -203,7 +200,7 @@ public class PortalFragment extends Fragment {
             @Override
             public void onFailure(Call call, Exception e) {
                 if(Constant.LOG_LEVEL == "DEV") {
-                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
                 }
                 Log.d("dkdebug", " /news/getLastestNews onFailure e=" + e);
             }
@@ -232,8 +229,10 @@ public class PortalFragment extends Fragment {
                         @Override
                         public void OnBannerClick(int position) {
                             if (Constant.LOG_LEVEL == "DEV") {
-                                Toast.makeText(mContext, "open url=" + indexBannerModel.get(position).getHtmlUrl(), Toast.LENGTH_SHORT).show();
-                            }
+                                if(Constant.LOG_LEVEL == "DEV") {
+                                    Toast.makeText(mContext, "open url=" + indexBannerModel.get(position).getHtmlUrl(), Toast.LENGTH_SHORT).show();
+
+                                }}
                         }
                     });
                     banner.start();
@@ -252,9 +251,9 @@ public class PortalFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                if (Constant.LOG_LEVEL == "DEV") {
-                    Toast.makeText(mContext, "Failed", Toast.LENGTH_SHORT).show();
-                }
+//                if (Constant.LOG_LEVEL == "DEV") {
+                    Toast.makeText(mContext, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
+//                }
                 Log.d("dkdebug onFailure", "e=" + e);
             }
 

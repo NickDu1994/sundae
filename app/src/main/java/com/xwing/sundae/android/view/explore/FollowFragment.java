@@ -198,12 +198,14 @@ public class FollowFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(getContext(), "getMyFollowList Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+                if(!Constant.LOG_LEVEL.equals("PRD")) {
+                    Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+                }
                 Gson gson = new Gson();
                 Log.e("loginPostRequest", "getFollowList" + response);
 

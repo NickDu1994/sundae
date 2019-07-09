@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -174,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements
                             fragmentTransaction.show(mPostFragment);
                         }*/
                         // showMoreWindow(getWindow().getDecorView().findViewById(R.id.mainContainer));
+                        currentIndex = 2;
                         if (!getUserInfo.isUserLogined()) {
                             Toast.makeText(MainActivity.this, "请先进行登录", Toast.LENGTH_SHORT).show();
 //                            startActivity(new Intent(MainActivity.this, LoginActivity.class));
@@ -257,12 +259,12 @@ public class MainActivity extends AppCompatActivity implements
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(MainActivity.this, "checkunread Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_SHORT).show();
                 Gson gson = new Gson();
                 Log.e("loginPostRequest", "checkunread" + response);
 
@@ -361,11 +363,23 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.d("dandan out", String.valueOf(mMoreWindow.isShowing()));
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mMoreWindow.isShowing()) {
+                switchSelectTab(0);
+                mMoreWindow.dismiss();
+                Log.d("dandan in", String.valueOf(mMoreWindow.isShowing()));
+            }
+        }
+        return true;
+    }
+
+    @Override
     public void onFragmentInteraction(Uri uri) {
         if (Constant.LOG_LEVEL == "DEV") {
             Toast.makeText(this, "MainActivity recieve message from fragment" + uri.toString(), Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public void showMoreWindow(View view) {

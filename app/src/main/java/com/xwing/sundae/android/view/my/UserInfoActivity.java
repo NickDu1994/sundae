@@ -5,16 +5,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -26,17 +23,12 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.Gson;
 import com.lljjcoder.citypickerview.widget.CityPicker;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.UserInfoOneLineView;
-import com.xwing.sundae.android.model.CommonResponse;
-import com.xwing.sundae.android.model.MyFollowerModel;
 import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.CallBackUtil;
-import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
-import com.xwing.sundae.android.util.GlideImageLoader;
 import com.xwing.sundae.android.util.ImageServerConstant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.PostImageUtil;
@@ -45,11 +37,8 @@ import com.xwing.sundae.android.view.GetUserInfo;
 import com.yanzhenjie.permission.AndPermission;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 
-import jp.wasabeef.glide.transformations.internal.Utils;
 import okhttp3.Call;
 
 public class UserInfoActivity extends AppCompatActivity implements View.OnClickListener,
@@ -261,14 +250,14 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(UserInfoActivity.this, "upload Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserInfoActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
 
                 String res = response;
-                Toast.makeText(UserInfoActivity.this, "upload succ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserInfoActivity.this, "更新成功", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -465,12 +454,11 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(UserInfoActivity.this, "update user server error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserInfoActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
-
                 Toast.makeText(UserInfoActivity.this, "更新信息成功", Toast.LENGTH_SHORT).show();
                 try {
                     sharedPreferencesHelper.remove("user_info");

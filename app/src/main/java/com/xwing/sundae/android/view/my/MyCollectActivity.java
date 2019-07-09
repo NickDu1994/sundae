@@ -1,9 +1,8 @@
 package com.xwing.sundae.android.view.my;
 
-import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,7 +22,6 @@ import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.view.GetUserInfo;
-import com.xwing.sundae.android.view.IndexDetailActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,14 +114,16 @@ public class MyCollectActivity extends AppCompatActivity {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(MyCollectActivity.this, "getMyFollowList Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyCollectActivity.this, "网络有点问题哦，稍后再试试吧", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
                 Toast.makeText(MyCollectActivity.this, "Success", Toast.LENGTH_SHORT).show();
                 Gson gson = new Gson();
-                Log.e("loginPostRequest", "getFollowList" + response);
+                if(!Constant.LOG_LEVEL.equals("PRD")) {
+                    Log.e("loginPostRequest", "getFollowList" + response);
+                }
 
                 try {
                     Map<String, Object> map_res = gson.fromJson(response, Map.class);
@@ -163,7 +163,7 @@ public class MyCollectActivity extends AppCompatActivity {
                     Long user_id = userInfo.getId();
                     // call remove api
                     removeCollect(user_id, remove_entryid, pos);
-                    Toast.makeText(MyCollectActivity.this, "取消收藏:" + pos, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MyCollectActivity.this, "取消收藏:" + pos, Toast.LENGTH_SHORT).show();
                     collectList.remove(pos);
 
                 }
@@ -204,13 +204,14 @@ public class MyCollectActivity extends AppCompatActivity {
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(MyCollectActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyCollectActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
                 myCollectAdapter.notifyItemRemoved(pos);//推荐用这个
-                Toast.makeText(MyCollectActivity.this, "Success", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(MyCollectActivity.this, "取消收藏成功", Toast.LENGTH_SHORT).show();
 
             }
         });

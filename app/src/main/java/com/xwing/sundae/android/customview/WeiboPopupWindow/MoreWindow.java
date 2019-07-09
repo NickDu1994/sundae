@@ -150,8 +150,12 @@ public class MoreWindow extends PopupWindow implements View.OnClickListener {
 
         showAnimation(layout);
         setBackgroundDrawable(new BitmapDrawable(mContext.getResources(), blur()));
-        setOutsideTouchable(true);
-        setFocusable(true);
+
+        layout.setFocusable(true); // 这个很重要
+        layout.setFocusableInTouchMode(true);
+        setFocusable(false);// 这个很重要
+        setOutsideTouchable(false);
+
         showAtLocation(anchor, Gravity.BOTTOM, 0, statusBarHeight);
         fragmentManager = _fragmentManager;
     }

@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andview.refreshview.XRefreshView;
@@ -134,7 +133,7 @@ public class MessageFragment extends Fragment {
                     Long user_id = userInfo.getId();
                     // call remove api
                     removeMessage(user_id, messageId, pos);
-                    Toast.makeText(getActivity(), "删除消息:" + pos, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity(), "删除消息:" + pos, Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -243,7 +242,7 @@ public class MessageFragment extends Fragment {
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(getActivity(), "server error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -263,12 +262,14 @@ public class MessageFragment extends Fragment {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(getContext(), "getMessageList Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+                if(!Constant.LOG_LEVEL.equals("PRD")) {
+                    Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+                }
                 Gson gson = new Gson();
                 Log.e("loginPostRequest", "getMessageList" + response);
 
@@ -353,7 +354,7 @@ public class MessageFragment extends Fragment {
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -367,7 +368,7 @@ public class MessageFragment extends Fragment {
                 if (message != null)
                     messageList.add(message);
                 messageAdapter.notifyItemRemoved(pos);//推荐用这个
-                Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "已删除", Toast.LENGTH_SHORT).show();
 
             }
         });

@@ -170,12 +170,14 @@ public class MyFollowActivity extends AppCompatActivity {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(MyFollowActivity.this, "getMyFollowList Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyFollowActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(MyFollowActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                if(!Constant.LOG_LEVEL.equals("PRD")) {
+                    Toast.makeText(MyFollowActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                }
                 Gson gson = new Gson();
                 Log.e("loginPostRequest", "getFollowList" + response);
 
@@ -230,7 +232,7 @@ public class MyFollowActivity extends AppCompatActivity {
                     removeFollower(user_id, remove_userid, pos);
                     followList.remove(pos);
 
-                    Toast.makeText(MyFollowActivity.this, "取消关注:" + pos, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MyFollowActivity.this, "取消成功", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -261,13 +263,13 @@ public class MyFollowActivity extends AppCompatActivity {
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(MyFollowActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyFollowActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
                 myFollowerInfoAdapter.notifyItemRemoved(pos);//推荐用这个
-                Toast.makeText(MyFollowActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyFollowActivity.this, "取消关注成功", Toast.LENGTH_SHORT).show();
 
             }
         });

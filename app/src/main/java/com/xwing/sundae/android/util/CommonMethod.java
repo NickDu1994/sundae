@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -20,17 +19,10 @@ import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.xwing.sundae.R;
-import com.xwing.sundae.android.model.CommonResponse;
-import com.xwing.sundae.android.model.UserInfo;
-import com.xwing.sundae.android.view.LoginActivity;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -39,7 +31,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -51,11 +42,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static android.content.Context.MODE_PRIVATE;
-import static java.util.Objects.isNull;
 
 public class CommonMethod {
 
@@ -173,14 +159,15 @@ public class CommonMethod {
 
     /**
      * dp 转换成 px
+     *
      * @param context
      * @param dp
      * @return
      */
-    public static int convertDpToPixel(Context context, float dp){
+    public static int convertDpToPixel(Context context, float dp) {
         Resources resources = context.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
-        float px = dp * ((float)metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+        float px = dp * ((float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT);
         return (int) px;
     }
 
@@ -250,13 +237,13 @@ public class CommonMethod {
         return msg;
     }
 
-    private static final String MySundaeRootDirectory = Environment.getExternalStorageDirectory() + File.separator+"Sundae";
+    private static final String MySundaeRootDirectory = Environment.getExternalStorageDirectory() + File.separator + "Sundae";
 
-    public static String getSundaeRootDirectory(){
+    public static String getSundaeRootDirectory() {
         return MySundaeRootDirectory;
     }
 
-    public static void mkdirSundaeDirectory(){
+    public static void mkdirSundaeDirectory() {
         boolean isSdCardExist = Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED);// 判断sdcard是否存在
         if (isSdCardExist) {
@@ -272,28 +259,28 @@ public class CommonMethod {
         }
     }
 
-    public static Uri getImageUri(Context context, Intent data){
+    public static Uri getImageUri(Context context, Intent data) {
         String imagePath = null;
         Uri uri = data.getData();
-        if(Build.VERSION.SDK_INT >= 19){
-            if(DocumentsContract.isDocumentUri(context,uri)){
+        if (Build.VERSION.SDK_INT >= 19) {
+            if (DocumentsContract.isDocumentUri(context, uri)) {
                 String docId = DocumentsContract.getDocumentId(uri);
-                if("com.android.providers.media.documents".equals(uri.getAuthority())){
+                if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
                     String id = docId.split(":")[1];
-                    String selection = MediaStore.Images.Media._ID+"="+id;
-                    imagePath = getImagePath(context,MediaStore.Images.Media.EXTERNAL_CONTENT_URI,selection);
-                }else if("com.android.providers.downloads.documents".equals(uri.getAuthority())){
-                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),Long.valueOf(docId));
-                    imagePath = getImagePath(context,contentUri,null);
+                    String selection = MediaStore.Images.Media._ID + "=" + id;
+                    imagePath = getImagePath(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+                } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(docId));
+                    imagePath = getImagePath(context, contentUri, null);
                 }
-            }else if("content".equalsIgnoreCase(uri.getScheme())){
-                imagePath = getImagePath(context,uri,null);
-            }else if("file".equalsIgnoreCase(uri.getScheme())){
+            } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                imagePath = getImagePath(context, uri, null);
+            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
                 imagePath = uri.getPath();
             }
-        }else{
-            uri= data.getData();
-            imagePath = getImagePath(context,uri,null);
+        } else {
+            uri = data.getData();
+            imagePath = getImagePath(context, uri, null);
         }
         File file = new File(imagePath);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -306,11 +293,11 @@ public class CommonMethod {
         return uri;
     }
 
-    private static String getImagePath(Context context,Uri uri, String selection) {
+    private static String getImagePath(Context context, Uri uri, String selection) {
         String path = null;
-        Cursor cursor = context.getContentResolver().query(uri,null,selection,null,null);
-        if(cursor != null){
-            if(cursor.moveToFirst()){
+        Cursor cursor = context.getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
                 path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
             }
             cursor.close();
@@ -384,12 +371,13 @@ public class CommonMethod {
     public static List<String> removeDuplicate(List<String> list) {
         Set<String> set = new HashSet<String>();
         List<String> newList = new ArrayList<String>();
-        for (Iterator<String> iter = list.iterator(); iter.hasNext();) {
+        for (Iterator<String> iter = list.iterator(); iter.hasNext(); ) {
             String element = (String) iter.next();
             if (set.add(element))
                 newList.add(element);
-            }
+        }
         return newList;
     }
+
 
 }

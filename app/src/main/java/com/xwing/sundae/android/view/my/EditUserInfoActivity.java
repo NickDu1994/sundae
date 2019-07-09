@@ -16,10 +16,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.customview.UserInfoEditLineView;
-import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.CallBackUtil;
-import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
@@ -205,7 +203,7 @@ public class EditUserInfoActivity extends AppCompatActivity implements View.OnCl
         OkhttpUtil.okHttpPost(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(EditUserInfoActivity.this, "server error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditUserInfoActivity.this, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
             }
 
             @Override

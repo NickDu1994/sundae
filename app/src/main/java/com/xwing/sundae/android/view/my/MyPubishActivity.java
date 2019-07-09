@@ -1,9 +1,9 @@
 package com.xwing.sundae.android.view.my;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,10 +14,7 @@ import android.widget.Toast;
 import com.andview.refreshview.XRefreshView;
 import com.google.gson.Gson;
 import com.xwing.sundae.R;
-import com.xwing.sundae.android.adapter.MyFollowerInfoAdapter;
 import com.xwing.sundae.android.adapter.MyPublishAdapter;
-import com.xwing.sundae.android.model.MyCollectModel;
-import com.xwing.sundae.android.model.MyFollowerModel;
 import com.xwing.sundae.android.model.MyPublishModel;
 import com.xwing.sundae.android.model.UserInfo;
 import com.xwing.sundae.android.util.CallBackUtil;
@@ -25,7 +22,6 @@ import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.view.GetUserInfo;
 import com.xwing.sundae.android.view.IndexDetailActivity;
-import com.xwing.sundae.android.view.MainActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,12 +146,14 @@ public class MyPubishActivity extends AppCompatActivity {
         OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
             @Override
             public void onFailure(Call call, Exception e) {
-                Toast.makeText(MyPubishActivity.this, "getMyPublishList Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyPubishActivity.this, "网络有点问题哦，稍后再试试吧", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(MyPubishActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                if(!Constant.LOG_LEVEL.equals("PRD")) {
+                    Toast.makeText(MyPubishActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                }
                 Gson gson = new Gson();
                 Log.e("loginPostRequest", "getMyPublishList" + response);
 
@@ -193,7 +191,7 @@ public class MyPubishActivity extends AppCompatActivity {
         myPublishAdapter.setOnItemClickEvent(new MyPublishAdapter.OnRecyclerItemClickListener() {
             @Override
             public void OnItemClick(View view, int postion) {
-                Toast.makeText(MyPubishActivity.this, "we got click from afterresponse" + postion, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MyPubishActivity.this, "we got click from afterresponse" + postion, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(MyPubishActivity.this, IndexDetailActivity.class);
                 String entryId = String.valueOf(publishList.get(postion).getItem_id());
                 intent.putExtra("entryId", entryId);
