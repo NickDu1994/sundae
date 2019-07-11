@@ -75,6 +75,8 @@ public class IndexDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index_detail);
 
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary) );
+
         getUserInfo = new GetUserInfo(IndexDetailActivity.this);
         if (null != getUserInfo.getUserInfo() && !"".equals(getUserInfo.getUserInfo())) {
             storageUserId = getUserInfo.getUserInfo().getData().getId().toString();
@@ -145,6 +147,11 @@ public class IndexDetailActivity extends AppCompatActivity {
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                GetUserInfo getUserInfo = new GetUserInfo(IndexDetailActivity.this);
+                if (!getUserInfo.isUserLogined()) {
+                    Toast.makeText(IndexDetailActivity.this, "请先去登录哦", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent = new Intent();
                 intent.setClass(IndexDetailActivity.this, AddCommentActivity.class);
                 intent.putExtra("id", currentEntryId);

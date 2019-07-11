@@ -301,6 +301,11 @@ public class SearchFragment extends Fragment {
         addComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                GetUserInfo getUserInfo = new GetUserInfo(mContext);
+                if (!getUserInfo.isUserLogined()) {
+                    Toast.makeText(mContext, "请先去登录哦", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent = new Intent();
                 intent.setClass(mContext, AddCommentActivity.class);
                 intent.putExtra("id", currentEntryId);
@@ -511,9 +516,13 @@ public class SearchFragment extends Fragment {
                     }else {
                         if(data.isFollow()){
                             followTV.setText("已关注");
+                            followTV.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
+                            followTV.setBackgroundResource(R.drawable.custom_round_button_dark);
                             isFollow = true;
                         }else {
                             followTV.setText("关注");
+                            followTV.setTextColor(getResources().getColor(R.color.colorMainTheme));
+                            followTV.setBackgroundResource(R.drawable.custom_round_button);
                             isFollow = false;
                         }
                     }
@@ -725,9 +734,13 @@ public class SearchFragment extends Fragment {
                         Log.d("dkdebug","save success");
                         if(finalIsEnroll){
                             followTV.setText("已关注");
+                            followTV.setTextColor(getResources().getColor(R.color.colorSecondaryDark));
+                            followTV.setBackgroundResource(R.drawable.custom_round_button_dark);
                             isFollow = true;
                         }else {
-                            followTV.setText("关注");
+                            followTV.setText("+关注");
+                            followTV.setTextColor(getResources().getColor(R.color.colorMainTheme));
+                            followTV.setBackgroundResource(R.drawable.custom_round_button);
                             isFollow = false;
                         }
                     }

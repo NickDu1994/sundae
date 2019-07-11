@@ -18,10 +18,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.xwing.sundae.R;
 import com.xwing.sundae.android.model.MyCollectModel;
-import com.xwing.sundae.android.model.MyFollowerModel;
 import com.xwing.sundae.android.util.ImageServerConstant;
 import com.xwing.sundae.android.view.IndexDetailActivity;
-import com.xwing.sundae.android.view.my.MyCollectActivity;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
@@ -122,8 +120,8 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
         (viewHolder.collect_field).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "onClick:"
-                        + mDatas.get(viewHolder.getAdapterPosition()).getItem_id(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "onClick:"
+//                        + mDatas.get(viewHolder.getAdapterPosition()).getItem_id(), Toast.LENGTH_SHORT).show();
                 Log.d("TAG", "onClick() called with: v = [" + v + "]");
                 Intent intent= new Intent(mContext, IndexDetailActivity.class);
                 String entryId = String.valueOf(mDatas.get(viewHolder.getAdapterPosition()).getItem_id());

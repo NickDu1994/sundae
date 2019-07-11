@@ -48,6 +48,8 @@ public class AddCommentActivity extends AppCompatActivity {
             userInfo = getUserInfo.getUserInfo().getData();
         }
 
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary) );
+
         idString = getIntent().getStringExtra("id");
 
         //声明四个打分条

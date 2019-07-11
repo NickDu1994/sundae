@@ -44,6 +44,8 @@
         android:layout_marginBottom="5dp"
         android:text="This is a content for sundae app usingThis is a content for sundae app usingThis is a content for sundae app using"
         android:textColor="#8B8B8B"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:textSize="14sp" />
 
     <LinearLayout

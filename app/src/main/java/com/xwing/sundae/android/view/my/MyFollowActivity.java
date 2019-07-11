@@ -74,7 +74,7 @@ public class MyFollowActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_follow);
-
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary) );
         getUserInfo = new GetUserInfo(this);
         if (null != getUserInfo) {
             userInfo = getUserInfo.getUserInfo().getData();

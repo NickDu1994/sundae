@@ -119,6 +119,9 @@ public class UserInfoActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
+
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary) );
+
         sharedPreferencesHelper = new SharedPreferencesHelper(this, "user");
         getUserInfo = new GetUserInfo(this);
 

@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:background="@drawable/shape_gradient">
+                android:background="@color/colorPrimary">
 
                 <com.xwing.sundae.android.customview.SearchRoundCTACardView
                     android:id="@+id/search_button"

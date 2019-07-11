@@ -11,12 +11,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.xwing.sundae.R;
-import com.xwing.sundae.android.model.FollowModel;
 import com.xwing.sundae.android.model.MyFollowerModel;
 import com.xwing.sundae.android.util.ImageServerConstant;
 
@@ -105,7 +103,7 @@ public class MyFollowerInfoAdapter extends RecyclerView.Adapter<MyFollowerInfoAd
         viewHolder.follow_field.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(mContext, "longclig", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "longclig", Toast.LENGTH_SHORT).show();
                 Log.d("TAG", "onLongClick() called with: v = [" + v + "]");
                 return false;
             }
@@ -123,8 +121,8 @@ public class MyFollowerInfoAdapter extends RecyclerView.Adapter<MyFollowerInfoAd
         (viewHolder.follow_field).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "onClick:"
-                        + mDatas.get(viewHolder.getAdapterPosition()).getFollow_avatarUrl(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "onClick:"
+//                        + mDatas.get(viewHolder.getAdapterPosition()).getFollow_avatarUrl(), Toast.LENGTH_SHORT).show();
                 Log.d("TAG", "onClick() called with: v = [" + v + "]");
             }
         });

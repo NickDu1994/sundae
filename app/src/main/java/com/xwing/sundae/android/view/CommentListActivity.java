@@ -43,7 +43,7 @@ public class CommentListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment_list);
-
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary) );
         idString = getIntent().getStringExtra("id");
         xRefreshView = findViewById(R.id.xrefreshview_poetryFragment);
         recyclerView = (RecyclerView) findViewById(R.id.comment_list);

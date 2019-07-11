@@ -73,6 +73,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 drawableId = R.drawable.message_collection;
                 viewHolder.messageImage.setBackgroundResource(R.drawable.message_collect_bg);
                 break;
+            case 4:
+                messageTxt = MessageConstant.MESSAGE_TYPE_COMMENT;
+                drawableId = R.drawable.message_comment;
+                viewHolder.messageImage.setBackgroundResource(R.drawable.message_comment_bg);
+                break;
         }
 
         String timeString = message.getCreateTime();

@@ -19,6 +19,7 @@ public class InitActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init);
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary) );
         skip = findViewById(R.id.skip);
 
         mCountHandler.sendEmptyMessageDelayed(0, 1000);

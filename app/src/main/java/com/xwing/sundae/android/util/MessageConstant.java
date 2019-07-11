@@ -8,4 +8,6 @@ public class MessageConstant {
     public static final String MESSAGE_TYPE_FOLLOW = "有人关注鸭";
 
     public static final String MESSAGE_TYPE_COLLECT = "有人收藏耶";
+
+    public static final String MESSAGE_TYPE_COMMENT = "有人评论啦";
 }

@@ -83,11 +83,14 @@ public class MainActivity extends AppCompatActivity implements
 //        SharedPreferencesHelper sharedPreferencesHelper = new SharedPreferencesHelper(this,"user");
 //        sharedPreferencesHelper.clear();
         getUserInfo = new GetUserInfo(this);
+
         if (getUserInfo.isUserLogined()) {
             userInfo = getUserInfo.getUserInfo().getData();
         }
+        
         setDefaultFragment();
         initView();
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimary));
     }
 
     private void initView() {
