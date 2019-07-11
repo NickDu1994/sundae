@@ -260,7 +260,7 @@ public class PortalFragment extends Fragment {
             @Override
             public void onResponse(String response) {
 //                Toast.makeText(//                Toast.makeTextmContext,"Success",Toast.LENGTH_SHORT).show();,"Success",Toast.LENGTH_SHORT).show();
-                Log.d("dkdebug", "response" + response);
+                Log.d("dkdebuggetRecommend", "response" + response);
                 Gson gson = new Gson();
                 try{
                     CommonResponse<List<AbbreviationPlusModel>> responseIndexRecommendList =

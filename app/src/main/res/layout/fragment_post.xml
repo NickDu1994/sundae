@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -49,72 +50,164 @@
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:orientation="vertical">
-                    <com.github.florent37.materialtextfield.MaterialTextField
-                        android:layout_width="match_parent"
-                        android:layout_height="70dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        app:mtf_backgroundColor="#FFFFFF"
-                        app:mtf_labelColor="#666"
+                    <!--<com.github.florent37.materialtextfield.MaterialTextField-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:layout_marginRight="20dp"-->
+                        <!--app:mtf_backgroundColor="#FFFFFF"-->
+                        <!--app:mtf_labelColor="#666"-->
+                        <!--app:mtf_cardCollapsedHeight="5dp"-->
+                        <!--app:mtf_openKeyboardOnFocus="true"-->
+                        <!--app:mtf_image="@drawable/keyboard"-->
+                        <!--app:mtf_animationDuration="1000"-->
+                        <!--android:textSize="16sp"-->
+                        <!--android:id="@+id/post_edit_t1"-->
+                        <!--&gt;-->
+
+                        <!--<EditText-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:hint="缩写"-->
+                            <!--android:textColor="#333"-->
+                            <!--android:textSize="16sp"-->
+                            <!--android:id="@+id/post_edit1"/>-->
+
+                    <!--</com.github.florent37.materialtextfield.MaterialTextField>-->
+                    <!--<EditText-->
+                        <!--android:id="@+id/post_edit1"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="60sp"-->
+                        <!--android:background="@null"-->
+                        <!--android:layout_marginLeft="10dip"-->
+                        <!--android:padding="5dip"-->
+                        <!--android:textSize="16sp" />-->
+                    <LinearLayout
                         android:id="@+id/post_edit_t1"
-                        >
+                        android:layout_width="match_parent"
+                        android:layout_height="50sp"
+                        android:layout_marginLeft="20sp"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="20sp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="28sp"
+                            android:layout_height="28sp"
+                            android:src="@drawable/keyboard" />
 
                         <EditText
+                            android:id="@+id/post_edit1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="缩写(点我输入)"
-                            android:textColor="#333"
-                            android:textSize="15sp"
-                            android:id="@+id/post_edit1"/>
-
-                    </com.github.florent37.materialtextfield.MaterialTextField>
-                    <com.github.florent37.materialtextfield.MaterialTextField
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        app:mtf_backgroundColor="#FFFFFF"
-                        app:mtf_labelColor="#666"
+                            android:layout_marginLeft="10dip"
+                            android:background="#00000000"
+                            android:hint="请输入词条的缩写"
+                            android:padding="5dip"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                    <LinearLayout
                         android:id="@+id/post_edit_t2"
-                        >
-
-                        <EditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="全称(点我输入)"
-                            android:textColor="#333"
-                            android:textSize="15sp"
-                            android:id="@+id/post_edit2"/>
-
-                    </com.github.florent37.materialtextfield.MaterialTextField>
-                    <com.github.florent37.materialtextfield.MaterialTextField
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        app:mtf_backgroundColor="#FFFFFF"
-                        app:mtf_labelColor="#666"
-                        android:id="@+id/post_edit_t3"
-                        >
+                        android:layout_height="50sp"
+                        android:layout_marginLeft="20sp"
+                        android:layout_marginTop="20sp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="28sp"
+                            android:layout_height="28sp"
+                            android:src="@drawable/keyboard" />
 
                         <EditText
+                            android:id="@+id/post_edit2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="标题(点我输入)"
-                            android:textColor="#333"
-                            android:textSize="15sp"
-                            android:id="@+id/post_edit3"/>
+                            android:layout_marginLeft="10dip"
+                            android:background="#00000000"
+                            android:hint="请输入词条的全称"
+                            android:padding="5dip"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/post_edit_t3"
+                        android:layout_width="match_parent"
+                        android:layout_height="50sp"
+                        android:layout_marginTop="20sp"
+                        android:layout_marginLeft="20sp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                    </com.github.florent37.materialtextfield.MaterialTextField>
+                        <ImageView
+                            android:layout_width="28sp"
+                            android:layout_height="28sp"
+                            android:src="@drawable/keyboard" />
+
+                        <EditText
+                            android:id="@+id/post_edit3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dip"
+                            android:background="#00000000"
+                            android:hint="请输入标题"
+                            android:padding="5dip"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+                    <!--<com.github.florent37.materialtextfield.MaterialTextField-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:layout_marginRight="20dp"-->
+                        <!--app:mtf_backgroundColor="#FFFFFF"-->
+                        <!--app:mtf_labelColor="#666"-->
+                        <!--app:mtf_cardCollapsedHeight="5dp"-->
+                        <!--app:mtf_image="@drawable/keyboard"-->
+                        <!--app:mtf_animationDuration="1000"-->
+                        <!--app:mtf_openKeyboardOnFocus="true"-->
+                        <!--android:id="@+id/post_edit_t2"-->
+                        <!--&gt;-->
+
+                        <!--<EditText-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:hint="全称"-->
+                            <!--android:textColor="#333"-->
+                            <!--android:textSize="15sp"-->
+                            <!--android:id="@+id/post_edit2"/>-->
+
+                    <!--</com.github.florent37.materialtextfield.MaterialTextField>-->
+                    <!--<com.github.florent37.materialtextfield.MaterialTextField-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginLeft="20dp"-->
+                        <!--android:layout_marginRight="20dp"-->
+                        <!--app:mtf_backgroundColor="#FFFFFF"-->
+                        <!--app:mtf_labelColor="#666"-->
+                        <!--app:mtf_animationDuration="1000"-->
+                        <!--app:mtf_cardCollapsedHeight="5dp"-->
+                        <!--app:mtf_image="@drawable/mobile"-->
+                        <!--android:id="@+id/post_edit_t3"-->
+                        <!--&gt;-->
+
+                        <!--<EditText-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:hint="标题"-->
+                            <!--android:textColor="#333"-->
+                            <!--android:textSize="15sp"-->
+                            <!--android:id="@+id/post_edit3"/>-->
+
+                    <!--</com.github.florent37.materialtextfield.MaterialTextField>-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -134,8 +227,8 @@
 
                             <ImageView
                                 android:id="@+id/post_back_show1"
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginBottom="10dp"
                                 android:background="@drawable/pluspic"
@@ -143,8 +236,8 @@
 
                             <ImageView
                                 android:id="@+id/post_back_show2"
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginLeft="10sp"
                                 android:layout_marginBottom="10dp"
@@ -152,23 +245,29 @@
 
                             <ImageView
                                 android:id="@+id/post_back_show3"
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginLeft="10sp"
                                 android:layout_marginBottom="10dp"
                                 android:background="@drawable/pluspic" />
                         </LinearLayout>
                     </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="正文:"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="20dp">
-
+                    android:layout_marginRight="20dp">
                     <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -187,13 +286,13 @@
                                 android:contentDescription="@null"
                                 android:src="@drawable/back1" />
 
-                            <ImageButton
-                                android:id="@+id/action_redo"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/go1" />
+                            <!--<ImageButton-->
+                                <!--android:id="@+id/action_redo"-->
+                                <!--android:layout_width="32dp"-->
+                                <!--android:layout_height="32dp"-->
+                                <!--android:background="@null"-->
+                                <!--android:contentDescription="@null"-->
+                                <!--android:src="@drawable/go1" />-->
 
                             <ImageButton
                                 android:id="@+id/action_bold"
@@ -210,6 +309,8 @@
                                 android:background="@null"
                                 android:contentDescription="@null"
                                 android:src="@drawable/italic1" />
+
+
 
                             <ImageButton
                                 android:id="@+id/action_subscript"
@@ -244,6 +345,13 @@
                                 android:src="@drawable/underline1" />
 
                             <ImageButton
+                                android:id="@+id/action_insert_link"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:background="@null"
+                                android:contentDescription="@null"
+                                android:src="@drawable/link" />
+                            <ImageButton
                                 android:id="@+id/action_heading1"
                                 android:layout_width="32dp"
                                 android:layout_height="32dp"
@@ -257,155 +365,80 @@
                                 android:layout_height="32dp"
                                 android:background="@null"
                                 android:contentDescription="@null"
-                                android:src="@drawable/h12" />
+                                android:src="@drawable/h22" />
 
-                            <ImageButton
-                                android:id="@+id/action_heading3"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/h13" />
+                            <!--<ImageButton-->
+                                <!--android:id="@+id/action_heading3"-->
+                                <!--android:layout_width="32dp"-->
+                                <!--android:layout_height="32dp"-->
+                                <!--android:background="@null"-->
+                                <!--android:contentDescription="@null"-->
+                                <!--android:src="@drawable/h13" />-->
 
-                            <ImageButton
-                                android:id="@+id/action_heading4"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/h14" />
+                            <!--<ImageButton-->
+                                <!--android:id="@+id/action_heading4"-->
+                                <!--android:layout_width="32dp"-->
+                                <!--android:layout_height="32dp"-->
+                                <!--android:background="@null"-->
+                                <!--android:contentDescription="@null"-->
+                                <!--android:src="@drawable/h14" />-->
 
-                            <ImageButton
-                                android:id="@+id/action_heading5"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/h15" />
+                            <!--<ImageButton-->
+                                <!--android:id="@+id/action_heading5"-->
+                                <!--android:layout_width="32dp"-->
+                                <!--android:layout_height="32dp"-->
+                                <!--android:background="@null"-->
+                                <!--android:contentDescription="@null"-->
+                                <!--android:src="@drawable/h15" />-->
 
-                            <ImageButton
-                                android:id="@+id/action_heading6"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/h16" />
+                            <!--<ImageButton-->
+                                <!--android:id="@+id/action_heading6"-->
+                                <!--android:layout_width="32dp"-->
+                                <!--android:layout_height="32dp"-->
+                                <!--android:background="@null"-->
+                                <!--android:contentDescription="@null"-->
+                                <!--android:src="@drawable/h16" />-->
 
-                            <ImageButton
-                                android:id="@+id/action_txt_color"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/fontcolor" />
+                            <!--<ImageButton-->
+                                <!--android:id="@+id/action_txt_color"-->
+                                <!--android:layout_width="32dp"-->
+                                <!--android:layout_height="32dp"-->
+                                <!--android:background="@null"-->
+                                <!--android:contentDescription="@null"-->
+                                <!--android:src="@drawable/fontcolors" />-->
 
-                            <ImageButton
-                                android:id="@+id/action_bg_color"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/bgcolor" />
+                            <!--<ImageButton-->
+                                <!--android:id="@+id/action_bg_color"-->
+                                <!--android:layout_width="32dp"-->
+                                <!--android:layout_height="32dp"-->
+                                <!--android:background="@null"-->
+                                <!--android:contentDescription="@null"-->
+                                <!--android:src="@drawable/bgcolor" />-->
 
-
-                            <ImageButton
-                                android:id="@+id/action_indent"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/indent" />
-
-                            <ImageButton
-                                android:id="@+id/action_outdent"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/outdent" />
-
-                            <ImageButton
-                                android:id="@+id/action_align_left"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/justify_left" />
-
-                            <ImageButton
-                                android:id="@+id/action_align_center"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/justify_center" />
-
-                            <ImageButton
-                                android:id="@+id/action_align_right"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/justify_right" />
-
-                            <ImageButton
-                                android:id="@+id/action_insert_bullets"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/bullets" />
-
-                            <ImageButton
-                                android:id="@+id/action_insert_numbers"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/numbers" />
-
-                            <ImageButton
-                                android:id="@+id/action_blockquote"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/blockquote" />
-
-
-
-                            <ImageButton
-                                android:id="@+id/action_insert_link"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@drawable/insert_link" />
-
-                            <ImageButton
-                                android:id="@+id/action_insert_checkbox"
-                                android:layout_width="48dp"
-                                android:layout_height="48dp"
-                                android:background="@null"
-                                android:contentDescription="@null"
-                                android:src="@android:drawable/checkbox_on_background" />
+                            <!--<ImageButton-->
+                                <!--android:id="@+id/action_insert_checkbox"-->
+                                <!--android:layout_width="48dp"-->
+                                <!--android:layout_height="48dp"-->
+                                <!--android:background="@null"-->
+                                <!--android:contentDescription="@null"-->
+                                <!--android:src="@android:drawable/checkbox_on_background" />-->
 
                         </LinearLayout>
                     </HorizontalScrollView>
+                <jp.wasabeef.richeditor.RichEditor
+                    android:id="@+id/editor"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    />
 
-                    <jp.wasabeef.richeditor.RichEditor
-                        android:id="@+id/editor"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
 
-                        />
 
-                    <TextView
-                        android:id="@+id/preview"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        />
+                <!--<TextView-->
+                        <!--android:id="@+id/preview"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginTop="15dp"-->
+                        <!--/>-->
 
                 </LinearLayout>
             </LinearLayout>

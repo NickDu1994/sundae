@@ -119,9 +119,10 @@ public class MyCollectActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(String response) {
-                Toast.makeText(MyCollectActivity.this, "Success", Toast.LENGTH_SHORT).show();
+
                 Gson gson = new Gson();
                 if(!Constant.LOG_LEVEL.equals("PRD")) {
+                    Toast.makeText(MyCollectActivity.this, "Success", Toast.LENGTH_SHORT).show();
                     Log.e("loginPostRequest", "getFollowList" + response);
                 }
 
@@ -224,7 +225,7 @@ public class MyCollectActivity extends AppCompatActivity {
         xRefreshView.setMoveForHorizontal(true);
         //允许下拉刷新
         xRefreshView.setPullRefreshEnable(true);
-        xRefreshView.setPullLoadEnable(true);
+        xRefreshView.setPullLoadEnable(false);
         xRefreshView.setAutoLoadMore(false);
         xRefreshView.enableReleaseToLoadMore(false);
         xRefreshView.enableRecyclerViewPullUp(true);

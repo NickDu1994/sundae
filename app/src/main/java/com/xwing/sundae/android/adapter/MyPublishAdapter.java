@@ -19,6 +19,9 @@ import com.xwing.sundae.android.model.MyFollowerModel;
 import com.xwing.sundae.android.model.MyPublishModel;
 import com.xwing.sundae.android.util.ImageServerConstant;
 
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
+
 import java.util.List;
 
 /**
@@ -76,7 +79,10 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
             v.item_name.setText(publish.getItem_name());
         }
 
-        v.item_content.setText(publish.getItem_content());
+        v.htmlTextView.setHtml(publish.getItem_content(),
+                new HtmlHttpImageGetter(v.htmlTextView));
+
+//        v.item_content.setText(publish.getItem_content());
         String abbr_type = publish.getAbb_type();
         String abbr_type_name = "词条";
         if(null == abbr_type || "".equals(abbr_type)) {
@@ -108,6 +114,7 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
         TextView create_time,abb_likedCount,abb_type,item_name,item_content;
         View mView;
         OnRecyclerItemClickListener mListener;
+        HtmlTextView htmlTextView;
 
         public ViewHolder(@NonNull View v, OnRecyclerItemClickListener listener) {
             super(v);
@@ -117,7 +124,8 @@ public class MyPublishAdapter extends RecyclerView.Adapter<MyPublishAdapter.View
             abb_likedCount = v.findViewById(R.id.abb_likedCount);
             abb_type = v.findViewById(R.id.abb_type);
             item_name = v.findViewById(R.id.item_name);
-            item_content = v.findViewById(R.id.item_content);
+//            item_content = v.findViewById(R.id.item_content);
+            htmlTextView = (HtmlTextView) v.findViewById(R.id.item_content);
             this.mListener = listener;
         }
 

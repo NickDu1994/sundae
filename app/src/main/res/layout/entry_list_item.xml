@@ -33,16 +33,17 @@
             android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
-            <TextView
+            <org.sufficientlysecure.htmltextview.HtmlTextView
                 android:id="@+id/item_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:textAppearance="@android:style/TextAppearance.Small"
+                android:layout_marginTop="8dp"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="The WTF is the acronym of what the fuck, which means something that is very unbelievable. This is a very long."
-                android:textColor="#777"
-                android:textSize="13dp" />
+                android:layout_marginBottom="8dp"
+                android:textSize="13dp"/>
         </LinearLayout>
         <!--<TextView-->
         <!--android:id="@+id/fruit_addressType"-->

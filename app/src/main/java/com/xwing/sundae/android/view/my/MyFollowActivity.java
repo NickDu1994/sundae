@@ -132,7 +132,7 @@ public class MyFollowActivity extends AppCompatActivity {
         xRefreshView.setPinnedContent(false);
         xRefreshView.setMoveForHorizontal(true);
         //允许下拉刷新
-        xRefreshView.setPullRefreshEnable(true);
+        xRefreshView.setPullRefreshEnable(false);
         xRefreshView.setPullLoadEnable(false);
         xRefreshView.setAutoLoadMore(false);
         xRefreshView.enableReleaseToLoadMore(false);

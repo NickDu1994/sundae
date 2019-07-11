@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,9 +88,13 @@ public class PostFragment extends Fragment {
     private ArrayList<String> mImagePaths;
     GetUserInfo getUserInfo;
 
-    private MaterialTextField materialTextField1;
-    private  MaterialTextField materialTextField2;
-    private  MaterialTextField materialTextField3;
+//    private MaterialTextField materialTextField1;
+//    private  MaterialTextField materialTextField2;
+//    private  MaterialTextField materialTextField3;
+
+    private LinearLayout materialTextField1;
+    private  LinearLayout materialTextField2;
+    private  LinearLayout materialTextField3;
     public PostFragment() {
         // Required empty public constructor
     }
@@ -147,13 +152,13 @@ public class PostFragment extends Fragment {
             postBackShow3 = (ImageView) view.findViewById(R.id.post_back_show3);
             postBackShow2.setVisibility(View.INVISIBLE);
             postBackShow3.setVisibility(View.INVISIBLE);
-            mEditor.setEditorHeight(200);
-            mEditor.setEditorFontSize(22);
+            mEditor.setEditorHeight(350);
+            mEditor.setEditorFontSize(16);
             mEditor.setEditorFontColor(Color.BLACK);
 
             mEditor.setPadding(10, 10, 10, 10);
 
-            mEditor.setPlaceholder("请输入正文");
+            mEditor.setPlaceholder("请输入...");
 
             materialTextField1 = view.findViewById(R.id.post_edit_t1);
             materialTextField2 = view.findViewById(R.id.post_edit_t2);
@@ -243,12 +248,12 @@ public class PostFragment extends Fragment {
                 }
             });
 
-            view.findViewById(R.id.action_redo).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.redo();
-                }
-            });
+//            view.findViewById(R.id.action_redo).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.redo();
+//                }
+//            });
 
             view.findViewById(R.id.action_bold).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -298,120 +303,120 @@ public class PostFragment extends Fragment {
                     mEditor.setHeading(1);
                 }
             });
+//
+//            view.findViewById(R.id.action_heading2).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setHeading(2);
+//                }
+//            });
 
-            view.findViewById(R.id.action_heading2).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setHeading(2);
-                }
-            });
+//            view.findViewById(R.id.action_heading3).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setHeading(3);
+//                }
+//            });
+//
+//            view.findViewById(R.id.action_heading4).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setHeading(4);
+//                }
+//            });
+//
+//            view.findViewById(R.id.action_heading5).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setHeading(5);
+//                }
+//            });
+//
+//            view.findViewById(R.id.action_heading6).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setHeading(6);
+//                }
+//            });
 
-            view.findViewById(R.id.action_heading3).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setHeading(3);
-                }
-            });
+//            view.findViewById(R.id.action_txt_color).setOnClickListener(new View.OnClickListener() {
+//                private boolean isChanged;
+//
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setTextColor(isChanged ? Color.BLACK : Color.RED);
+//                    isChanged = !isChanged;
+//                }
+//            });
+//
+//            view.findViewById(R.id.action_bg_color).setOnClickListener(new View.OnClickListener() {
+//                private boolean isChanged;
+//
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setTextBackgroundColor(isChanged ? Color.TRANSPARENT : Color.YELLOW);
+//                    isChanged = !isChanged;
+//                }
+//            });
 
-            view.findViewById(R.id.action_heading4).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setHeading(4);
-                }
-            });
-
-            view.findViewById(R.id.action_heading5).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setHeading(5);
-                }
-            });
-
-            view.findViewById(R.id.action_heading6).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setHeading(6);
-                }
-            });
-
-            view.findViewById(R.id.action_txt_color).setOnClickListener(new View.OnClickListener() {
-                private boolean isChanged;
-
-                @Override
-                public void onClick(View v) {
-                    mEditor.setTextColor(isChanged ? Color.BLACK : Color.RED);
-                    isChanged = !isChanged;
-                }
-            });
-
-            view.findViewById(R.id.action_bg_color).setOnClickListener(new View.OnClickListener() {
-                private boolean isChanged;
-
-                @Override
-                public void onClick(View v) {
-                    mEditor.setTextBackgroundColor(isChanged ? Color.TRANSPARENT : Color.YELLOW);
-                    isChanged = !isChanged;
-                }
-            });
-
-            view.findViewById(R.id.action_indent).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setIndent();
-                }
-            });
-
-            view.findViewById(R.id.action_outdent).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setOutdent();
-                }
-            });
-
-            view.findViewById(R.id.action_align_left).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setAlignLeft();
-                }
-            });
-
-            view.findViewById(R.id.action_align_center).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setAlignCenter();
-                }
-            });
-
-            view.findViewById(R.id.action_align_right).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setAlignRight();
-                }
-            });
-
-            view.findViewById(R.id.action_blockquote).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setBlockquote();
-                }
-            });
-
-            view.findViewById(R.id.action_insert_bullets).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setBullets();
-                }
-            });
-
-            view.findViewById(R.id.action_insert_numbers).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.setNumbers();
-                }
-            });
-
-
-
+//            view.findViewById(R.id.action_indent).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setIndent();
+//                }
+//            });
+//
+//            view.findViewById(R.id.action_outdent).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setOutdent();
+//                }
+//            });
+//
+//            view.findViewById(R.id.action_align_left).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setAlignLeft();
+//                }
+//            });
+//
+//            view.findViewById(R.id.action_align_center).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setAlignCenter();
+//                }
+//            });
+//
+//            view.findViewById(R.id.action_align_right).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setAlignRight();
+//                }
+//            });
+//
+//            view.findViewById(R.id.action_blockquote).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setBlockquote();
+//                }
+//            });
+//
+//            view.findViewById(R.id.action_insert_bullets).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setBullets();
+//                }
+//            });
+//
+//            view.findViewById(R.id.action_insert_numbers).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.setNumbers();
+//                }
+//            });
+//
+//
+//
             view.findViewById(R.id.action_insert_link).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -439,12 +444,12 @@ public class PostFragment extends Fragment {
 
                 }
             });
-            view.findViewById(R.id.action_insert_checkbox).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mEditor.insertTodo();
-                }
-            });
+//            view.findViewById(R.id.action_insert_checkbox).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mEditor.insertTodo();
+//                }
+//            });
 
         view.findViewById(R.id.post_back).setOnClickListener(new View.OnClickListener(){
             @Override
@@ -469,19 +474,19 @@ public class PostFragment extends Fragment {
                 String title2 = editText2.getText().toString();
                 String title3 = editText3.getText().toString();
                 if(mParam1.equals("1")&&(editText1==null||editText1.length()<=0)){
-                    materialTextField1.expand();
-
-                    materialTextField1.setHasFocus(true);
+//                    materialTextField1.expand();
+//
+//                    materialTextField1.setHasFocus(true);
                     loadingView.setVisibility(View.GONE);
                     return;
                 }else if(mParam1.equals("1")&&(editText2==null||editText2.length()<=0)){
-                    materialTextField2.expand();
-                    materialTextField2.setHasFocus(true);
+//                    materialTextField2.expand();
+//                    materialTextField2.setHasFocus(true);
                     loadingView.setVisibility(View.GONE);
                     return;
                 }else if(mParam1.equals("2")&&(editText3==null||editText3.length()<=0)){
-                    materialTextField3.expand();
-                    materialTextField3.setHasFocus(true);
+//                    materialTextField3.expand();
+//                    materialTextField3.setHasFocus(true);
                     loadingView.setVisibility(View.GONE);
                     return;
                 }

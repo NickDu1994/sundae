@@ -23,6 +23,9 @@ import com.xwing.sundae.android.util.ImageServerConstant;
 import com.xwing.sundae.android.view.IndexDetailActivity;
 import com.xwing.sundae.android.view.my.MyCollectActivity;
 
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
+
 import java.util.List;
 
 /**
@@ -77,7 +80,9 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
 
         RequestOptions options = new RequestOptions().error(R.drawable.explore_actived);
         viewHolder.item_name.setText(collect.getItem_name());
-        viewHolder.item_content.setText(collect.getItem_content());
+        viewHolder.htmlTextView.setHtml(collect.getItem_content(),
+                new HtmlHttpImageGetter(viewHolder.htmlTextView));
+//        viewHolder.item_content.setText(collect.getItem_content());
 
         if("".equals(collect.getItem_image()) || null == collect.getItem_image()) {
             Glide.with(mContext).load(R.drawable.explore_actived).apply(options).into(viewHolder.item_image);
@@ -138,16 +143,19 @@ public class MyCollectAdapter extends RecyclerView.Adapter<MyCollectAdapter.View
         TextView item_name,item_content,collect_author,collect_time;
         Button btnCancelFollow;
         LinearLayout collect_field;
+        HtmlTextView htmlTextView;
 
         public ViewHolder(View v) {
             super(v);
             item_image = v.findViewById(R.id.item_image);
             item_name = v.findViewById(R.id.item_name);
-            item_content = v.findViewById(R.id.item_content);
+//            item_content = v.findViewById(R.id.item_content);
             collect_author = v.findViewById(R.id.collect_author);
             collect_time = v.findViewById(R.id.collect_time);
             collect_field = v.findViewById(R.id.collect_field);
             btnCancelFollow = v.findViewById(R.id.btnCancelCollect);
+
+            htmlTextView = (HtmlTextView) v.findViewById(R.id.item_content);
         }
     }
 

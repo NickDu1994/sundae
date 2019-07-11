@@ -109,7 +109,7 @@ public class MyPubishActivity extends AppCompatActivity {
         xRefreshView.setMoveForHorizontal(true);
         //允许下拉刷新
         xRefreshView.setPullRefreshEnable(true);
-        xRefreshView.setPullLoadEnable(true);
+        xRefreshView.setPullLoadEnable(false);
         xRefreshView.setAutoLoadMore(false);
         xRefreshView.enableReleaseToLoadMore(false);
         xRefreshView.enableRecyclerViewPullUp(true);

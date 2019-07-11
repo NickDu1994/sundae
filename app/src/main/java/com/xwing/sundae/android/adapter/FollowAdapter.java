@@ -16,6 +16,9 @@ import com.xwing.sundae.android.model.FollowModel;
 import com.xwing.sundae.android.util.ImageServerConstant;
 import com.xwing.sundae.android.view.IndexDetailActivity;
 
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
+
 import java.util.List;
 
 public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder> {
@@ -43,7 +46,9 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
         viewHolder.eventDesc.setText(follow.getEvent_desc());
         viewHolder.eventTime.setText(follow.getEvent_time());
         viewHolder.itemName.setText(follow.getItem_name());
-        viewHolder.itemContent.setText(follow.getItem_content());
+//        viewHolder.itemContent.setText(follow.getItem_content());
+        viewHolder.htmlTextView.setHtml(follow.getItem_content(),
+                new HtmlHttpImageGetter(viewHolder.htmlTextView));
         String avatarUrl = ImageServerConstant.IMAGE_SERVER_URL + follow.getItem_avatar();
         String itemUrl = ImageServerConstant.IMAGE_SERVER_URL + follow.getItem_image();
         RequestOptions options = new RequestOptions().circleCropTransform();
@@ -76,16 +81,18 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowAdapter.ViewHolder
         ImageView itemImage;
         TextView itemUsername;
         ImageView itemAvatar;
+        HtmlTextView htmlTextView;
 
         public ViewHolder(View v) {
             super(v);
             eventDesc = (TextView) v.findViewById(R.id.event_desc);
             eventTime = (TextView) v.findViewById(R.id.event_time);
             itemName = (TextView) v.findViewById(R.id.item_name);
-            itemContent = (TextView) v.findViewById(R.id.item_content);
+//            itemContent = (TextView) v.findViewById(R.id.item_content);
             itemImage = (ImageView) v.findViewById(R.id.item_image);
             itemUsername= (TextView) v.findViewById(R.id.item_username);
             itemAvatar = (ImageView) v.findViewById(R.id.item_avatar);
+            htmlTextView = (HtmlTextView) v.findViewById(R.id.item_content);
         }
     }
 
