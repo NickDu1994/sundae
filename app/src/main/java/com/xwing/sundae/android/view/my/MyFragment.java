@@ -260,7 +260,9 @@ public class MyFragment extends Fragment implements View.OnClickListener, UserIn
                                 sharedPreferencesHelper.remove("user_info");
                                 String currentKeywordNote = spUtil.getSP("keyword_note");
                                 if(currentKeywordNote!= null){
+                                    spUtil.putSP("keyword_note","");
                                     spUtil.removeSP("keyword_note");
+
                                 }
                                 sharedPreferencesHelper.put("auth",false);
                                 setUserInfoAsNoLogin();
