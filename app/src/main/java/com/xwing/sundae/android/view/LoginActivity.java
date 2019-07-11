@@ -32,6 +32,7 @@ import com.xwing.sundae.android.util.CommonMethod;
 import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.SharedPreferencesHelper;
+import com.xwing.sundae.android.util.SharedPreferencesUtil;
 import com.xwing.sundae.android.util.interpolator.JellyInterpolator;
 import com.xwing.sundae.android.view.my.MyFragment;
 
@@ -60,6 +61,7 @@ public class LoginActivity extends AppCompatActivity {
 
     String verify_code = "";
     SharedPreferencesHelper sharedPreferencesHelper;
+    SharedPreferencesUtil spUtil;
 
     private MyFragment mMyFragment;
 
@@ -70,6 +72,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         getUserInfo = new GetUserInfo(this);
+        spUtil = SharedPreferencesUtil.getInstance(this);
         sharedPreferencesHelper = new SharedPreferencesHelper(LoginActivity.this, "user");
         initView();
         initEvent();
@@ -283,6 +286,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     sharedPreferencesHelper.put("user_info", response);
                     sharedPreferencesHelper.put("auth", true);
+                    spUtil.putSP("keyword_note","");
+                    spUtil.removeSP("keyword_note");
                     CommonResponse<UserInfo> userInfoBean = getUserInfo.getUserInfo();
                     if (null != userInfoBean.getData()) {
                         Long userId = userInfoBean.getData().getId();
