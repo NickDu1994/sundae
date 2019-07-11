@@ -17,6 +17,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="vertical">
             <!--<LinearLayout-->
             <!--android:layout_width="match_parent"-->
@@ -63,6 +65,7 @@
                     android:id="@+id/index_recylerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusableInTouchMode="false"
                     android:nestedScrollingEnabled="false"></android.support.v7.widget.RecyclerView>
             </RelativeLayout>
         </LinearLayout>

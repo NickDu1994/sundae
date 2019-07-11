@@ -13,6 +13,15 @@ public class AbbreviationDetailModel {
     private boolean follow;
     private String author;
     private String avatar;
+    private String collectNumber;
+
+    public String getCollectNumber() {
+        return collectNumber;
+    }
+
+    public void setCollectNumber(String collectNumber) {
+        this.collectNumber = collectNumber;
+    }
 
     public boolean isLike() {
         return like;

@@ -3,10 +3,14 @@ package com.xwing.sundae.android.view.index;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -29,11 +33,15 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.xwing.sundae.R;
+import com.xwing.sundae.android.adapter.CommentAdapter;
 import com.xwing.sundae.android.customview.CustomeButtonGroupView;
+import com.xwing.sundae.android.customview.FScrollView;
 import com.xwing.sundae.android.model.AbbreviationDetailModel;
 import com.xwing.sundae.android.model.AbbreviationPlusModel;
+import com.xwing.sundae.android.model.CommentModel;
 import com.xwing.sundae.android.model.CommonResponse;
 import com.xwing.sundae.android.util.CallBackUtil;
 import com.xwing.sundae.android.util.CommonMethod;
@@ -41,6 +49,8 @@ import com.xwing.sundae.android.util.Constant;
 import com.xwing.sundae.android.util.ImageServerConstant;
 import com.xwing.sundae.android.util.OkhttpUtil;
 import com.xwing.sundae.android.util.SharedPreferencesUtil;
+import com.xwing.sundae.android.view.AddCommentActivity;
+import com.xwing.sundae.android.view.CommentListActivity;
 import com.xwing.sundae.android.view.GetUserInfo;
 import com.xwing.sundae.android.view.LoginActivity;
 import com.xwing.sundae.android.view.MainActivity;
@@ -49,6 +59,7 @@ import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +81,7 @@ public class SearchFragment extends Fragment {
     private String storageAuthorId = "";
     private String storageUserId = "";
 
+    private CardView mainEditTextCardView;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private Button cancelButton;
@@ -83,6 +95,21 @@ public class SearchFragment extends Fragment {
     private ImageView saveIV;
     private TextView followTV;
     private Context mContext;
+
+    private TextView collectNumber;
+    private TextView addComment;
+    private TextView totalCount;
+    private LinearLayout viewMore;
+    private LinearLayout commentEmpty;
+    private int totalCommentNumber;
+
+    private List<CommentModel> commentList = new ArrayList<>();
+    RecyclerView recyclerView;
+    CommentAdapter commentAdapter;
+    private Handler handler = new Handler();
+
+    private FScrollView detailScroll;
+    private LinearLayout bottomBar;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -137,6 +164,16 @@ public class SearchFragment extends Fragment {
         listPanel = getActivity().findViewById(R.id.listPanel);
         detailPanel = getActivity().findViewById(R.id.detailPanel);
         mainEditText = getActivity().findViewById(R.id.mainEditText);
+        detailScroll = getActivity().findViewById(R.id.detail_scroll);
+        bottomBar = getActivity().findViewById(R.id.bottom_bar);
+
+        mainEditTextCardView = getActivity().findViewById(R.id.mainEditTextCardView);
+        mainEditTextCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainEditText.requestFocus();
+            }
+        });
         mainEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -248,20 +285,56 @@ public class SearchFragment extends Fragment {
         followTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isFollow){
-                    handleFollow(true);
-                }else {
+                if(isFollow){
                     handleFollow(false);
+                }else {
+                    handleFollow(true);
                 }
             }
         });
 
+        addComment = (TextView) getActivity().findViewById(R.id.add_comment);
+        totalCount = (TextView) getActivity().findViewById(R.id.comment_count_title);
+        viewMore = (LinearLayout) getActivity().findViewById(R.id.view_more_comment);
+        commentEmpty = (LinearLayout) getActivity().findViewById(R.id.comment_empty);
+
+        addComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(mContext, AddCommentActivity.class);
+                intent.putExtra("id", currentEntryId);
+                startActivity(intent);
+            }
+        });
+
+        viewMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(mContext, CommentListActivity.class);
+                intent.putExtra("id", currentEntryId);
+                startActivity(intent);
+            }
+        });
+
+        recyclerView = (RecyclerView) getActivity().findViewById(R.id.comment_list);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()) {
+            @Override
+            public boolean canScrollVertically() {
+                return true;
+            }
+        });
+        recyclerView.setHasFixedSize(true);
+        commentAdapter = new CommentAdapter(commentList, getContext());
+        recyclerView.setAdapter(commentAdapter);
     }
 
     public void displayController(int panelName){
         suggestionPanel.setVisibility(View.GONE);
         listPanel.setVisibility(View.GONE);
-        detailPanel.setVisibility(View.GONE);
+        bottomBar.setVisibility(View.GONE);
+        detailScroll.setVisibility(View.GONE);
         switch (panelName){
             case 1:
                 suggestionPanel.setVisibility(View.VISIBLE);
@@ -270,7 +343,9 @@ public class SearchFragment extends Fragment {
                 listPanel.setVisibility(View.VISIBLE);
                 break;
             case 3:
-                detailPanel.setVisibility(View.VISIBLE);
+                bottomBar.setVisibility(View.VISIBLE);
+                detailScroll.setVisibility(View.VISIBLE);
+                break;
             default:
                 break;
         }
@@ -321,6 +396,7 @@ public class SearchFragment extends Fragment {
                                 Toast.makeText(mContext, "position=" + position + keywordList.get(position).get("id"), Toast.LENGTH_SHORT).show();
                             }
                             showDetail(dataList.get(position).getId());
+                            getComments(dataList.get(position).getId());
 
                         }
                     });
@@ -334,8 +410,11 @@ public class SearchFragment extends Fragment {
 
     public void showDetail(String entryId) {
 
+        mainEditText.clearFocus();
+//        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput (InputMethodManager.HIDE_NOT_ALWAYS, 0);
+        imm.hideSoftInputFromWindow(getActivity().getWindow().getDecorView().getWindowToken(), 0);
+//        imm.toggleSoftInput (0, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
         displayController(PANEL_DETAIL);
 
@@ -396,17 +475,20 @@ public class SearchFragment extends Fragment {
                     ImageView userPicIV = getActivity().findViewById(R.id.user_pic);
                     RequestOptions options = new RequestOptions().
                             circleCropTransform();
+
                     if(null == data.getAvatar() || "".equals(data.getAvatar())) {
                         Glide.with(mContext).load(R.drawable.defaultpic_theme).apply(options).into(userPicIV);
-
                     } else {
                         Glide.with(mContext).load(ImageServerConstant.IMAGE_SERVER_URL + data.getAvatar()).apply(options).into(userPicIV);
                     }
+
                     TextView authorTV = getActivity().findViewById(R.id.author);
                     authorTV.setText(data.getAuthor());
                     storageAuthorId = data.getAbbreviation().getCreateBy();
                     TextView likeTV = getActivity().findViewById(R.id.like_number);
-                    likeTV.setText("获赞" + data.getAbbreviation().getLikedCount());
+                    likeTV.setText(data.getAbbreviation().getLikedCount());
+                    collectNumber = getActivity().findViewById(R.id.collect_number);
+                    collectNumber.setText(data.getCollectNumber());
 
                     if(data.isLike()){
                         likeIV.setImageResource(R.drawable.like);
@@ -429,8 +511,10 @@ public class SearchFragment extends Fragment {
                     }else {
                         if(data.isFollow()){
                             followTV.setText("已关注");
+                            isFollow = true;
                         }else {
                             followTV.setText("关注");
+                            isFollow = false;
                         }
                     }
 
@@ -450,6 +534,56 @@ public class SearchFragment extends Fragment {
             }
         });
 
+    }
+
+    public void getComments(String entryId) {
+        String url = Constant.REQUEST_URL_MY + "/comment/getCommentListTwo";
+
+        HashMap<String, String> paramsMap = new HashMap<>();
+        paramsMap.put("abbrId", entryId);
+        OkhttpUtil.okHttpGet(url, paramsMap, new CallBackUtil.CallBackString() {
+            @Override
+            public void onFailure(Call call, Exception e) {
+                Toast.makeText(mContext, "网络有点问题哦，稍后再试试吧！", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(String response) {
+                if(!Constant.LOG_LEVEL.equals("PRD")) {
+                    Toast.makeText(mContext, "Success", Toast.LENGTH_SHORT).show();
+                }
+                Gson gson = new Gson();
+                Log.e("loginPostRequest", "getCommentList" + response);
+
+                try {
+                    Map<String, Object> map_res = gson.fromJson(response, Map.class);
+                    LinkedTreeMap data = (LinkedTreeMap) map_res.get("data");
+                    Object content = data.get("content");
+                    double total = (double) data.get("totalElements");
+                    totalCommentNumber = (int) total;
+                    totalCount.setText("网友点评（" + String.valueOf(totalCommentNumber) + "）");
+                    if (totalCommentNumber == 0) {
+                        viewMore.setVisibility(View.GONE);
+                        commentEmpty.setVisibility(View.VISIBLE);
+                    } else {
+                        viewMore.setVisibility(View.VISIBLE);
+                        commentEmpty.setVisibility(View.GONE);
+                    }
+                    String tmp = gson.toJson(content);
+                    CommentModel[] commentModels = gson.fromJson(tmp, CommentModel[].class);
+                    commentList.addAll(Arrays.asList(commentModels));
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            commentAdapter.notifyDataSetChanged();
+                        }
+                    });
+
+                } catch (Exception e) {
+                    Log.e("loginPostRequestError", "error" + e);
+                }
+            }
+        });
     }
 
     public void handleSaveAndLike(final String entryId, boolean isEnroll, String type) {
@@ -508,22 +642,33 @@ public class SearchFragment extends Fragment {
                                     new TypeToken<CommonResponse<Object>>() {}.getType());
                     if(saveResult.getStatus() == 200){
                         Log.d("dkdebug","save success");
+                        TextView likeTV = getActivity().findViewById(R.id.like_number);
                         if("like".equals(finalType)){
+                            String currentNum = likeTV.getText().toString();
+                            int resultNum;
                             if(finalIsEnroll){
                                 likeIV.setImageResource(R.drawable.like);
+                                resultNum = Integer.valueOf(currentNum) + 1;
                                 isLike = true;
                             }else {
                                 likeIV.setImageResource(R.drawable.dislike);
+                                resultNum = Integer.valueOf(currentNum) - 1;
                                 isLike = false;
                             }
+                            likeTV.setText(String.valueOf(resultNum));
                         }else {
+                            String currentNum = collectNumber.getText().toString();
+                            int resultNum;
                             if(finalIsEnroll){
                                 saveIV.setImageResource(R.drawable.heart_fill);
+                                resultNum = Integer.valueOf(currentNum) + 1;
                                 isSave = true;
                             }else {
                                 saveIV.setImageResource(R.drawable.heart);
+                                resultNum = Integer.valueOf(currentNum) - 1;
                                 isSave = false;
                             }
+                            collectNumber.setText(String.valueOf(resultNum));
                         }
                     }
                 } catch (Exception e) {
@@ -638,5 +783,14 @@ public class SearchFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public void onResume() {
+        super.onResume();
+        if(!mainEditText.getText().toString().isEmpty()){
+//            showDetail(mainEditText.getText().toString());
+            commentList.clear();
+            getComments(currentEntryId);
+        }
     }
 }

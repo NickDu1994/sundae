@@ -46,7 +46,9 @@
         <activity android:name=".android.view.my.UserInfoActivity" />
         <activity android:name=".android.view.LoginActivity" />
         <activity android:name=".android.view.IndexDetailActivity" />
-        <activity android:name=".android.view.MainActivity"/>
+        <activity android:name=".android.view.MainActivity" />
+        <activity android:name=".android.view.AddCommentActivity" />
+        <activity android:name=".android.view.CommentListActivity"></activity>
     </application>
 
 </manifest>

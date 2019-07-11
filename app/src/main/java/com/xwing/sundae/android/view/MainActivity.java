@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements
     GetUserInfo getUserInfo;
     UserInfo userInfo;
     private int currentIndex = 0;
+    long lastTime = 0l;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -364,15 +365,26 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d("dandan out", String.valueOf(mMoreWindow.isShowing()));
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mMoreWindow.isShowing()) {
+            if (mMoreWindow != null && mMoreWindow.isShowing()) {
                 switchSelectTab(0);
                 mMoreWindow.dismiss();
                 Log.d("dandan in", String.valueOf(mMoreWindow.isShowing()));
+                return false;
+            } else {
+
+                long currentTime = System.currentTimeMillis();
+
+                if (currentTime - lastTime < 2 * 1000) {
+                    super.onKeyDown(keyCode, event);
+                } else {
+                    Toast.makeText(this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
+                    lastTime = currentTime;
+                    return false;
+                }
             }
         }
-        return true;
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
